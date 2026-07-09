@@ -1,0 +1,148 @@
+<div class="space-y-md animate-fade-in font-sans">
+  <div class="flex items-center gap-sm text-start">
+    <button (click)="goBack()" class="inline-flex items-center gap-xs text-xs text-primary hover:underline font-bold transition-all">
+      <svg class="w-4 h-4 shrink-0 flip-rtl" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+      </svg>
+      <span>Back to Course</span>
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="animate-pulse grid grid-cols-1 lg:grid-cols-3 gap-md">
+      <div class="lg:col-span-2 h-96 bg-surface-container-high rounded-xl"></div>
+      <div class="h-96 bg-surface-container-high rounded-xl"></div>
+    </div>
+  } @else if (!course()) {
+    <div class="glass-panel p-lg text-center border border-white/5">
+      <p class="text-on-surface-variant">Course content not available. Please ensure you are enrolled.</p>
+    </div>
+  } @else {
+    @let c = course()!;
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+      <div class="lg:col-span-2 space-y-md">
+        @if (activeLesson(); as lesson) {
+          <div class="glass-panel rounded-xl overflow-hidden border border-white/5">
+            @if (lesson.videoUrl) {
+              <div class="relative bg-black aspect-video flex items-center justify-center">
+                <video [src]="lesson.videoUrl" controls autoplay class="w-full h-full object-contain"></video>
+              </div>
+            } @else {
+              <div class="h-64 bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            }
+            <div class="p-sm text-start space-y-sm">
+              <div class="flex items-center justify-between">
+                <h2 class="text-sm font-bold text-on-surface">{{ lesson.title }}</h2>
+                <span class="text-xs text-on-surface-variant">{{ formatDuration(lesson.durationInSeconds) }}</span>
+              </div>
+              @if (lesson.description) {
+                <p class="text-xs text-on-surface-variant">{{ lesson.description }}</p>
+              }
+              <div class="flex gap-sm pt-sm border-t border-white/5">
+                @if (!lesson.isCompleted) {
+                  <button (click)="markAsComplete(lesson.id)"
+                          class="px-md py-2 rounded-full bg-green-600/20 text-green-400 text-xs font-bold hover:bg-green-600 hover:text-white transition-all active:scale-95">
+                    Mark as Complete
+                  </button>
+                } @else {
+                  <span class="px-md py-2 rounded-full bg-green-500/20 text-green-400 text-xs font-bold flex items-center gap-xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Completed
+                  </span>
+                }
+                <button (click)="showNotes.set(!showNotes())"
+                        class="px-md py-2 rounded-full bg-surface-container-high text-on-surface text-xs font-bold hover:bg-surface-bright transition-all active:scale-95">
+                  Notes
+                </button>
+              </div>
+            </div>
+          </div>
+
+          @if (showNotes()) {
+            <div class="glass-panel p-sm rounded-xl border border-white/5 text-start space-y-sm">
+              <h3 class="text-xs font-bold text-on-surface">Notes</h3>
+              <div class="flex gap-xs">
+                <input type="text" [ngModel]="noteText()" (ngModelChange)="noteText.set($event)" placeholder="Add a note..."
+                       class="flex-1 h-9 px-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none" />
+                <button (click)="saveNote()" [disabled]="isSavingNote() || !noteText().trim()"
+                        class="px-sm h-9 rounded bg-primary text-on-primary text-xs font-bold disabled:opacity-35 transition-all">
+                  Save
+                </button>
+              </div>
+              @if (notes().length > 0) {
+                <div class="space-y-xs max-h-48 overflow-y-auto">
+                  @for (note of notes(); track note.id) {
+                    <div class="p-xs bg-surface-container-low rounded text-xs">
+                      <p class="text-on-surface">{{ note.noteText }}</p>
+                      <span class="text-[10px] text-on-surface-variant">{{ note.createdAt | date:'short' }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        }
+      </div>
+
+      <div class="lg:col-span-1 space-y-sm">
+        <div class="glass-panel p-sm rounded-xl border border-white/5 text-center">
+          <h3 class="text-xs font-bold text-on-surface mb-xs">{{ c.title }}</h3>
+          <div class="w-full bg-surface-container-high rounded-full h-2 overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500"
+                 [style.width.%]="getTotalLessons() > 0 ? (getCompletedCount() / getTotalLessons() * 100) : 0"></div>
+          </div>
+          <span class="text-[10px] text-on-surface-variant">{{ getCompletedCount() }}/{{ getTotalLessons() }} lessons</span>
+        </div>
+
+        <div class="space-y-xs max-h-[70vh] overflow-y-auto pr-xs">
+          @for (section of c.sections; track section.id) {
+            <div class="glass-panel rounded-xl border border-white/5 overflow-hidden">
+              <button (click)="toggleSection(section.id)"
+                      class="w-full p-sm flex items-center justify-between text-start hover:bg-surface-container-low/40 transition-all">
+                <div>
+                  <h4 class="text-xs font-bold text-on-surface">{{ section.title }}</h4>
+                  <span class="text-[10px] text-on-surface-variant">{{ section.lessons.length }} lessons</span>
+                </div>
+                <svg class="w-4 h-4 text-on-surface-variant transition-transform duration-300"
+                     [ngClass]="{'rotate-180': !collapsedSections()[section.id]}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+              @if (!collapsedSections()[section.id]) {
+                <div class="border-t border-white/5 divide-y divide-white/5">
+                  @for (lesson of section.lessons; track lesson.id) {
+                    <button (click)="selectLesson(lesson, section.id)"
+                            class="w-full p-sm flex items-center gap-xs text-xs text-start hover:bg-surface-container-low/30 transition-all"
+                            [ngClass]="{'bg-primary/5': activeLesson()?.id === lesson.id}">
+                      @if (lesson.isCompleted) {
+                        <svg class="w-4 h-4 shrink-0 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                      } @else {
+                        <svg class="w-4 h-4 shrink-0 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                      }
+                      <div class="flex-1 text-start">
+                        <span class="font-semibold text-on-surface block leading-tight">{{ lesson.title }}</span>
+                        <span class="text-[10px] text-on-surface-variant">{{ formatDuration(lesson.durationInSeconds) }}</span>
+                      </div>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

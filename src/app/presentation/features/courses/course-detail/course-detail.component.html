@@ -1,0 +1,579 @@
+<div class="space-y-md animate-fade-in font-sans">
+  
+  <!-- Back link -->
+  <div class="text-start">
+    <a routerLink="/courses" class="inline-flex items-center gap-xs text-xs text-primary hover:underline font-bold transition-all">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+      </svg>
+      <span>{{ t().detail.backToCatalog }}</span>
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <!-- Loading skeleton -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-md animate-pulse">
+      <div class="lg:col-span-2 space-y-sm text-start">
+        <div class="h-10 bg-surface-container-high rounded w-3/4 mb-xs"></div>
+        <div class="h-4 bg-surface-container-high rounded w-1/2 mb-md"></div>
+        <div class="h-20 bg-surface-container-high rounded w-full"></div>
+      </div>
+      <div class="glass-panel p-md rounded-xl border border-white/5 h-80">
+        <div class="h-44 bg-surface-container-high rounded-lg mb-sm"></div>
+        <div class="h-8 bg-surface-container-high rounded-full w-full"></div>
+      </div>
+    </div>
+  } @else if (!course()) {
+    <!-- Course not found alert -->
+    <div class="glass-panel p-lg text-center border border-white/5 space-y-xs animate-fade-in">
+      <svg class="w-12 h-12 text-on-surface-variant/30 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+      <h3 class="text-sm font-bold text-on-surface">{{ t().detail.courseNotFoundTitle }}</h3>
+      <p class="text-xs text-on-surface-variant">{{ t().detail.courseNotFoundDesc }}</p>
+    </div>
+  } @else {
+    <!-- Course Details Content -->
+    @let c = course()!;
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-md items-start">
+      
+      <!-- Left Column: Syllabus details (2/3 width) -->
+      <div class="lg:col-span-2 space-y-md text-start">
+        
+        <!-- Header Info -->
+        <div class="space-y-base">
+          <span class="px-xs py-base rounded bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
+            {{ c.category }}
+          </span>
+          <h1 class="text-headline-lg font-extrabold text-on-surface leading-tight font-sans">
+            {{ c.title }}
+          </h1>
+          <p class="text-body-md text-on-surface-variant leading-relaxed">
+            {{ c.subtitle }}
+          </p>
+
+          <!-- Instructor and Rating Meta -->
+          <div class="flex flex-wrap items-center gap-sm text-xs text-on-surface-variant pt-base border-t border-white/5">
+            <span>{{ t().detail.instructor }}: <strong class="text-on-surface">{{ c.instructorName }}</strong></span>
+            <span>•</span>
+            <span class="flex items-center gap-[2px] text-yellow-500">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+              <strong class="text-on-surface">{{ c.averageRating || '5.0' }}</strong> ({{ c.totalRatings }} {{ t().detail.ratings }})
+            </span>
+          </div>
+        </div>
+
+        <!-- Description Box -->
+        <div class="glass-panel p-sm md:p-md rounded-xl space-y-base border border-white/5">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-primary">
+            {{ t().detail.aboutTitle }}
+          </h3>
+          <p class="text-xs text-on-surface-variant leading-relaxed whitespace-pre-line">
+            {{ c.description }}
+          </p>
+        </div>
+
+        <!-- Requirements & Outcomes Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+          <!-- Requirements -->
+          @if (c.requirements && c.requirements.length > 0) {
+            <div class="glass-panel p-sm md:p-md rounded-xl space-y-base border border-white/5">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-secondary">
+                {{ t().detail.requirementsTitle }}
+              </h3>
+              <ul class="space-y-xs text-xs text-on-surface-variant">
+                @for (req of c.requirements; track req) {
+                  <li class="flex items-start gap-xs">
+                    <span class="text-secondary select-none shrink-0">•</span>
+                    <span>{{ req }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          <!-- Learning Outcomes -->
+          @if (c.outcomes && c.outcomes.length > 0) {
+            <div class="glass-panel p-sm md:p-md rounded-xl space-y-base border border-white/5">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-primary">
+                {{ t().detail.outcomesTitle }}
+              </h3>
+              <ul class="space-y-xs text-xs text-on-surface-variant">
+                @for (out of c.outcomes; track out) {
+                  <li class="flex items-start gap-xs">
+                    <span class="text-primary select-none shrink-0">✓</span>
+                    <span>{{ out }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+
+        <!-- Course Curriculum Accordion sections -->
+        <div class="space-y-sm">
+          <h3 class="text-headline-sm font-bold text-on-surface">
+            {{ t().detail.curriculumTitle }}
+          </h3>
+
+          <div class="space-y-xs">
+            @for (section of c.sections; track section.id) {
+              <!-- Accordion Card -->
+              <div class="glass-panel rounded-xl border border-white/5 overflow-hidden">
+                <!-- Section Header Trigger -->
+                <button 
+                  (click)="toggleSection(section.id)"
+                  class="w-full p-sm flex items-center justify-between hover:bg-surface-container-low/40 active:scale-[0.99] transition-all duration-300 text-start"
+                >
+                  <div class="space-y-base">
+                    <h4 class="text-xs font-bold text-on-surface">
+                      {{ section.title }}
+                    </h4>
+                    <span class="text-[10px] text-on-surface-variant/80">
+                      {{ section.lessons.length }} {{ t().detail.lessonsCount }}
+                    </span>
+                  </div>
+                  
+                  <!-- Arrow rotate indicator -->
+                  <span class="text-on-surface-variant transition-transform duration-300" [ngClass]="{'rotate-180': !collapsedSections()[section.id]}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </span>
+                </button>
+
+                <!-- Lessons content -->
+                @if (!collapsedSections()[section.id]) {
+                  <div class="border-t border-white/5 divide-y divide-white/5 bg-surface-container-lowest/30 animate-fade-in">
+                    @for (lesson of section.lessons; track lesson.id) {
+                      <div class="p-sm flex items-center justify-between gap-sm text-xs">
+                        
+                        <!-- Title & duration -->
+                        <div class="flex items-start gap-xs text-start">
+                          <!-- Play/Lock SVG Icon -->
+                          <span class="shrink-0 mt-[2px]" [ngClass]="(lesson.isPreview || isEnrolled()) ? 'text-primary' : 'text-on-surface-variant/40'">
+                            @if (lesson.isPreview || isEnrolled()) {
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                              </svg>
+                            } @else {
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-width="2"/>
+                              </svg>
+                            }
+                          </span>
+                          
+                          <div class="space-y-base">
+                            <span class="font-semibold text-on-surface leading-tight">{{ lesson.title }}</span>
+                            <div class="flex items-center gap-xs text-[10px] text-on-surface-variant/60">
+                              <span>{{ lesson.durationInSeconds / 60 | number:'1.0-0' }} {{ t().detail.minutes }}</span>
+                              @if (lesson.isPreview) {
+                                <span class="px-xs py-[2px] bg-secondary/15 text-secondary rounded font-bold uppercase tracking-wider scale-90">
+                                  {{ t().detail.previewTag }}
+                                </span>
+                              }
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- CTA Actions -->
+                        <div>
+                          @if (lesson.isPreview && lesson.videoUrl) {
+                            <button 
+                              (click)="triggerPreview(lesson.videoUrl)"
+                              class="px-sm py-base rounded bg-primary/10 hover:bg-primary hover:text-white border border-primary/20 text-[10px] font-bold tracking-wide active:scale-95 transition-all select-none"
+                            >
+                              {{ t().detail.watchPreview }}
+                            </button>
+                          } @else if (isEnrolled() && lesson.videoUrl) {
+                            <!-- Enrolled direct links -->
+                            <button 
+                              (click)="goToStudy()"
+                              class="px-sm py-base rounded bg-secondary/15 text-secondary hover:bg-secondary hover:text-white border border-secondary/20 text-[10px] font-bold tracking-wide active:scale-95 transition-all select-none"
+                            >
+                              {{ t().detail.studyNow }}
+                            </button>
+                          } @else {
+                            <!-- Locked lessons -->
+                            <span class="text-[10px] text-on-surface-variant/40 flex items-center gap-base">
+                              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2"/>
+                              </svg>
+                              {{ t().detail.locked }}
+                            </span>
+                          }
+                        </div>
+
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Sticky Pricing box (1/3 width) -->
+      <div class="lg:sticky lg:top-20 z-10 glass-panel rounded-xl p-md border border-white/10 flex flex-col gap-md">
+        
+        <!-- Thumbnail Banner container -->
+        <div class="h-44 bg-surface-container-low rounded-lg overflow-hidden border border-white/5">
+          <img 
+            [src]="c.thumbnailUrl || '/default-course.jpg'" 
+            class="w-full h-full object-cover" 
+            alt="Course thumbnail"
+            onerror="this.src='/default-course.jpg'"
+          />
+        </div>
+
+        <!-- Pricing details -->
+        <div class="text-start space-y-base border-b border-white/5 pb-md">
+          <span class="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-wider block">
+            {{ t().detail.pricingTag }}
+          </span>
+
+          <div class="flex items-baseline gap-xs">
+            @if (c.discountPrice && isDiscountActive(c)) {
+              <span class="text-headline-lg font-extrabold text-primary leading-none">{{ c.discountPrice }} EGP</span>
+              <span class="text-xs text-red-400 line-through font-semibold">{{ c.price }} EGP</span>
+            } @else {
+              <span class="text-headline-lg font-extrabold text-on-surface leading-none">{{ c.price }} EGP</span>
+            }
+          </div>
+
+          @if (c.discountPrice && isDiscountActive(c)) {
+            <span class="text-[10px] text-green-400 font-semibold block leading-none">
+              🏷️ {{ t().detail.discountActive }}
+            </span>
+          }
+        </div>
+
+        <!-- Main Enrollment CTAs -->
+        <div class="flex flex-col gap-sm">
+          @if (isEnrolled()) {
+            <!-- Already Purchased -->
+            <button 
+              (click)="goToStudy()"
+              class="w-full h-11 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-xs font-bold tracking-wider shadow-lg shadow-green-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all select-none flex items-center justify-center gap-base"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>{{ t().detail.resumeStudy }}</span>
+            </button>
+          } @else {
+            <!-- Buy / Enroll button -->
+            <button 
+              (click)="onEnrollClick()"
+              [disabled]="isLoadingBalance() || isPurchasing()"
+              class="w-full h-11 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold tracking-wider shadow-lg shadow-blue-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all select-none flex items-center justify-center gap-base"
+            >
+              @if (isLoadingBalance() || isPurchasing()) {
+                <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span>{{ t().detail.processing }}</span>
+              } @else {
+                <span>{{ t().detail.enrollNow }}</span>
+              }
+            </button>
+          }
+
+          <!-- Info bullets -->
+          <div class="text-[10px] text-on-surface-variant/80 text-start space-y-base pt-xs">
+            <div class="flex items-center gap-xs">
+              <svg class="w-3.5 h-3.5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+              <span>{{ t().detail.bullet1 }}</span>
+            </div>
+            <div class="flex items-center gap-xs">
+              <svg class="w-3.5 h-3.5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>{{ t().detail.bullet2 }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ----------------- MODAL 1: Watch Video Preview ----------------- -->
+    @if (previewVideoUrl()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-sm backdrop-blur-sm animate-fade-in">
+        <div class="w-full max-w-3xl bg-surface-container rounded-xl overflow-hidden shadow-2xl border border-white/10 flex flex-col">
+          <!-- Header title bar -->
+          <div class="flex justify-between items-center px-md h-12 border-b border-white/5">
+            <h3 class="text-xs font-bold text-on-surface uppercase tracking-wide">
+              {{ t().detail.lessonPreviewTitle }}
+            </h3>
+            <button 
+              (click)="closePreview()"
+              class="w-8 h-8 rounded-full hover:bg-surface-bright flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all active:scale-90"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <!-- Video Tag container -->
+          <div class="relative bg-black flex justify-center items-center h-96">
+            <video 
+              [src]="previewVideoUrl()" 
+              controls 
+              autoplay
+              class="w-full h-full object-contain"
+            ></video>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ----------------- MODAL 2: Checkout Auth Required ----------------- -->
+    @if (showAuthModal()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-sm backdrop-blur-sm animate-fade-in">
+        <div class="glass-panel w-full max-w-md p-md rounded-2xl border border-white/10 shadow-2xl space-y-md my-auto relative text-start">
+          
+          <button 
+            (click)="closeAuthModal()"
+            class="absolute top-sm end-sm w-7 h-7 rounded-full hover:bg-surface-bright flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all"
+          >
+            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+
+          <div class="text-center pt-xs">
+            <h2 class="text-headline-md font-bold text-on-surface">
+              {{ t().detail.authModalTitle }}
+            </h2>
+            <p class="text-xs text-on-surface-variant mt-base">
+              {{ t().detail.authModalSubtitle }}
+            </p>
+          </div>
+
+          @if (loginError()) {
+            <div class="p-sm bg-red-500/20 text-red-300 text-xs rounded border border-red-500/30 text-start animate-fade-in">
+              {{ loginError() }}
+            </div>
+          }
+
+          <form (ngSubmit)="onSubmitLogin()" #modalLoginForm="ngForm" class="space-y-sm">
+            <!-- Email -->
+            <div class="flex flex-col gap-base">
+              <label for="modalEmail" class="block text-[11px] font-semibold text-on-surface-variant">
+                {{ t().login.emailLabel }}
+              </label>
+              <input 
+                id="modalEmail"
+                name="modalEmail"
+                type="email" 
+                [placeholder]="t().login.emailPlh"
+                [ngModel]="loginEmail()"
+                (ngModelChange)="loginEmail.set($event)"
+                required
+                class="w-full h-11 px-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+              />
+            </div>
+
+            <!-- Password -->
+            <div class="flex flex-col gap-base">
+              <label for="modalPassword" class="block text-[11px] font-semibold text-on-surface-variant">
+                {{ t().login.passwordLabel }}
+              </label>
+              <input 
+                id="modalPassword"
+                name="modalPassword"
+                type="password" 
+                [placeholder]="t().login.passwordPlh"
+                [ngModel]="loginPassword()"
+                (ngModelChange)="loginPassword.set($event)"
+                required
+                class="w-full h-11 px-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+              />
+            </div>
+
+            <!-- Submit -->
+            <button 
+              type="submit"
+              [disabled]="isSubmittingLogin() || !modalLoginForm.valid"
+              class="w-full h-10 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold active:scale-95 disabled:opacity-35 transition-all select-none flex items-center justify-center gap-base"
+            >
+              @if (isSubmittingLogin()) {
+                <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span>{{ t().login.authenticating }}</span>
+              } @else {
+                <span>{{ t().login.signIn }}</span>
+              }
+            </button>
+          </form>
+
+          <!-- Register Redirect option -->
+          <div class="text-center text-xs text-on-surface-variant pt-xs border-t border-white/5">
+            <span>{{ t().login.noAccountText }}</span>
+            <button 
+              (click)="closeAuthAndGoToRegister()"
+              class="text-secondary hover:underline font-bold transition-all"
+            >
+              {{ t().login.registerLink }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    }
+
+    <!-- ----------------- MODAL 3: Purchase Confirmation ----------------- -->
+    @if (showPurchaseConfirmModal()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-sm backdrop-blur-sm animate-fade-in">
+        <div class="glass-panel w-full max-w-md p-md rounded-2xl border border-white/10 shadow-2xl space-y-md my-auto relative text-start">
+          
+          <button 
+            (click)="closePurchaseModal()"
+            class="absolute top-sm end-sm w-7 h-7 rounded-full hover:bg-surface-bright flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all"
+          >
+            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+
+          <div class="text-center pt-xs">
+            <h2 class="text-headline-md font-bold text-on-surface">
+              {{ t().detail.confirmPurchaseTitle }}
+            </h2>
+            <p class="text-xs text-on-surface-variant mt-base">
+              {{ t().detail.confirmPurchaseDesc }}
+            </p>
+          </div>
+
+          <!-- Checkout Details -->
+          <div class="bg-surface-container-low p-sm rounded-xl space-y-base text-xs">
+            <div class="flex justify-between">
+              <span class="text-on-surface-variant">{{ t().detail.courseLabel }}</span>
+              <strong class="text-on-surface">{{ c.title }}</strong>
+            </div>
+            <div class="flex justify-between border-t border-white/5 pt-base">
+              <span class="text-on-surface-variant">{{ t().detail.priceLabel }}</span>
+              <strong class="text-primary">{{ getEffectivePrice() }} EGP</strong>
+            </div>
+            <div class="flex justify-between border-t border-white/5 pt-base">
+              <span class="text-on-surface-variant">{{ t().detail.walletBalance }}</span>
+              <strong class="text-on-surface">{{ walletService.balance() }} EGP</strong>
+            </div>
+          </div>
+
+          <!-- Confirm button -->
+          <button 
+            (click)="confirmPurchase()"
+            [disabled]="isPurchasing()"
+            class="w-full h-10 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold active:scale-95 disabled:opacity-35 transition-all select-none flex items-center justify-center gap-base"
+          >
+            @if (isPurchasing()) {
+              <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              <span>{{ t().detail.completingPurchase }}</span>
+            } @else {
+              <span>{{ t().detail.confirmPurchaseBtn }}</span>
+            }
+          </button>
+
+        </div>
+      </div>
+    }
+
+    <!-- ----------------- MODAL 4: Insufficient Balance / Deposit ----------------- -->
+    @if (showDepositModal()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-sm backdrop-blur-sm animate-fade-in">
+        <div class="glass-panel w-full max-w-md p-md rounded-2xl border border-white/10 shadow-2xl space-y-md my-auto relative text-start">
+          
+          <button 
+            (click)="closeDepositModal()"
+            class="absolute top-sm end-sm w-7 h-7 rounded-full hover:bg-surface-bright flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all"
+          >
+            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+
+          <div class="text-center pt-xs">
+            <h2 class="text-headline-md font-bold text-red-400">
+              {{ t().detail.insufficientFundsTitle }}
+            </h2>
+            <p class="text-xs text-on-surface-variant mt-base">
+              {{ t().detail.insufficientFundsDesc }}
+            </p>
+          </div>
+
+          <!-- Balance details -->
+          <div class="bg-surface-container-low p-sm rounded-xl space-y-base text-xs">
+            <div class="flex justify-between">
+              <span class="text-on-surface-variant">{{ t().detail.coursePrice }}</span>
+              <strong class="text-on-surface font-bold">{{ getEffectivePrice() }} EGP</strong>
+            </div>
+            <div class="flex justify-between border-t border-white/5 pt-base">
+              <span class="text-on-surface-variant">{{ t().detail.currentBalance }}</span>
+              <strong class="text-red-400">{{ walletService.balance() }} EGP</strong>
+            </div>
+            <div class="flex justify-between border-t border-white/5 pt-base">
+              <span class="text-on-surface-variant">{{ t().detail.amountNeeded }}</span>
+              <strong class="text-primary font-bold">{{ getEffectivePrice() - walletService.balance() }} EGP</strong>
+            </div>
+          </div>
+
+          <!-- simulated Deposit Form -->
+          <form (ngSubmit)="confirmDeposit()" #depositForm="ngForm" class="space-y-sm border-t border-white/5 pt-sm">
+            <div class="flex flex-col gap-base text-start">
+              <label for="topup" class="block text-xs font-semibold text-on-surface-variant">
+                {{ t().detail.depositAmount }}
+              </label>
+              <input 
+                id="topup"
+                name="topup"
+                type="number" 
+                min="1"
+                [ngModel]="topupAmount()"
+                (ngModelChange)="topupAmount.set($event)"
+                required
+                class="w-full h-11 px-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start font-bold"
+              />
+            </div>
+
+            <!-- simulated Deposit button -->
+            <button 
+              type="submit"
+              [disabled]="isDepositing() || !depositForm.valid || topupAmount() <= 0"
+              class="w-full h-10 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-xs font-bold active:scale-95 disabled:opacity-35 transition-all select-none flex items-center justify-center gap-base"
+            >
+              @if (isDepositing()) {
+                <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span>{{ t().detail.depositing }}</span>
+              } @else {
+                <span>{{ t().detail.depositBtn }}</span>
+              }
+            </button>
+          </form>
+
+        </div>
+      </div>
+    }
+
+  }
+
+</div>

@@ -1,0 +1,231 @@
+<div class="grid grid-cols-1 md:grid-cols-2 min-h-[calc(100vh-4rem)] w-full overflow-hidden animate-fade-in">
+  
+  <!-- Column 1: Auth Form (50%) -->
+  <div class="flex items-center justify-center p-sm md:p-md bg-surface transition-colors duration-300">
+    <!-- Level 1 Glassmorphism Card -->
+    <div class="glass-panel rounded-lg p-md md:p-lg w-full max-w-md shadow-2xl flex flex-col gap-md">
+      
+      <!-- Heading -->
+      <div class="text-center">
+        <h2 class="text-headline-lg font-bold text-on-surface font-sans">
+          {{ t().login.welcomeBack }}
+        </h2>
+        <p class="text-body-sm text-on-surface-variant mt-xs">
+          {{ t().login.subtitle }}
+        </p>
+      </div>
+
+      <!-- Error Alerts -->
+      @if (generalError()) {
+        <div class="p-sm bg-red-500/20 text-red-300 text-xs rounded border border-red-500/30 text-start">
+          {{ generalError() }}
+        </div>
+      }
+
+      <!-- Login Form -->
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-sm">
+        
+        <!-- Email Field -->
+        <div class="flex flex-col gap-base">
+          <label for="email" class="block text-xs font-semibold text-on-surface-variant text-start">
+            {{ t().login.emailLabel }}
+          </label>
+          
+          <div class="relative flex items-center">
+            <!-- Mail SVG Icon -->
+            <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </span>
+            <input 
+              id="email"
+              name="email"
+              type="email" 
+              [placeholder]="t().login.emailPlh"
+              [ngModel]="email()"
+              (ngModelChange)="email.set($event)"
+              required
+              class="w-full h-12 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+              [ngClass]="{'border-red-500': validationErrors()['Email']}"
+            />
+          </div>
+          
+          <!-- Field Errors -->
+          @if (validationErrors()['Email']; as errors) {
+            @for (err of errors; track err) {
+              <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+            }
+          }
+        </div>
+
+        <!-- Password Field -->
+        <div class="flex flex-col gap-base">
+          <div class="flex justify-between items-center">
+            <label for="password" class="block text-xs font-semibold text-on-surface-variant text-start">
+              {{ t().login.passwordLabel }}
+            </label>
+          </div>
+
+          <div class="relative flex items-center">
+            <!-- Lock SVG Icon -->
+            <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <input 
+              id="password"
+              name="password"
+              [type]="showPassword() ? 'text' : 'password'" 
+              [placeholder]="t().login.passwordPlh"
+              [ngModel]="password()"
+              (ngModelChange)="password.set($event)"
+              required
+              class="w-full h-12 ps-lg pe-xl text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+              [ngClass]="{'border-red-500': validationErrors()['Password']}"
+            />
+            
+            <button 
+              type="button"
+              (click)="togglePasswordVisibility()"
+              class="absolute end-xs h-12 w-10 flex items-center justify-center text-on-surface-variant hover:text-on-surface focus:outline-none"
+              [title]="t().login.togglePasswordTitle"
+            >
+              @if (showPassword()) {
+                <!-- Eye SVG -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              } @else {
+                <!-- Eye Off SVG -->
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+                </svg>
+              }
+            </button>
+          </div>
+
+          <!-- Field Errors -->
+          @if (validationErrors()['Password']; as errors) {
+            @for (err of errors; track err) {
+              <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+            }
+          }
+        </div>
+
+        <!-- Remember Me & Forgot Password -->
+        <div class="flex justify-between items-center text-xs pt-xs">
+          <label class="flex items-center gap-xs text-on-surface-variant cursor-pointer select-none">
+            <input 
+              type="checkbox" 
+              name="rememberMe"
+              [ngModel]="rememberMe()"
+              (ngModelChange)="rememberMe.set($event)"
+              class="w-4 h-4 rounded bg-surface-container-lowest border-white/10 text-primary-container focus:ring-0 focus:ring-offset-0"
+            />
+            <span>{{ t().login.rememberMe }}</span>
+          </label>
+
+          <a routerLink="/forgot-password" class="text-primary hover:underline font-medium">
+            {{ t().login.forgotPassword }}
+          </a>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit"
+          [disabled]="isSubmitting() || !loginForm.valid"
+          class="w-full h-10 mt-xs rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:from-surface-container-high disabled:to-surface-container-high text-white disabled:text-on-surface-variant/40 text-xs font-bold tracking-wide shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 select-none flex items-center justify-center gap-2"
+        >
+          @if (isSubmitting()) {
+            <!-- Circular Loading Spinner -->
+            <svg class="animate-spin h-5 w-5 text-current" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span>{{ t().login.authenticating }}</span>
+          } @else {
+            <span>{{ t().login.signIn }}</span>
+          }
+        </button>
+      </form>
+
+      <!-- Navigation footer -->
+      <div class="text-center text-xs text-on-surface-variant pt-xs border-t border-white/5">
+        <span>{{ t().login.noAccountText }}</span>
+        <a routerLink="/register" class="text-secondary hover:underline font-bold">
+          {{ t().login.registerLink }}
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Column 2: Premium Design Panel (50%) -->
+  <div class="hidden md:flex flex-col justify-between p-lg relative overflow-hidden border-s border-white/5 bg-surface-container-lowest z-10">
+    <div class="absolute inset-0 bg-gradient-to-tr from-surface-container-lowest via-surface-container-low/90 to-primary-container/15 z-0"></div>
+    <div class="absolute -top-40 -end-40 w-96 h-96 rounded-full bg-secondary/10 blur-[100px] pointer-events-none z-0"></div>
+    <div class="absolute -bottom-40 -start-40 w-96 h-96 rounded-full bg-primary/10 blur-[100px] pointer-events-none z-0"></div>
+
+    <!-- Upper Section: Brand info -->
+    <div class="z-10 flex items-center gap-xs">
+      <img src="EDUGATE-Logo.jpeg" class="w-10 h-10 rounded shadow-md object-cover border border-primary/20" alt="EDUGATE" />
+      <span class="text-lg font-bold text-on-surface tracking-wider">EDUGATE Academy</span>
+    </div>
+
+    <!-- Center Section: Highlights -->
+    <div class="z-10 my-auto py-md space-y-md text-start">
+      <div class="inline-flex items-center gap-xs px-xs py-1 rounded bg-secondary/15 text-secondary text-[11px] font-bold border border-secondary/20">
+        <!-- Bolt SVG Icon -->
+        <svg class="w-3.5 h-3.5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span>{{ t().login.sidebarTag }}</span>
+      </div>
+      
+      <h1 class="text-3xl font-extrabold text-on-surface tracking-tight leading-tight max-w-md font-sans">
+        {{ t().login.sidebarTitle }}
+      </h1>
+      
+      <p class="text-xs text-on-surface-variant leading-relaxed max-w-sm">
+        {{ t().login.sidebarDesc }}
+      </p>
+
+      <!-- Dynamic Feature Chips -->
+      <div class="flex flex-col gap-xs pt-xs">
+        <!-- Chip 1: Code Sandbox -->
+        <div class="flex items-center gap-xs p-xs rounded bg-surface-container-low border border-white/5 max-w-sm shadow-sm hover:border-secondary/35 transition-all">
+          <svg class="w-5 h-5 text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+          </svg>
+          <div>
+            <h4 class="text-xs font-bold text-secondary">{{ t().login.chip1Title }}</h4>
+            <p class="text-[10px] text-on-surface-variant">{{ t().login.chip1Desc }}</p>
+          </div>
+        </div>
+        <!-- Chip 2: Bilingual support -->
+        <div class="flex items-center gap-xs p-xs rounded bg-surface-container-low border border-white/5 max-w-sm shadow-sm hover:border-tertiary/35 transition-all">
+          <svg class="w-5 h-5 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="2"/>
+          </svg>
+          <div>
+            <h4 class="text-xs font-bold text-tertiary">{{ t().login.chip2Title }}</h4>
+            <p class="text-[10px] text-on-surface-variant">{{ t().login.chip2Desc }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Section: Info Footer -->
+    <div class="z-10 flex justify-between items-center text-[10px] text-on-surface-variant">
+      <span>{{ t().login.footerText }}</span>
+      <span>© 2026 EDUGATE</span>
+    </div>
+
+  </div>
+
+</div>

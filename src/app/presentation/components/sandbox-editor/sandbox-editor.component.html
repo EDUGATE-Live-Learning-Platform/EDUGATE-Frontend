@@ -1,0 +1,68 @@
+<div class="glass-panel rounded-lg p-sm border border-white/10 flex flex-col gap-sm">
+  <!-- Window Header tabs -->
+  <div class="flex justify-between items-center bg-surface-container-low p-xs rounded border-b border-white/5">
+    <div class="flex items-center gap-xs">
+      <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+      <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+      <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+      <span class="text-code-label font-bold text-on-surface-variant ms-xs font-mono">counter.component.ts</span>
+    </div>
+    
+    <!-- Code format metadata -->
+    <span class="text-[10px] text-on-surface-variant font-mono">TypeScript / Angular 21</span>
+  </div>
+
+  <!-- IDE Editor Frame -->
+  <pre class="bg-surface-container-lowest font-mono text-xs text-primary p-sm rounded border border-white/5 overflow-x-auto text-start select-all leading-relaxed whitespace-pre select-text"><code>{{ codeSnippet() }}</code></pre>
+
+  <!-- Controls Bar -->
+  <div class="flex justify-between items-center gap-xs font-sans">
+    <div class="flex gap-xs">
+      <!-- Run Code Button (Play SVG icon replaces lightning emoji) -->
+      <button 
+        (click)="runCode()" 
+        [disabled]="isRunning()"
+        class="px-sm py-xs text-xs font-bold rounded bg-secondary hover:bg-teal-500 text-on-secondary disabled:bg-on-surface-variant/20 disabled:text-on-surface-variant/40 active:scale-95 transition-all select-none flex items-center gap-xs"
+      >
+        @if (isRunning()) {
+          <svg class="animate-spin h-3.5 w-3.5 text-current" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+          <span>{{ t().sandbox.running }}</span>
+        } @else {
+          <svg class="w-3.5 h-3.5 text-on-secondary shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <span>{{ t().sandbox.runCode }}</span>
+        }
+      </button>
+
+      <!-- Clear Logs Button -->
+      <button 
+        (click)="clearLogs()" 
+        class="px-sm py-xs text-xs font-medium rounded bg-surface-container-highest hover:bg-surface-bright text-on-surface border border-white/5 active:scale-95 transition-all select-none"
+      >
+        {{ t().sandbox.clearConsole }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Sandbox Console Output -->
+  <div class="flex flex-col gap-1 font-sans">
+    <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider text-start">
+      {{ t().sandbox.consoleLogs }}
+    </span>
+    
+    <div class="bg-black/50 border border-white/5 p-xs rounded font-mono text-[11px] text-on-surface-variant space-y-[2px] max-h-32 overflow-y-auto scrollbar-thin select-text">
+      @for (log of consoleLogs(); track log) {
+        <p class="leading-normal text-start" [ngClass]="{
+          'text-secondary': log.startsWith('sandbox.logCompiling') || log.startsWith('sandbox.logChecking') || log.startsWith('sandbox.logSuccess') || log.startsWith('sandbox.logResult'),
+          'text-tertiary font-semibold': log.includes('Success') || log.includes('success')
+        }">
+          {{ translationService.translate(log) }}
+        </p>
+      }
+    </div>
+  </div>
+</div>

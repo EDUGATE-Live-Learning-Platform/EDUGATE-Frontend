@@ -1,0 +1,30 @@
+<div class="space-y-md">
+  <!-- Dashboard Heading -->
+  <div class="border-b border-white/5 pb-sm">
+    <h1 class="text-display-lg bg-gradient-to-r from-on-surface via-primary to-secondary bg-clip-text text-transparent mb-xs">
+      {{ t().dashboard.title }}
+    </h1>
+    <p class="text-body-md text-on-surface-variant max-w-3xl">
+      {{ t().dashboard.subtitle }}
+    </p>
+  </div>
+
+  <!-- Primary Dashboard Section -->
+  <div class="space-y-sm">
+    <div class="flex justify-between items-center">
+      <h2 class="text-headline-lg-mobile md:text-headline-lg font-bold text-on-surface">
+        {{ t().dashboard.activeCourses }}
+      </h2>
+      <span class="text-xs text-on-surface-variant">
+        {{ t().dashboard.showingCourses }}
+      </span>
+    </div>
+
+    <!-- Course Cards Container Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-sm">
+      @for (course of courses(); track course.id) {
+        <app-course-card [course]="course" [lang]="lang()"></app-course-card>
+      }
+    </div>
+  </div>
+</div>

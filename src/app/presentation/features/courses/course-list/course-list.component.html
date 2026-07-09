@@ -1,0 +1,280 @@
+<div class="space-y-md animate-fade-in font-sans">
+  
+  <!-- Heading Section -->
+  <div class="border-b border-white/5 pb-sm">
+    <h1 class="text-display-lg bg-gradient-to-r from-on-surface via-primary to-secondary bg-clip-text text-transparent mb-xs">
+      {{ t().catalog.title }}
+    </h1>
+    <p class="text-body-md text-on-surface-variant max-w-3xl">
+      {{ t().catalog.subtitle }}
+    </p>
+  </div>
+
+  <!-- Main Grid Layout: Filters Left (1/4), Course Cards Right (3/4) -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-md">
+    
+    <!-- Left Column: Filtration Panel -->
+    <div class="glass-panel rounded-xl p-md flex flex-col gap-md border border-white/10 h-fit">
+      
+      <div class="flex justify-between items-center border-b border-white/5 pb-base">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-primary">
+          {{ t().catalog.filtersTitle }}
+        </h3>
+        <button 
+          (click)="clearFilters()"
+          class="text-[10px] font-bold text-secondary hover:underline transition-all"
+        >
+          {{ t().catalog.clearFilters }}
+        </button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="flex flex-col gap-base">
+        <label for="search" class="block text-xs font-semibold text-on-surface-variant text-start">
+          {{ t().catalog.searchLabel }}
+        </label>
+        <div class="relative flex items-center">
+          <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </span>
+          <input 
+            id="search"
+            type="text" 
+            [placeholder]="t().catalog.searchPlh"
+            [value]="searchQuery()"
+            (input)="onSearchChange($event)"
+            class="w-full h-10 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+          />
+        </div>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="flex flex-col gap-base">
+        <label for="category" class="block text-xs font-semibold text-on-surface-variant text-start">
+          {{ t().catalog.categoryLabel }}
+        </label>
+        <select 
+          id="category"
+          [ngModel]="selectedCategory()"
+          (ngModelChange)="selectedCategory.set($event)"
+          class="w-full h-10 px-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+        >
+          @for (cat of categories; track cat.value) {
+            <option [value]="cat.value">
+              {{ translateKey(cat.labelKey) }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <!-- Max Price Slider -->
+      <div class="flex flex-col gap-base text-start">
+        <div class="flex justify-between items-center text-xs font-semibold text-on-surface-variant">
+          <span>{{ t().catalog.maxPrice }}</span>
+          <span class="text-primary font-bold">{{ maxPrice() }} EGP</span>
+        </div>
+        <input 
+          type="range" 
+          min="0" 
+          max="1500" 
+          step="50"
+          [ngModel]="maxPrice()"
+          (ngModelChange)="maxPrice.set($event)"
+          class="w-full accent-primary bg-surface-container-lowest h-1.5 rounded-lg appearance-none cursor-pointer"
+        />
+        <div class="flex justify-between text-[9px] text-on-surface-variant/60">
+          <span>0 EGP</span>
+          <span>1500 EGP</span>
+        </div>
+      </div>
+
+      <!-- Min Rating Filter -->
+      <div class="flex flex-col gap-base text-start">
+        <label class="block text-xs font-semibold text-on-surface-variant">
+          {{ t().catalog.minRating }}
+        </label>
+        
+        <div class="flex flex-col gap-xs">
+          <!-- Star Filter Rows -->
+          @for (stars of [0, 4, 3, 2, 1]; track stars) {
+            <label class="flex items-center gap-xs cursor-pointer select-none text-xs text-on-surface-variant hover:text-on-surface">
+              <input 
+                type="radio" 
+                name="ratingFilter"
+                [value]="stars"
+                [checked]="minRating() === stars"
+                (change)="minRating.set(stars)"
+                class="w-4 h-4 text-primary bg-surface-container-lowest border-white/10 focus:ring-0"
+              />
+              <span class="flex items-center gap-base">
+                @if (stars === 0) {
+                  <span>{{ t().catalog.anyRating }}</span>
+                } @else {
+                  <span class="flex items-center text-yellow-500">
+                    @for (s of [1, 2, 3, 4, 5]; track s) {
+                      <svg class="w-3.5 h-3.5" [attr.fill]="s <= stars ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.9 1.39-.9 1.68 0l2.162 4.636 4.908.71c.983.14 1.376 1.385.666 2.09l-3.551 3.522.838 4.887c.168.982-.828 1.7-1.706 1.233L12 17.587l-4.396 2.378c-.878.467-1.874-.251-1.706-1.233l.838-4.887L3.185 10.363c-.71-.705-.317-1.95.666-2.09l4.908-.71L11.049 2.927z"/>
+                      </svg>
+                    }
+                  </span>
+                  <span class="text-[10px] text-on-surface-variant/80">& {{ t().catalog.up }}</span>
+                }
+              </span>
+            </label>
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Course Grid -->
+    <div class="lg:col-span-3 space-y-md">
+      
+      @if (isLoading()) {
+        <!-- Skeleton Grid Loading State -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-sm animate-pulse">
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+            <div class="glass-panel p-sm rounded-xl border border-white/5 h-80 flex flex-col justify-between">
+              <div class="h-32 bg-surface-container-high rounded-lg mb-sm"></div>
+              <div class="h-4 bg-surface-container-high rounded w-3/4 mb-xs"></div>
+              <div class="h-3 bg-surface-container-high rounded w-1/2 mb-md"></div>
+              <div class="h-8 bg-surface-container-high rounded-full w-full"></div>
+            </div>
+          }
+        </div>
+      } @else if (courses().length === 0) {
+        <!-- Empty catalog alert -->
+        <div class="glass-panel rounded-xl p-lg text-center border border-white/5 space-y-xs animate-fade-in">
+          <svg class="w-12 h-12 text-on-surface-variant/30 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <h3 class="text-sm font-bold text-on-surface">{{ t().catalog.noCoursesTitle }}</h3>
+          <p class="text-xs text-on-surface-variant">{{ t().catalog.noCoursesDesc }}</p>
+        </div>
+      } @else {
+        <!-- Catalog Items Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-sm animate-fade-in">
+          
+          @for (course of courses(); track course.id) {
+            <!-- Catalog Card (Glassmorphic) -->
+            <div class="glass-panel rounded-xl overflow-hidden border border-white/5 hover:border-primary/25 shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 flex flex-col h-[23rem] group">
+              
+              <!-- Thumbnail Banner -->
+              <div class="h-36 relative bg-surface-container-low overflow-hidden">
+                <img 
+                  [src]="course.thumbnailUrl || '/default-course.jpg'" 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  alt="Course Thumbnail"
+                  onerror="this.src='/default-course.jpg'"
+                />
+                
+                <!-- Category Badge -->
+                @if (course.category) {
+                  <span class="absolute top-xs start-xs px-xs py-base rounded bg-black/60 text-white text-[9px] font-bold uppercase tracking-wider backdrop-blur-md">
+                    {{ course.category }}
+                  </span>
+                }
+              </div>
+
+              <!-- Card Body Content -->
+              <div class="p-sm flex flex-col justify-between flex-1 text-start">
+                
+                <div class="space-y-base">
+                  <!-- Instructor -->
+                  <span class="text-[10px] font-bold text-secondary uppercase tracking-wide">
+                    {{ course.instructorName }}
+                  </span>
+
+                  <!-- Title -->
+                  <h3 class="text-xs font-bold text-on-surface leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                    {{ course.title }}
+                  </h3>
+
+                  <!-- Subtitle -->
+                  <p class="text-[11px] text-on-surface-variant line-clamp-2 leading-relaxed">
+                    {{ course.subtitle }}
+                  </p>
+                </div>
+
+                <!-- Rating and Pricing Footer -->
+                <div class="border-t border-white/5 pt-xs mt-xs flex flex-col gap-base">
+                  
+                  <!-- Rating row -->
+                  <div class="flex items-center justify-between text-[10px] text-on-surface-variant">
+                    <span class="flex items-center gap-[2px] text-yellow-500">
+                      <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                      </svg>
+                      <span class="font-bold text-on-surface">{{ course.averageRating || '5.0' }}</span>
+                    </span>
+                    <span>({{ course.totalRatings }} {{ t().catalog.reviewsCount }})</span>
+                  </div>
+
+                  <!-- Price row -->
+                  <div class="flex items-end justify-between">
+                    <div class="flex flex-col text-start">
+                      @if (course.isDiscountActive && course.discountPrice) {
+                        <span class="text-[9px] text-red-400 line-through leading-none">{{ course.price }} EGP</span>
+                        <span class="text-xs font-bold text-primary leading-tight">{{ course.discountPrice }} EGP</span>
+                      } @else {
+                        <span class="text-xs font-bold text-on-surface leading-tight">{{ course.price }} EGP</span>
+                      }
+                    </div>
+
+                    <!-- CTA Action Button -->
+                    <button 
+                      (click)="viewDetails(course.id)"
+                      class="h-8 px-sm rounded-full bg-primary/10 hover:bg-primary hover:text-white border border-primary/20 text-primary text-[10px] font-bold tracking-wide active:scale-95 transition-all select-none"
+                    >
+                      {{ t().catalog.viewDetails }}
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          }
+
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="flex items-center justify-between pt-sm border-t border-white/5 animate-fade-in text-xs font-bold">
+          
+          <button 
+            (click)="prevPage()"
+            [disabled]="currentPage() === 1"
+            class="h-9 px-sm rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all border border-white/5 select-none flex items-center gap-xs"
+          >
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span>{{ t().catalog.prev }}</span>
+          </button>
+
+          <span class="text-on-surface-variant uppercase tracking-wider">
+            {{ t().catalog.page }} {{ currentPage() }}
+          </span>
+
+          <button 
+            (click)="nextPage()"
+            [disabled]="!hasMore()"
+            class="h-9 px-sm rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all border border-white/5 select-none flex items-center gap-xs"
+          >
+            <span>{{ t().catalog.next }}</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+
+        </div>
+      }
+
+    </div>
+
+  </div>
+
+</div>

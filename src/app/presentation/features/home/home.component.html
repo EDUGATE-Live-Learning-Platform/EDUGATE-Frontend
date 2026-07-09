@@ -1,0 +1,783 @@
+<div [dir]="lang() === 'ar' ? 'rtl' : 'ltr'" [ngClass]="lang() === 'ar' ? 'rtl-mode' : 'ltr-mode'" class="space-y-md">
+  
+  <!-- Hero Section -->
+  <section class="relative min-h-[700px] flex items-center pt-xl pb-lg hero-pattern rounded-3xl overflow-hidden bg-surface-container-lowest/10 border border-white/5">
+    <div class="max-w-container-max mx-auto px-gutter grid lg:grid-cols-2 gap-xl items-center w-full">
+      <div class="space-y-md text-start order-2 lg:order-1">
+        <h1 class="text-display-lg md:text-[56px] leading-tight text-on-surface">
+          {{ t().heroTitlePart1 }} <span class="text-primary">{{ t().heroTitlePart2 }}</span> {{ t().heroTitlePart3 }}
+        </h1>
+        <p class="text-on-surface-variant text-body-md max-w-xl">
+          {{ t().heroDesc }}
+        </p>
+        <div class="flex flex-wrap gap-sm pt-md">
+          <button routerLink="/register" class="px-xl py-4 bg-primary-container text-on-primary-container rounded-xl font-bold text-lg shadow-lg hover:shadow-primary/20 active:scale-95 transition-all">
+            {{ t().heroStartBtn }}
+          </button>
+          <button routerLink="/dashboard" class="px-xl py-4 glass-card text-on-surface border border-outline-variant/30 rounded-xl font-bold text-lg hover:bg-surface-variant active:scale-95 transition-all">
+            {{ t().heroExploreBtn }}
+          </button>
+        </div>
+      </div>
+      
+      <!-- 3D Mockup Area -->
+      <div class="relative order-1 lg:order-2 h-[350px] md:h-[500px] flex items-center justify-center">
+        <div class="relative w-full h-full max-w-lg glass-card rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden ai-glow">
+          <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCCH7wbMlAmS8mr_b43rvNNxBl0kfFz-AQ_IbLmjIEkEvsIreMXIX2bJd7Aa_zxJftalIKCTeDjZ_D2EKh6QUa0eetwDFuyIfdpTmSMsd0Lv_QUqPSBdJ6oKLYtvgN_DGQHvjrJYgHcny8I3qKg3BrKMugkTA5YIMFzMIBZCVZvYMV7eUics-fBeGNd0iEh_bE8YlxBT9MIoubUPYysKWdjeKXx_L-g0sczypEmHQx7c3vetD2mKPgb-oGrZoQt1J7jg7r2xkUZMM05')"></div>
+        </div>
+        
+        <!-- Floating Cards -->
+        <div class="absolute -top-4 end-4 glass-card p-4 rounded-xl shadow-xl animate-bounce duration-[3000ms]">
+          <div class="flex items-center gap-sm">
+            <div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+              </svg>
+            </div>
+            <span class="font-bold text-sm">{{ lang() === 'en' ? 'AI Mentor' : 'ذكاء اصطناعي' }}</span>
+          </div>
+        </div>
+        <div class="absolute bottom-10 start-4 glass-card p-4 rounded-xl shadow-xl animate-pulse">
+          <div class="flex items-center gap-sm">
+            <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+              </svg>
+            </div>
+            <span class="font-bold text-sm">{{ lang() === 'en' ? 'Advanced Coding' : 'برمجة متقدمة' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-lg bg-surface-container-lowest/50 rounded-3xl border border-white/5">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+        <div class="glass-card p-md rounded-2xl text-center border-b-4 border-primary">
+          <div class="text-primary text-headline-lg font-bold mb-2">50,000+</div>
+          <div class="text-on-surface-variant font-medium">{{ t().statStudents }}</div>
+        </div>
+        <div class="glass-card p-md rounded-2xl text-center border-b-4 border-secondary">
+          <div class="text-secondary text-headline-lg font-bold mb-2">200+</div>
+          <div class="text-on-surface-variant font-medium">{{ t().statInstructors }}</div>
+        </div>
+        <div class="glass-card p-md rounded-2xl text-center border-b-4 border-tertiary">
+          <div class="text-tertiary text-headline-lg font-bold mb-2">98%</div>
+          <div class="text-on-surface-variant font-medium">{{ t().statSuccess }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Student Journey -->
+  <section class="py-xl">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="text-center mb-xl">
+        <h2 class="text-headline-lg text-on-surface mb-sm">{{ t().journeyTitle }}</h2>
+        <p class="text-on-surface-variant max-w-2xl mx-auto">{{ t().journeySubtitle }}</p>
+      </div>
+      <div class="relative">
+        <!-- Progress Line -->
+        <div class="absolute top-1/2 start-0 w-full h-1 bg-outline-variant/20 -translate-y-1/2 hidden lg:block"></div>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-sm relative">
+          <!-- Steps -->
+          <div class="group text-center space-y-sm">
+            <div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center mx-auto relative z-10 transition-transform group-hover:scale-110">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+              </svg>
+            </div>
+            <span class="block font-medium text-body-sm">{{ t().step1 }}</span>
+          </div>
+          
+          <div class="group text-center space-y-sm">
+            <div class="w-12 h-12 rounded-full bg-surface-container text-primary flex items-center justify-center mx-auto relative z-10 transition-transform group-hover:scale-110">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+            </div>
+            <span class="block font-medium text-body-sm">{{ t().step2 }}</span>
+          </div>
+
+          <div class="group text-center space-y-sm">
+            <div class="w-12 h-12 rounded-full bg-surface-container text-primary flex items-center justify-center mx-auto relative z-10 transition-transform group-hover:scale-110">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+            </div>
+            <span class="block font-medium text-body-sm">{{ t().step3 }}</span>
+          </div>
+
+          <div class="group text-center space-y-sm">
+            <div class="w-12 h-12 rounded-full bg-surface-container text-primary flex items-center justify-center mx-auto relative z-10 transition-transform group-hover:scale-110">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <span class="block font-medium text-body-sm">{{ t().step4 }}</span>
+          </div>
+
+          <div class="group text-center space-y-sm">
+            <div class="w-12 h-12 rounded-full bg-surface-container text-primary flex items-center justify-center mx-auto relative z-10 transition-transform group-hover:scale-110">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <span class="block font-medium text-body-sm">{{ t().step5 }}</span>
+          </div>
+
+          <div class="group text-center space-y-sm">
+            <div class="w-12 h-12 rounded-full bg-surface-container text-primary flex items-center justify-center mx-auto relative z-10 transition-transform group-hover:scale-110">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+              </svg>
+            </div>
+            <span class="block font-medium text-body-sm">{{ t().step6 }}</span>
+          </div>
+
+          <div class="group text-center space-y-sm">
+            <div class="w-12 h-12 rounded-full bg-surface-container text-primary flex items-center justify-center mx-auto relative z-10 transition-transform group-hover:scale-110">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"/>
+              </svg>
+            </div>
+            <span class="block font-medium text-body-sm">{{ t().step7 }}</span>
+          </div>
+
+          <div class="group text-center space-y-sm">
+            <div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mx-auto relative z-10 transition-transform group-hover:scale-110">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/>
+              </svg>
+            </div>
+            <span class="block font-medium text-body-sm">{{ t().step8 }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Academic Grades -->
+  <section class="py-xl bg-surface-container-low/40 rounded-3xl border border-white/5">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="text-center mb-xl">
+        <h2 class="text-headline-lg text-on-surface mb-sm">{{ t().gradesTitle }}</h2>
+        <p class="text-on-surface-variant">{{ t().gradesSubtitle }}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+        <!-- Grade 1 -->
+        <div class="glass-card rounded-3xl overflow-hidden flex flex-col h-full border border-outline-variant/20 hover:scale-[1.02] transition-all">
+          <div class="p-md bg-primary/10 border-b border-primary/20">
+            <h3 class="text-2xl font-bold text-primary">{{ t().grade1 }}</h3>
+          </div>
+          <div class="p-md flex-grow space-y-md text-start">
+            <div>
+              <h4 class="text-secondary font-bold text-sm mb-2">{{ t().techSubjects }}</h4>
+              <ul class="space-y-xs text-on-surface-variant text-body-sm">
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade1Tech1 }}
+                </li>
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade1Tech2 }}
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-tertiary font-bold text-sm mb-2">{{ t().generalSubjects }}</h4>
+              <ul class="space-y-xs text-on-surface-variant text-body-sm">
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade1Gen1 }}
+                </li>
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade1Gen2 }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="p-md">
+            <button routerLink="/dashboard" class="w-full py-3 bg-primary-container text-on-primary-container rounded-xl font-bold hover:brightness-110 active:scale-95 transition-all">
+              {{ t().viewCurriculum }}
+            </button>
+          </div>
+        </div>
+        
+        <!-- Grade 2 -->
+        <div class="glass-card rounded-3xl overflow-hidden flex flex-col h-full border border-secondary/20 hover:scale-[1.02] transition-all relative">
+          <div class="absolute top-2 start-2 bg-secondary text-on-secondary px-3 py-1 rounded-full text-[10px] font-bold">
+            {{ t().mostRequested }}
+          </div>
+          <div class="p-md bg-secondary/10 border-b border-secondary/20">
+            <h3 class="text-2xl font-bold text-secondary">{{ t().grade2 }}</h3>
+          </div>
+          <div class="p-md flex-grow space-y-md text-start">
+            <div>
+              <h4 class="text-secondary font-bold text-sm mb-2">{{ t().techSubjects }}</h4>
+              <ul class="space-y-xs text-on-surface-variant text-body-sm">
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade2Tech1 }}
+                </li>
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade2Tech2 }}
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-tertiary font-bold text-sm mb-2">{{ t().generalSubjects }}</h4>
+              <ul class="space-y-xs text-on-surface-variant text-body-sm">
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade2Gen1 }}
+                </li>
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade2Gen2 }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="p-md">
+            <button routerLink="/dashboard" class="w-full py-3 bg-secondary-container text-on-secondary-container rounded-xl font-bold hover:brightness-110 active:scale-95 transition-all">
+              {{ t().viewCurriculum }}
+            </button>
+          </div>
+        </div>
+        
+        <!-- Grade 3 -->
+        <div class="glass-card rounded-3xl overflow-hidden flex flex-col h-full border border-tertiary/20 hover:scale-[1.02] transition-all">
+          <div class="p-md bg-tertiary/10 border-b border-tertiary/20">
+            <h3 class="text-2xl font-bold text-tertiary">{{ t().grade3 }}</h3>
+          </div>
+          <div class="p-md flex-grow space-y-md text-start">
+            <div>
+              <h4 class="text-secondary font-bold text-sm mb-2">{{ t().techSubjects }}</h4>
+              <ul class="space-y-xs text-on-surface-variant text-body-sm">
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade3Tech1 }}
+                </li>
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade3Tech2 }}
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-tertiary font-bold text-sm mb-2">{{ t().generalSubjects }}</h4>
+              <ul class="space-y-xs text-on-surface-variant text-body-sm">
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade3Gen1 }}
+                </li>
+                <li class="flex items-center gap-xs">
+                  <svg class="w-4 h-4 text-tertiary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/>
+                  </svg>
+                  {{ t().grade3Gen2 }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="p-md">
+            <button routerLink="/dashboard" class="w-full py-3 bg-tertiary-container text-on-tertiary-container rounded-xl font-bold hover:brightness-110 active:scale-95 transition-all">
+              {{ t().viewCurriculum }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Paths -->
+  <section class="py-xl">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="flex justify-between items-end mb-xl gap-md">
+        <div class="text-start">
+          <h2 class="text-headline-lg text-on-surface mb-sm">{{ t().pathsTitle }}</h2>
+          <p class="text-on-surface-variant">{{ t().pathsSubtitle }}</p>
+        </div>
+        <button routerLink="/dashboard" class="text-primary font-bold flex items-center gap-xs hover:underline">
+          <span>{{ t().viewAllPaths }}</span>
+          <svg class="w-4 h-4 flip-rtl shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+        <!-- Path 1 -->
+        <div class="group relative bg-surface-container rounded-2xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all border border-outline-variant/10">
+          <div class="w-full h-48 bg-cover bg-center group-hover:scale-110 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAShVMR-hJNkgvUGR6yGo-5reIRzvf9BhJqnq8Hab_-wuerDWZKXVBJWCiKpUEWWLJ8bdK5DiUr6py61HSsDyI9sNYetcHQXp_eOQbEm3RhtglGy0mwEfz5D3VVHv7LTAQYY5E38GL34EgEiBaVNiZdf1OqhTpADgOSuN_92lpmLq5-pZTtehcDPDYmAUOXVvQ8i7AlvepdWdLXxpf4po2iq9-pILLuNA3O_eBgzqYiOpHRExoX0Bfury1TTO9vjov6UKzWiW_QhjnE')"></div>
+          <div class="p-md space-y-sm text-start">
+            <h3 class="font-bold text-lg text-on-surface">{{ t().path1Title }}</h3>
+            <div class="flex items-center justify-between text-body-sm text-on-surface-variant">
+              <span>120 {{ t().hours }}</span>
+              <span class="flex items-center gap-xs">
+                <svg class="w-4 h-4 text-tertiary shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                4.9
+              </span>
+            </div>
+            <button routerLink="/register" class="w-full py-2 bg-primary/10 text-primary rounded-lg font-bold group-hover:bg-primary group-hover:text-on-primary transition-all">
+              {{ t().registerNow }}
+            </button>
+          </div>
+        </div>
+        
+        <!-- Path 2 -->
+        <div class="group relative bg-surface-container rounded-2xl overflow-hidden shadow-lg hover:shadow-secondary/10 transition-all border border-outline-variant/10">
+          <div class="w-full h-48 bg-cover bg-center group-hover:scale-110 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDkvg-0QXfnhJuEoVrNLUSzmYkiwZoiTEKiB7WeVbXVRPvQkndYpnmA5wxblG964_CwwHB5I-PgfRrFkz0L_5JTgyc3D7NhrZ2cq5S0BsctMatDbPuCnhL_6TKu1cQCOxKtSKN429RN7BJMKgkrdrK2TDuDh3GvoTVjgXjO0J98apnqEJPsf4N2_8bHIsI4PoMI7N_4elMSlCFwvUio7FBHZ9AMIZXOTHkLHo_rinVGMniDhoLYPHf3oX61BzBp9O4tCPL3MmIU-Dmn')"></div>
+          <div class="p-md space-y-sm text-start">
+            <h3 class="font-bold text-lg text-on-surface">{{ t().path2Title }}</h3>
+            <div class="flex items-center justify-between text-body-sm text-on-surface-variant">
+              <span>90 {{ t().hours }}</span>
+              <span class="flex items-center gap-xs">
+                <svg class="w-4 h-4 text-tertiary shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                4.8
+              </span>
+            </div>
+            <button routerLink="/register" class="w-full py-2 bg-secondary/10 text-secondary rounded-lg font-bold group-hover:bg-secondary group-hover:text-on-secondary transition-all">
+              {{ t().registerNow }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Path 3 -->
+        <div class="group relative bg-surface-container rounded-2xl overflow-hidden shadow-lg hover:shadow-error/10 transition-all border border-outline-variant/10">
+          <div class="w-full h-48 bg-cover bg-center group-hover:scale-110 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDiG4LhHTGjwl0orkDN6bB3aaJ-YoRvRbPRfcC3m1GxorYDJOcELsuP8-yw1DPpxhWwCGNpXp6oXxctZr6yZYHhey-LdXYYry9Zuc4PGhyChDDvE5RDkAKeq-SSQaq6J-3yadOp_48b4cE6x7S5JI9fp8_gDbiXl_zjuoANSWBb7m8cDm4k54KLlIonA1pjBU7RV4CVgaurZ7U7TS6KwN9VkCQud3qrpT543PB5Fso9e-mhqixfS8-c225I7oimDuqPQx0zYWbDa02P')"></div>
+          <div class="p-md space-y-sm text-start">
+            <h3 class="font-bold text-lg text-on-surface">{{ t().path3Title }}</h3>
+            <div class="flex items-center justify-between text-body-sm text-on-surface-variant">
+              <span>150 {{ t().hours }}</span>
+              <span class="flex items-center gap-xs">
+                <svg class="w-4 h-4 text-tertiary shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                5.0
+              </span>
+            </div>
+            <button routerLink="/register" class="w-full py-2 bg-red-500/10 text-red-400 rounded-lg font-bold group-hover:bg-red-500 group-hover:text-white transition-all">
+              {{ t().registerNow }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Path 4 -->
+        <div class="group relative bg-surface-container rounded-2xl overflow-hidden shadow-lg hover:shadow-tertiary/10 transition-all border border-outline-variant/10">
+          <div class="w-full h-48 bg-cover bg-center group-hover:scale-110 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRUjvqgYQBk6v0uKB6mnS6DanE-xIRP8AMOVhCYsak4ClSpaSPxwYi8XY_4nCKYnTzSE6L707z3LLQStTCZ7QB4Dm7ahjUk9shAaduAhJ8paZUpIKBErBzuerbFQV3q2CDwgUayVSYqOLS_4NF2fRKE7qQpFr7fP5Ld49-uFQVoVCfzzxbhhRpTf4nJER7KxacmNk37w6M7YVzSgl_RGnt3kUZj2qiDow0jcVO8b58-CjtDdpBj9Pwp-V3ABGQ5EISmAzTfiTNgugI')"></div>
+          <div class="p-md space-y-sm text-start">
+            <h3 class="font-bold text-lg text-on-surface">{{ t().path4Title }}</h3>
+            <div class="flex items-center justify-between text-body-sm text-on-surface-variant">
+              <span>200 {{ t().hours }}</span>
+              <span class="flex items-center gap-xs">
+                <svg class="w-4 h-4 text-tertiary shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                4.7
+              </span>
+            </div>
+            <button routerLink="/register" class="w-full py-2 bg-tertiary/10 text-tertiary rounded-lg font-bold group-hover:bg-tertiary group-hover:text-on-tertiary transition-all">
+              {{ t().registerNow }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Revisions Section -->
+  <section class="py-xl bg-primary-container/5 rounded-3xl border border-white/5">
+    <div class="max-w-container-max mx-auto px-gutter grid lg:grid-cols-2 gap-xl items-center">
+      <div class="space-y-md text-start">
+        <h2 class="text-headline-lg text-primary">{{ t().revisionsTitle }}</h2>
+        <p class="text-on-surface-variant">{{ t().revisionsDesc }}</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+          <div class="glass-card p-md rounded-2xl border-s-4 border-primary">
+            <h3 class="font-bold mb-1">{{ t().monthlyPackTitle }}</h3>
+            <p class="text-xs text-on-surface-variant">{{ t().monthlyPackDesc }}</p>
+          </div>
+          <div class="glass-card p-md rounded-2xl border-s-4 border-secondary">
+            <h3 class="font-bold mb-1">{{ t().finalSessionTitle }}</h3>
+            <p class="text-xs text-on-surface-variant">{{ t().finalSessionDesc }}</p>
+          </div>
+        </div>
+        <button routerLink="/dashboard" class="px-lg py-3 bg-primary text-on-primary rounded-xl font-bold flex items-center gap-sm">
+          <span>{{ t().viewSchedule }}</span>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="relative overflow-hidden rounded-3xl h-[350px]">
+        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDxN4qgDyxRQhGiz5nvG0i4Ou9m2utrVMVXxNa5QGB_eRW6izMnr1uVW7nx6Zofod7wZJ61xArPMuxHlHl-bzwF3NaSL09mdeeNf4m2rzjHZ_jAtl5yJKJS7o2TMEjR3zWlpy_px8noZu0hK0gdso5qJQEoeqgah1c0IXxpa2xMoQGR8b-8OhfhF8gXU89sCu8h1poDdpWwzD_JRyUFC3pl7WpgM0yh0IOEfkTnCGcA3W4wDXwGYmuSUe73DoxxrS-_DAaGt-sr_2Q-')"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instructors Section -->
+  <section class="py-xl">
+    <div class="max-w-container-max mx-auto px-gutter text-center">
+      <h2 class="text-headline-lg text-on-surface mb-sm">{{ t().instructorsTitle }}</h2>
+      <p class="text-on-surface-variant mb-xl">{{ t().instructorsSubtitle }}</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+        <!-- Instructor 1 -->
+        <div class="glass-card p-md rounded-[2.5rem] text-center group">
+          <div class="w-32 h-32 rounded-full mx-auto mb-md overflow-hidden ring-4 ring-primary/20 group-hover:ring-primary/50 transition-all">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwBIKYZpX-Vx6CeyrrwSlKqxszQLYpemBTIdLlfXgwSaxof7XZMxAxi0czSusWG5oGJHup0oMe6QB-iDpLjKM8UjW9VcszZXli84SLWQFFio3dMcL7zP3sU1JW7NRxO-FHEZtq6CxVkTpDU3YbtQZo-4HiH_1bfRbK8Zk3wfCZ6quFMhSXXFDERKn8nz94cNjcil0_-zI0HFuG7gVrvn67TBC6aACcJ58t4txUGsnV25mro7NtTPytkE4RVyhHAr9Doc2vo0CxTenc" alt="Dr. Ahmed Khaled"/>
+          </div>
+          <h3 class="font-bold text-xl mb-1">{{ t().inst1Name }}</h3>
+          <p class="text-primary text-sm font-medium mb-md">{{ t().inst1Role }}</p>
+          <p class="text-on-surface-variant text-body-sm line-clamp-2 mb-md">{{ t().inst1Desc }}</p>
+          <div class="flex items-center justify-center gap-md text-xs font-bold text-on-surface-variant">
+            <span class="flex items-center gap-xs">
+              <svg class="w-4 h-4 text-on-surface-variant shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
+              12k {{ t().studentsCount }}
+            </span>
+            <span class="flex items-center gap-xs">
+              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+              {{ t().certified }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Instructor 2 -->
+        <div class="glass-card p-md rounded-[2.5rem] text-center group">
+          <div class="w-32 h-32 rounded-full mx-auto mb-md overflow-hidden ring-4 ring-secondary/20 group-hover:ring-secondary/50 transition-all">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxli539HYdrH4QGTMH8PMKqo9KprKQUPfeNo-NtlUd0tpindwitGoH0FWMr_ZHB0MRIyaTQie8htXysQuJ-UE91T-OtIPBZX4KUSq_jcZSrbVfKCOe9JiJEnHvSP_VOdXH8ADAbpLs734khozuUigHtjfbzYnGU5B9Q11G0G33WCwbq1cLMbw3rVmkG5AMkFMMsGsm0llqSVQAlaQ2-Xi-O7N3ntJlcJ23rgV3pFCmUtsu57L9SrFMG57IfomKW3QE2qCBSJdI4apW" alt="Ms. Sarah Al-Mansoor"/>
+          </div>
+          <h3 class="font-bold text-xl mb-1">{{ t().inst2Name }}</h3>
+          <p class="text-secondary text-sm font-medium mb-md">{{ t().inst2Role }}</p>
+          <p class="text-on-surface-variant text-body-sm line-clamp-2 mb-md">{{ t().inst2Desc }}</p>
+          <div class="flex items-center justify-center gap-md text-xs font-bold text-on-surface-variant">
+            <span class="flex items-center gap-xs">
+              <svg class="w-4 h-4 text-on-surface-variant shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
+              8k {{ t().studentsCount }}
+            </span>
+            <span class="flex items-center gap-xs">
+              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+              {{ t().certified }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Instructor 3 -->
+        <div class="glass-card p-md rounded-[2.5rem] text-center group">
+          <div class="w-32 h-32 rounded-full mx-auto mb-md overflow-hidden ring-4 ring-tertiary/20 group-hover:ring-tertiary/50 transition-all">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZJXG7GDViqDU0oBFrjGsoQozWJltmLRGc0VmogI7P3aajGLngWRL91kgn2vfgVlGfa4t6lxZHsm2dBSq524bbOb7FMCRzjxr0BZleajRPlNoSnHB-41vDSUMxjpM5ZGRo8Mjh8IGKnTXKm9YdPH632T8xqilNq4rtdcYMGIrC0pZluxUTdAlg0LJ5fuu4ZcnBY_OvmAI0Ovbd36-VWKr4WWWuWGj0Gg1HgcTjLIfLl8uuBOJmcc-gjs3l4_SX9my_FYJ1IifZ0WDI" alt="Eng. Omar Yassin"/>
+          </div>
+          <h3 class="font-bold text-xl mb-1">{{ t().inst3Name }}</h3>
+          <p class="text-tertiary text-sm font-medium mb-md">{{ t().inst3Role }}</p>
+          <p class="text-on-surface-variant text-body-sm line-clamp-2 mb-md">{{ t().inst3Desc }}</p>
+          <div class="flex items-center justify-center gap-md text-xs font-bold text-on-surface-variant">
+            <span class="flex items-center gap-xs">
+              <svg class="w-4 h-4 text-on-surface-variant shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
+              15k {{ t().studentsCount }}
+            </span>
+            <span class="flex items-center gap-xs">
+              <svg class="w-4 h-4 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+              {{ t().certified }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hall of Fame -->
+  <section class="py-xl bg-surface-container-lowest/50 rounded-3xl border border-white/5">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="text-center mb-xl">
+        <h2 class="text-headline-lg text-on-surface mb-sm">{{ t().fameTitle }}</h2>
+        <p class="text-on-surface-variant">{{ t().fameSubtitle }}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+        <!-- Top Student -->
+        <div class="glass-card rounded-3xl p-lg flex flex-col md:flex-row gap-md items-center border border-primary/20 relative overflow-hidden">
+          <div class="absolute -top-4 -right-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
+          <div class="w-24 h-24 shrink-0 rounded-2xl overflow-hidden ring-2 ring-primary">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxVp9lbPg7Y9ntBrpPtqu51qhNtnFdMlQnPDAn3busq9yqT8IiL1wJTitDqKNPWNO43ppo8-kXcZgcfBGwEPT1gbrgi1lQu1SdZ7AAtZh73PdWG-yxlnja6YC11oXKXouVCjRGKlz8D_GvdiP216vODhX3yZokeLvr8vhsLXHAL6xrWT3oeNk-1SgYm-bJse73HpWSuqoWa6Lx9LXZTXLPNkFjRbCrfDH2aP4aV78IKW1Hk5FYrtLq8AroAEtLnI-2njAUkR1sFd56" alt="Mohamed Ibrahim Ali"/>
+          </div>
+          <div class="text-start flex-grow">
+            <div class="flex items-center gap-xs text-primary mb-1">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"/>
+              </svg>
+              <span class="text-xs font-bold uppercase tracking-widest">{{ t().topStudentTag }}</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2 text-on-surface">{{ t().topStudentName }}</h3>
+            <p class="text-body-sm text-on-surface-variant">{{ t().topStudentDesc }}</p>
+          </div>
+        </div>
+        
+        <!-- Top Project -->
+        <div class="glass-card rounded-3xl p-lg flex flex-col md:flex-row gap-md items-center border border-secondary/20 relative overflow-hidden">
+          <div class="absolute -top-4 -right-4 w-24 h-24 bg-secondary/10 rounded-full blur-2xl"></div>
+          <div class="w-24 h-24 shrink-0 rounded-2xl overflow-hidden ring-2 ring-secondary">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZCrTvgaIdnlKvhdxkOCnJUgZRyR-zAK3qk7GNgqVAOYllrq4RDceSSt6SSEk2J_nKl45wwbqEJv5kqBhZrczqj2644JHfvX__YcD9c16bxU1NBl2s2_I4SDX3M_5xQQBDeDwziVXFRqNhUAh1kq3abLp3XsshBWMnpYtYkU5EP2fiJzZAh-WXdfd2Ac_u5Grs8PIEPEyMtJyDS6M9p-hbDT1m0Tz4leZx28zDKv8MJ_yBYFKWsMFXNLeyLYfKO3_hC0NsIfE4dMM6" alt="Graduation Project"/>
+          </div>
+          <div class="text-start flex-grow">
+            <div class="flex items-center gap-xs text-secondary mb-1">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+              <span class="text-xs font-bold uppercase tracking-widest">{{ t().topProjTag }}</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2 text-on-surface">{{ t().topProjName }}</h3>
+            <p class="text-body-sm text-on-surface-variant">{{ t().topProjDesc }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="py-xl">
+    <div class="max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+      <div class="p-md space-y-sm group hover:bg-surface-container-low rounded-2xl transition-all text-start">
+        <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-on-surface">{{ t().feat1Title }}</h3>
+        <p class="text-body-sm text-on-surface-variant">{{ t().feat1Desc }}</p>
+      </div>
+      
+      <div class="p-md space-y-sm group hover:bg-surface-container-low rounded-2xl transition-all text-start">
+        <div class="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-on-surface">{{ t().feat2Title }}</h3>
+        <p class="text-body-sm text-on-surface-variant">{{ t().feat2Desc }}</p>
+      </div>
+
+      <div class="p-md space-y-sm group hover:bg-surface-container-low rounded-2xl transition-all text-start">
+        <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-on-surface">{{ t().feat3Title }}</h3>
+        <p class="text-body-sm text-on-surface-variant">{{ t().feat3Desc }}</p>
+      </div>
+
+      <div class="p-md space-y-sm group hover:bg-surface-container-low rounded-2xl transition-all text-start">
+        <div class="w-12 h-12 rounded-xl bg-tertiary/10 text-tertiary flex items-center justify-center group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-on-surface">{{ t().feat4Title }}</h3>
+        <p class="text-body-sm text-on-surface-variant">{{ t().feat4Desc }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-xl bg-surface-container-high rounded-3xl border border-white/5">
+    <div class="max-w-container-max mx-auto px-gutter">
+      <div class="text-center mb-xl">
+        <h2 class="text-headline-lg text-on-surface mb-sm">{{ t().testTitle }}</h2>
+        <p class="text-on-surface-variant">{{ t().testSubtitle }}</p>
+      </div>
+      <div class="flex overflow-x-auto gap-md pb-md snap-x scrollbar-hide">
+        <!-- Testimonial 1 -->
+        <div class="min-w-[300px] md:min-w-[400px] glass-card p-md rounded-2xl snap-center space-y-md text-start">
+          <div class="flex items-center gap-sm">
+            <div class="w-12 h-12 rounded-full overflow-hidden">
+              <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU3_OVybxLsYd0a6HRjhZwJ5XFLpfmiMnCir1lrKHSPWRdbgw6sw42WI_U5hz1s1PMykykR_ym_0qWV9oq0fK2wocA5Bhjne4UMSsan3vYjmXyLF6I36Q_AU6FhPxuVhwBfSDnd8oCbpuYEpayy_BDOlH8-sy9rTqipfGC69aqzWeuOXOE_nkX_fHNoSN5wHCKRnppgW0wevhTc4jUOkRl2oPE3Wy_qqs-TpGIkHrNha-4Z6EvamXqzD877MgbYNnVfzLuGFd8Xb3l" alt="Layla Mahmoud"/>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-on-surface">{{ t().test1Name }}</h4>
+              <p class="text-xs text-on-surface-variant">{{ t().test1Role }}</p>
+            </div>
+          </div>
+          <p class="text-body-sm italic text-on-surface-variant">{{ t().test1Text }}</p>
+        </div>
+        
+        <!-- Testimonial 2 -->
+        <div class="min-w-[300px] md:min-w-[400px] glass-card p-md rounded-2xl snap-center space-y-md text-start">
+          <div class="flex items-center gap-sm">
+            <div class="w-12 h-12 rounded-full overflow-hidden">
+              <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHfq1UCdz5IUUneu2DnzV8IN6f5ixUEh8kWV2Z7MRT1_vrInw2cQtcac_XLTjIvAhTSySY10FC0IUm03bnESRUXuMuVUhogixBIZyOfvtW8Wm_J3aYTF1DRqKf9pAbk4x-7gzsfhGSW32SwV0zKwFEfgizFTx_ouvxNErwMzt-5Btr6Ao6FTH6k1h4HL-a-mGwS4xdJEloBFKGo-YshXc0yc9jbomqURgQLIUzaduCz9vRg2OhKSY_w0j7Ajp9mxASUqUBggmc8kKf" alt="Dr. Adel Al-Qahtani"/>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-on-surface">{{ t().test2Name }}</h4>
+              <p class="text-xs text-on-surface-variant">{{ t().test2Role }}</p>
+            </div>
+          </div>
+          <p class="text-body-sm italic text-on-surface-variant">{{ t().test2Text }}</p>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="min-w-[300px] md:min-w-[400px] glass-card p-md rounded-2xl snap-center space-y-md text-start">
+          <div class="flex items-center gap-sm">
+            <div class="w-12 h-12 rounded-full overflow-hidden">
+              <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFUx0WUm9HVkn6OwglVt97iK5QA3HtGu7QeideUOmNVwVHV0AfT9_11R7HrqWUgVcdxg9bfuIKzMEbTgzisUyK9f7ZGeAFmxzLpdBdzMUHL-PGcte6lohrLMwGdPpLiWTpO6vwgkY8XXgqxqn4F0qjsI_ru7Qah43Ti2wo0Vn3OA9vaU2NBFJTF9SXfVIWwEfkfSKfqrzZJ1FUtAtqY-9gfqp3sEo6A9NeEaf6zE-1TzLhzGE8LZFAchqCqxkdbEPQQf2sduQkltmZ" alt="Khaled Al-Saeed"/>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-on-surface">{{ t().test3Name }}</h4>
+              <p class="text-xs text-on-surface-variant">{{ t().test3Role }}</p>
+            </div>
+          </div>
+          <p class="text-body-sm italic text-on-surface-variant">{{ t().test3Text }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-xl">
+    <div class="max-w-2xl mx-auto px-gutter">
+      <div class="text-center mb-xl">
+        <h2 class="text-headline-lg text-on-surface mb-sm">{{ t().faqTitle }}</h2>
+      </div>
+      <div class="space-y-sm">
+        <details class="glass-card p-md rounded-xl cursor-pointer group open:bg-surface-container-high transition-all text-start">
+          <summary class="flex justify-between items-center font-bold list-none">
+            <span>{{ t().faqQ1 }}</span>
+            <svg class="w-5 h-5 group-open:rotate-180 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <p class="pt-md text-on-surface-variant text-body-sm">
+            {{ t().faqA1 }}
+          </p>
+        </details>
+        
+        <details class="glass-card p-md rounded-xl cursor-pointer group open:bg-surface-container-high transition-all text-start">
+          <summary class="flex justify-between items-center font-bold list-none">
+            <span>{{ t().faqQ2 }}</span>
+            <svg class="w-5 h-5 group-open:rotate-180 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <p class="pt-md text-on-surface-variant text-body-sm">
+            {{ t().faqA2 }}
+          </p>
+        </details>
+        
+        <details class="glass-card p-md rounded-xl cursor-pointer group open:bg-surface-container-high transition-all text-start">
+          <summary class="flex justify-between items-center font-bold list-none">
+            <span>{{ t().faqQ3 }}</span>
+            <svg class="w-5 h-5 group-open:rotate-180 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <p class="pt-md text-on-surface-variant text-body-sm">
+            {{ t().faqA3 }}
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="py-xl bg-surface-container-high rounded-3xl border border-white/5 relative overflow-hidden">
+    <div class="max-w-container-max mx-auto px-gutter relative z-10">
+      <div class="grid lg:grid-cols-2 gap-xl">
+        <div class="space-y-md text-start">
+          <h2 class="text-headline-lg text-on-surface">{{ t().contactTitle }}</h2>
+          <p class="text-on-surface-variant">{{ t().contactSubtitle }}</p>
+          <div class="space-y-sm">
+            <a class="flex items-center gap-md p-md glass-card rounded-2xl hover:bg-surface-variant transition-all border border-outline-variant/10" href="https://wa.me/#" target="_blank">
+              <div class="w-12 h-12 rounded-full bg-secondary-container/20 text-secondary-container flex items-center justify-center">
+                <svg class="w-6 h-6 text-secondary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-on-surface">{{ t().whatsappTitle }}</div>
+                <div class="text-xs text-on-surface-variant">{{ t().whatsappDesc }}</div>
+              </div>
+            </a>
+            
+            <div class="flex items-center gap-md p-md glass-card rounded-2xl border border-outline-variant/10">
+              <div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary-container flex items-center justify-center">
+                <svg class="w-6 h-6 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-on-surface">{{ t().hqTitle }}</div>
+                <div class="text-xs text-on-surface-variant">{{ t().hqDesc }}</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Mini Map Mockup -->
+          <div class="h-48 rounded-3xl overflow-hidden glass-card border border-outline-variant/20">
+            <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDg1gdoaid0o5POPSE5Yua-5t5xV_aahcvEIv3vQd2G4T1AyBr-xy8DsJE0tZcWoOwZYVadcbbY0vjkoD5q8aMsmyCzUz1NRPxrXtiH8aCCgqBgh1kOYWhau9XFunkiFKOnzNCQHnUR4eWIoLnrIW82kRUq4FJ-y2AWvU8HXxLSFT-ior2FjWpX5O93DN73DkSDbdO74BJ8Ak8MVQYG17VBN5ihTRzVcmbhrdUVeXliUlZu6h_pzbGziV8btZzHBhjwgV9XBWSvtbXh')"></div>
+          </div>
+        </div>
+        
+        <div class="glass-card p-xl rounded-[2rem] border border-outline-variant/20 shadow-2xl">
+          <form class="space-y-md">
+            <div class="space-y-xs text-start">
+              <label class="block text-sm font-medium text-on-surface-variant">{{ t().fullNameLabel }}</label>
+              <input class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-md py-3 text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" [placeholder]="t().fullNamePlh" type="text"/>
+            </div>
+            <div class="space-y-xs text-start">
+              <label class="block text-sm font-medium text-on-surface-variant">{{ t().emailLabel }}</label>
+              <input class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-md py-3 text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" [placeholder]="t().emailPlh" type="email"/>
+            </div>
+            <div class="space-y-xs text-start">
+              <label class="block text-sm font-medium text-on-surface-variant">{{ t().messageLabel }}</label>
+              <textarea class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-md py-3 text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" [placeholder]="t().messagePlh" rows="4"></textarea>
+            </div>
+            <button class="w-full py-4 bg-primary text-on-primary rounded-xl font-bold shadow-lg hover:brightness-110 active:scale-[0.98] transition-all" type="submit">
+              {{ t().submitBtn }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

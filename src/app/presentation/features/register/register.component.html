@@ -1,0 +1,599 @@
+<div class="grid grid-cols-1 md:grid-cols-2 min-h-[calc(100vh-4rem)] w-full overflow-hidden animate-fade-in">
+  
+  <!-- Column 1: Register Form (50%) -->
+  <div class="flex items-center justify-center p-xs sm:p-sm md:p-md bg-surface overflow-y-auto max-h-[calc(100vh-4rem)] scrollbar-thin transition-colors duration-300">
+    <!-- Level 1 Glassmorphism Card -->
+    <div class="glass-panel rounded-lg p-sm md:p-md w-full max-w-lg shadow-2xl flex flex-col gap-md my-xs">
+      
+      <!-- Heading -->
+      <div class="text-center">
+        <h2 class="text-headline-lg font-bold text-on-surface font-sans">
+          {{ t().register.title }}
+        </h2>
+        
+        <!-- Step Progress Indicator bar -->
+        <div class="flex items-center justify-center gap-xs mt-xs text-[10px] font-bold text-primary">
+          <span class="px-sm py-base rounded-full bg-primary-container/20 border border-primary-container/30 uppercase tracking-wider">
+            {{ translationService.translate('register.stepText', {step: step().toString()}) }}
+          </span>
+          <span class="text-on-surface-variant font-medium">
+            - {{ step() === 1 ? t().register.personalInfo : t().register.academicDetails }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Alert Messages -->
+      @if (successMessage()) {
+        <div class="p-sm bg-secondary/20 text-secondary text-xs rounded border border-secondary/30 text-start flex flex-col gap-xs animate-fade-in">
+          <div class="flex items-center gap-[4px] font-bold">
+            <svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>{{ t().register.successTitle }}</span>
+          </div>
+          <span>{{ successMessage() }}</span>
+        </div>
+      }
+
+      @if (generalError()) {
+        <div class="p-sm bg-red-500/20 text-red-300 text-xs rounded border border-red-500/30 text-start">
+          {{ generalError() }}
+        </div>
+      }
+
+      <!-- Registration Form -->
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="space-y-md">
+        
+        <!-- Step 1: Personal details -->
+        @if (step() === 1) {
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm animate-fade-in">
+            
+            <!-- Full Name -->
+            <div class="flex flex-col gap-base">
+              <label for="fullName" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.fullNameLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                </span>
+                <input 
+                  id="fullName"
+                  name="fullName"
+                  type="text" 
+                  [placeholder]="t().register.fullNamePlh"
+                  [ngModel]="fullName()"
+                  (ngModelChange)="fullName.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['FullName']}"
+                />
+              </div>
+              @if (validationErrors()['FullName']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+            <!-- Email Address -->
+            <div class="flex flex-col gap-base">
+              <label for="email" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.emailLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                  </svg>
+                </span>
+                <input 
+                  id="email"
+                  name="email"
+                  type="email" 
+                  [placeholder]="t().register.emailPlh"
+                  [ngModel]="email()"
+                  (ngModelChange)="email.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['Email']}"
+                />
+              </div>
+              @if (validationErrors()['Email']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="flex flex-col gap-base">
+              <label for="mobileNumber" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.phoneLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                  </svg>
+                </span>
+                <input 
+                  id="mobileNumber"
+                  name="mobileNumber"
+                  type="tel" 
+                  [placeholder]="'01000000001'"
+                  [ngModel]="mobileNumber()"
+                  (ngModelChange)="mobileNumber.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['MobileNumber']}"
+                />
+              </div>
+              @if (validationErrors()['MobileNumber']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+            <!-- Parent Phone Number -->
+            <div class="flex flex-col gap-base">
+              <label for="parentPhoneNumber" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.parentPhoneLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                  </svg>
+                </span>
+                <input 
+                  id="parentPhoneNumber"
+                  name="parentPhoneNumber"
+                  type="tel" 
+                  [placeholder]="'+201099998888'"
+                  [ngModel]="parentPhoneNumber()"
+                  (ngModelChange)="parentPhoneNumber.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['ParentPhoneNumber']}"
+                />
+              </div>
+              @if (validationErrors()['ParentPhoneNumber']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+            <!-- Password -->
+            <div class="flex flex-col gap-base">
+              <label for="password" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.passwordLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <input 
+                  id="password"
+                  name="password"
+                  [type]="showPassword() ? 'text' : 'password'" 
+                  [placeholder]="t().register.passwordPlh"
+                  [ngModel]="password()"
+                  (ngModelChange)="password.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-xl text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['Password']}"
+                />
+                <button 
+                  type="button"
+                  (click)="togglePasswordVisibility()"
+                  class="absolute end-xs h-12 w-10 flex items-center justify-center text-on-surface-variant hover:text-on-surface focus:outline-none"
+                  [title]="t().login.togglePasswordTitle"
+                >
+                  @if (showPassword()) {
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                  } @else {
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                    </svg>
+                  }
+                </button>
+              </div>
+              @if (validationErrors()['Password']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="flex flex-col gap-base">
+              <label for="confirmPassword" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.confirmPasswordLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <input 
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  [type]="showConfirmPassword() ? 'text' : 'password'" 
+                  [placeholder]="t().register.confirmPasswordPlh"
+                  [ngModel]="confirmPassword()"
+                  (ngModelChange)="confirmPassword.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-xl text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['PasswordConfirmation']}"
+                />
+                <button 
+                  type="button"
+                  (click)="toggleConfirmPasswordVisibility()"
+                  class="absolute end-xs h-12 w-10 flex items-center justify-center text-on-surface-variant hover:text-on-surface focus:outline-none"
+                  [title]="t().login.togglePasswordTitle"
+                >
+                  @if (showConfirmPassword()) {
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                  } @else {
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                    </svg>
+                  }
+                </button>
+              </div>
+              @if (validationErrors()['PasswordConfirmation']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+          </div>
+
+          <!-- Step 1 Navigation (Next) -->
+          <button 
+            type="button"
+            (click)="goToNextStep()"
+            class="w-full h-10 mt-xs rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold tracking-wide shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 select-none flex items-center justify-center gap-2"
+          >
+            <span>{{ t().register.nextStep }}</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        }
+
+        <!-- Step 2: Academic details and ID upload -->
+        @if (step() === 2) {
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm animate-fade-in">
+            
+            <!-- Governorate -->
+            <div class="flex flex-col gap-base">
+              <label for="governorate" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.governorateLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                </span>
+                <input 
+                  id="governorate"
+                  name="governorate"
+                  type="text" 
+                  [placeholder]="t().register.governoratePlh"
+                  [ngModel]="governorate()"
+                  (ngModelChange)="governorate.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['Governorate']}"
+                />
+              </div>
+              @if (validationErrors()['Governorate']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+            <!-- School Name -->
+            <div class="flex flex-col gap-base">
+              <label for="schoolName" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.schoolLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5"/>
+                  </svg>
+                </span>
+                <input 
+                  id="schoolName"
+                  name="schoolName"
+                  type="text" 
+                  [placeholder]="t().register.schoolPlh"
+                  [ngModel]="schoolName()"
+                  (ngModelChange)="schoolName.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['SchoolName']}"
+                />
+              </div>
+              @if (validationErrors()['SchoolName']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+            <!-- Academic Grade Selection -->
+            <div class="flex flex-col gap-base">
+              <label for="academicGrade" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.gradeLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                  </svg>
+                </span>
+                <select 
+                  id="academicGrade"
+                  name="academicGrade"
+                  [ngModel]="academicGrade()"
+                  (ngModelChange)="academicGrade.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['AcademicGrade']}"
+                >
+                  <option value="" disabled>{{ t().register.gradePlh }}</option>
+                  <option value="FirstGrade">{{ t().register.firstGrade }}</option>
+                  <option value="SecondGrade">{{ t().register.secondGrade }}</option>
+                  <option value="ThirdGrade">{{ t().register.thirdGrade }}</option>
+                </select>
+              </div>
+              @if (validationErrors()['AcademicGrade']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+            <!-- Academic Division Selection -->
+            <div class="flex flex-col gap-base">
+              <label for="academicDivision" class="block text-xs font-semibold text-on-surface-variant text-start">
+                {{ t().register.divisionLabel }}
+              </label>
+              <div class="relative flex items-center">
+                <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                  </svg>
+                </span>
+                <select 
+                  id="academicDivision"
+                  name="academicDivision"
+                  [ngModel]="academicDivision()"
+                  (ngModelChange)="academicDivision.set($event)"
+                  required
+                  class="w-full h-12 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+                  [ngClass]="{'border-red-500': validationErrors()['AcademicDivision']}"
+                >
+                  <option value="" disabled>{{ t().register.divisionPlh }}</option>
+                  <option value="General">{{ t().register.general }}</option>
+                  <option value="Scientific">{{ t().register.scientific }}</option>
+                  <option value="Literary">{{ t().register.literary }}</option>
+                </select>
+              </div>
+              @if (validationErrors()['AcademicDivision']; as errors) {
+                @for (err of errors; track err) {
+                  <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+                }
+              }
+            </div>
+
+          </div>
+
+          <!-- File Attachment Field -->
+          <div class="flex flex-col gap-base border-t border-white/5 pt-sm animate-fade-in">
+            <label class="block text-xs font-semibold text-on-surface-variant text-start">
+              {{ t().register.idLabel }}
+            </label>
+            
+            <div class="flex flex-col sm:flex-row items-center gap-sm">
+              <input 
+                type="file" 
+                id="studentIdImage"
+                (change)="onFileSelected($event)"
+                accept="image/png, image/jpeg, image/jpg"
+                class="hidden"
+                #fileInput
+              />
+              
+              <button 
+                type="button"
+                (click)="fileInput.click()"
+                class="h-12 px-sm rounded bg-surface-container-highest hover:bg-surface-bright text-on-surface border border-white/5 active:scale-95 transition-all text-xs font-semibold flex items-center gap-xs"
+              >
+                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9l-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                <span>{{ t().register.chooseImage }}</span>
+              </button>
+              
+              <span class="text-xs text-on-surface-variant">
+                @if (selectedFile()) {
+                  📄 {{ selectedFile()?.name }}
+                } @else {
+                  {{ t().register.noFile }}
+                }
+              </span>
+            </div>
+            
+            @if (fileError()) {
+              <span class="text-[10px] text-red-400 font-medium text-start block">{{ fileError() }}</span>
+            }
+            @if (validationErrors()['StudentIdImage']; as errors) {
+              @for (err of errors; track err) {
+                <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+              }
+            }
+          </div>
+
+          <!-- Terms & Conditions checkbox -->
+          <div class="pt-xs animate-fade-in">
+            <label class="flex items-start gap-xs text-xs text-on-surface-variant cursor-pointer select-none">
+              <input 
+                type="checkbox" 
+                name="termsAccepted"
+                [ngModel]="termsAccepted()"
+                (ngModelChange)="termsAccepted.set($event)"
+                required
+                class="w-4 h-4 mt-[2px] rounded bg-surface-container-lowest border-white/10 text-primary-container focus:ring-0 focus:ring-offset-0"
+              />
+              <span class="text-start">
+                {{ t().register.termsText }}
+              </span>
+            </label>
+            @if (validationErrors()['TermsAccepted']; as errors) {
+              @for (err of errors; track err) {
+                <span class="text-[10px] text-red-400 font-medium text-start block">{{ err }}</span>
+              }
+            }
+          </div>
+
+          <!-- Step 2 Navigation (Back & Submit) -->
+          <div class="flex items-center gap-sm pt-xs animate-fade-in">
+            <button 
+              type="button" 
+              (click)="goToPrevStep()"
+              class="w-1/3 h-10 rounded-full bg-surface-container-highest hover:bg-surface-bright text-on-surface border border-white/5 shadow-lg active:scale-95 transition-all text-xs font-semibold select-none flex items-center justify-center gap-base"
+            >
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+              </svg>
+              <span>{{ t().register.backBtn }}</span>
+            </button>
+
+            <button 
+              type="submit" 
+              [disabled]="isSubmitting() || !registerForm.valid || !termsAccepted()"
+              class="w-2/3 h-10 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:from-surface-container-high disabled:to-surface-container-high text-white disabled:text-on-surface-variant/40 text-xs font-bold tracking-wide shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 select-none flex items-center justify-center gap-2"
+            >
+              @if (isSubmitting()) {
+                <svg class="animate-spin h-5 w-5 text-current" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span>{{ t().register.submitting }}</span>
+              } @else {
+                <span>{{ t().register.submitBtn }}</span>
+              }
+            </button>
+          </div>
+        }
+
+      </form>
+
+      <!-- Navigation footer -->
+      <div class="text-center text-xs text-on-surface-variant pt-xs border-t border-white/5">
+        <span>{{ t().register.hasAccountText }}</span>
+        <a routerLink="/login" class="text-secondary hover:underline font-bold">
+          {{ t().register.signIn }}
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Column 2: Premium Design Onboarding Workflow (50%) -->
+  <div class="hidden md:flex flex-col justify-between p-lg relative overflow-hidden border-s border-white/5 bg-surface-container-lowest z-10">
+    <div class="absolute inset-0 bg-gradient-to-br from-surface-container-lowest via-surface-container-low/95 to-secondary/10 z-0"></div>
+    <div class="absolute -top-40 -start-40 w-96 h-96 rounded-full bg-primary/10 blur-[100px] pointer-events-none z-0"></div>
+    <div class="absolute -bottom-40 -end-40 w-96 h-96 rounded-full bg-secondary/10 blur-[100px] pointer-events-none z-0"></div>
+
+    <!-- Upper Section: Brand info -->
+    <div class="z-10 flex items-center gap-xs">
+      <img src="EDUGATE-Logo.jpeg" class="w-10 h-10 rounded shadow-md object-cover border border-primary/20" alt="EDUGATE" />
+      <span class="text-lg font-bold text-on-surface tracking-wider">EDUGATE Academy</span>
+    </div>
+
+    <!-- Center Section: Onboarding Steps workflow -->
+    <div class="z-10 my-auto py-md space-y-md text-start">
+      <div class="inline-flex items-center gap-xs px-xs py-1 rounded bg-primary/15 text-primary text-[11px] font-bold border border-primary/20">
+        <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+        </svg>
+        <span>{{ t().register.sidebarTag }}</span>
+      </div>
+      
+      <h1 class="text-3xl font-extrabold text-on-surface tracking-tight leading-tight max-w-md font-sans">
+        {{ t().register.sidebarTitle }}
+      </h1>
+      
+      <!-- Interactive steps list -->
+      <div class="flex flex-col gap-sm pt-xs max-w-md font-sans">
+        
+        <!-- Step 1 -->
+        <div class="flex items-start gap-xs">
+          <div class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs shrink-0 mt-[2px]">
+            1
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-on-surface">{{ t().register.step1Title }}</h4>
+            <p class="text-[10px] text-on-surface-variant leading-relaxed">{{ t().register.step1Desc }}</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex items-start gap-xs">
+          <div class="w-6 h-6 rounded-full bg-secondary/20 text-secondary flex items-center justify-center font-bold text-xs shrink-0 mt-[2px] border border-secondary/30">
+            2
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-on-surface">{{ t().register.step2Title }}</h4>
+            <p class="text-[10px] text-on-surface-variant leading-relaxed">{{ t().register.step2Desc }}</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex items-start gap-xs">
+          <div class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-xs shrink-0 mt-[2px] border border-white/10">
+            3
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-on-surface">{{ t().register.step3Title }}</h4>
+            <p class="text-[10px] text-on-surface-variant leading-relaxed">{{ t().register.step3Desc }}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom Section: Info Footer -->
+    <div class="z-10 flex justify-between items-center text-[10px] text-on-surface-variant">
+      <span>{{ t().login.footerText }}</span>
+      <span>© 2026 EDUGATE</span>
+    </div>
+
+  </div>
+
+</div>

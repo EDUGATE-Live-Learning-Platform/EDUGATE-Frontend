@@ -1,0 +1,221 @@
+<div class="min-h-screen bg-surface flex flex-col transition-colors duration-300">
+  <!-- Layout Header -->
+  <header class="glass-panel sticky top-0 z-40 w-full shadow-lg">
+    <div class="max-w-7xl mx-auto px-md h-16 flex items-center justify-between">
+      <!-- Brand Logo & Navigation Links -->
+      <div class="flex items-center gap-md">
+        <!-- Logo Image + Text Link -->
+        <a routerLink="/" class="flex items-center gap-xs text-xl font-bold tracking-wider hover:opacity-95 transition-opacity">
+          <img 
+            src="EDUGATE-Logo.jpeg" 
+            alt="EDUGATE Logo" 
+            class="w-9 h-9 rounded object-cover border border-primary/20 shadow-md animate-fade-in"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
+          />
+          <!-- Fallback Cap Icon (No Emoji) -->
+          <svg style="display:none;" class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+          </svg>
+          <span class="bg-gradient-to-r from-primary-container to-secondary bg-clip-text text-transparent">EDUGATE</span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center gap-sm">
+          <a 
+            routerLink="/home" 
+            routerLinkActive="text-primary font-semibold border-b-2 border-primary" 
+            [routerLinkActiveOptions]="{exact: true}"
+            class="text-xs font-medium text-on-surface-variant hover:text-on-surface py-2 transition-colors"
+          >
+            {{ t().nav.home }}
+          </a>
+          <a 
+            routerLink="/courses" 
+            routerLinkActive="text-primary font-semibold border-b-2 border-primary" 
+            [routerLinkActiveOptions]="{exact: true}"
+            class="text-xs font-medium text-on-surface-variant hover:text-on-surface py-2 transition-colors"
+          >
+            {{ t().nav.courses }}
+          </a>
+          <a 
+            routerLink="/instructors" 
+            routerLinkActive="text-primary font-semibold border-b-2 border-primary" 
+            [routerLinkActiveOptions]="{exact: true}"
+            class="text-xs font-medium text-on-surface-variant hover:text-on-surface py-2 transition-colors"
+          >
+            Instructors
+          </a>
+
+          @if (authService.currentUser()) {
+            <a 
+              routerLink="/wallet" 
+              routerLinkActive="text-primary font-semibold border-b-2 border-primary" 
+              class="text-xs font-medium text-on-surface-variant hover:text-on-surface py-2 transition-colors"
+            >
+              Wallet
+            </a>
+            <a 
+              routerLink="/profile" 
+              routerLinkActive="text-primary font-semibold border-b-2 border-primary" 
+              class="text-xs font-medium text-on-surface-variant hover:text-on-surface py-2 transition-colors"
+            >
+              {{ t().nav.profile }}
+            </a>
+          } @else {
+            <a 
+              routerLink="/login" 
+              routerLinkActive="text-primary font-semibold border-b-2 border-primary" 
+              class="text-xs font-medium text-on-surface-variant hover:text-on-surface py-2 transition-colors"
+            >
+              {{ t().nav.login }}
+            </a>
+            <a 
+              routerLink="/register" 
+              routerLinkActive="text-primary font-semibold border-b-2 border-primary" 
+              class="text-xs font-medium text-on-surface-variant hover:text-on-surface py-2 transition-colors"
+            >
+              {{ t().nav.register }}
+            </a>
+          }
+        </nav>
+      </div>
+
+      <!-- Header Action Items -->
+      <div class="flex items-center gap-sm">
+        
+        <!-- Modern Toggles Group (No Emojis) -->
+        <div class="flex items-center gap-xs bg-surface-container-low p-[3px] rounded-full border border-white/5">
+          <!-- Language Toggle Pill -->
+          <button 
+            (click)="toggleLanguage()" 
+            class="px-3 py-[6px] rounded-full hover:bg-surface-bright text-[11px] font-bold transition-all active:scale-95 flex items-center gap-1 select-none text-on-surface"
+            [title]="currentLang() === 'en' ? 'Switch to Arabic' : 'التحويل إلى الإنجليزية'"
+          >
+            <!-- Globe SVG Icon -->
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke-width="2"/>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke-width="2"/>
+            </svg>
+            <span>{{ currentLang() === 'en' ? 'العربية' : 'EN' }}</span>
+          </button>
+
+          <!-- Theme Toggle Pill -->
+          <button 
+            (click)="toggleTheme()" 
+            class="px-3 py-[6px] rounded-full hover:bg-surface-bright text-[11px] font-bold transition-all active:scale-95 flex items-center gap-1.5 select-none text-on-surface"
+            [title]="currentTheme() === 'dark' ? 'Switch to Light Mode' : 'التحويل إلى الوضع الداكن'"
+          >
+            @if (currentTheme() === 'dark') {
+              <!-- Sun SVG Icon -->
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4" stroke-width="2"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            } @else {
+              <!-- Moon SVG Icon -->
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            }
+            <span>{{ currentTheme() === 'dark' ? (currentLang() === 'en' ? 'Light' : 'مضيء') : (currentLang() === 'en' ? 'Dark' : 'داكن') }}</span>
+          </button>
+        </div>
+
+        <!-- Profile Avatar & Logout (If Logged In) -->
+        @if (authService.currentUser(); as user) {
+          <div class="flex items-center gap-xs border-s border-white/10 ps-sm">
+            <img 
+              [src]="user.ProfileImageUrl || '/default-avatar.svg'" 
+              class="w-8 h-8 rounded-full border border-secondary/30 object-cover shadow-sm"
+              alt="Avatar"
+              onerror="this.src='/default-avatar.svg'"
+            />
+            <button 
+              (click)="logout()"
+              class="hidden md:block px-xs py-base text-xs font-semibold rounded bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-100 transition-all select-none"
+            >
+              {{ t().nav.logout }}
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Sub-bar -->
+    <div class="md:hidden flex justify-around border-t border-white/5 bg-surface-container/40">
+      <a 
+        routerLink="/home" 
+        routerLinkActive="text-primary font-semibold border-b-2 border-primary"
+        [routerLinkActiveOptions]="{exact: true}"
+        class="text-[11px] font-medium text-on-surface-variant hover:text-on-surface py-xs transition-colors"
+      >
+        {{ t().nav.home }}
+      </a>
+      <a 
+        routerLink="/courses" 
+        routerLinkActive="text-primary font-semibold border-b-2 border-primary"
+        [routerLinkActiveOptions]="{exact: true}"
+        class="text-[11px] font-medium text-on-surface-variant hover:text-on-surface py-xs transition-colors"
+      >
+        {{ t().nav.courses }}
+      </a>
+      
+
+      @if (authService.currentUser()) {
+        <a 
+          routerLink="/wallet" 
+          routerLinkActive="text-primary font-semibold border-b-2 border-primary"
+          class="text-[11px] font-medium text-on-surface-variant hover:text-on-surface py-xs transition-colors"
+        >
+          Wallet
+        </a>
+        <a 
+          routerLink="/profile" 
+          routerLinkActive="text-primary font-semibold border-b-2 border-primary"
+          class="text-[11px] font-medium text-on-surface-variant hover:text-on-surface py-xs transition-colors"
+        >
+          {{ t().nav.profile }}
+        </a>
+        <button 
+          (click)="logout()"
+          class="text-[11px] font-medium text-red-400 py-xs transition-colors"
+        >
+          {{ t().nav.logout }}
+        </button>
+      } @else {
+        <a 
+          routerLink="/login" 
+          routerLinkActive="text-primary font-semibold border-b-2 border-primary"
+          class="text-[11px] font-medium text-on-surface-variant hover:text-on-surface py-xs transition-colors"
+        >
+          {{ t().nav.login }}
+        </a>
+        <a 
+          routerLink="/register" 
+          routerLinkActive="text-primary font-semibold border-b-2 border-primary"
+          class="text-[11px] font-medium text-on-surface-variant hover:text-on-surface py-xs transition-colors"
+        >
+          {{ t().nav.mobileRegister }}
+        </a>
+      }
+    </div>
+  </header>
+
+  <!-- Router Outlet Main Content -->
+  <main class="flex-1 w-full max-w-7xl mx-auto p-sm md:p-md">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-surface-container-lowest border-t border-white/5 py-md">
+    <div class="max-w-7xl mx-auto px-md flex flex-col md:flex-row justify-between items-center gap-xs text-[11px] text-on-surface-variant">
+      <p>© 2026 EDUGATE Academy. All rights reserved.</p>
+      <div class="flex gap-sm">
+        <span>Clean Architecture Auth Spec</span>
+        <span>•</span>
+        <span>Angular v21</span>
+      </div>
+    </div>
+  </footer>
+</div>

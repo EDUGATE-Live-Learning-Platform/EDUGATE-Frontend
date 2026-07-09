@@ -1,0 +1,115 @@
+<div class="glass-panel rounded-lg overflow-hidden flex flex-col h-full hover:shadow-xl transition-all duration-300">
+  <!-- Course Cover Image -->
+  <div class="relative h-44 w-full bg-surface-container-low overflow-hidden">
+    <img 
+      [src]="course().image" 
+      [alt]="lang() === 'en' ? course().titleEn : course().titleAr"
+      class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+    />
+    
+    <!-- Category & Difficulty Badges -->
+    <div class="absolute top-xs start-xs flex flex-wrap gap-base">
+      <span class="px-xs py-1 rounded bg-surface-container/90 backdrop-blur-md text-[11px] font-semibold text-primary uppercase tracking-wider border border-white/5">
+        {{ course().category }}
+      </span>
+      <span 
+        class="px-xs py-1 rounded text-[11px] font-semibold uppercase tracking-wider"
+        [ngClass]="{
+          'bg-secondary/20 text-secondary border border-secondary/30': course().difficulty === 'Beginner' || course().difficulty === 'مبتدئ',
+          'bg-tertiary/20 text-tertiary border border-tertiary/30': course().difficulty === 'Intermediate' || course().difficulty === 'متوسط',
+          'bg-red-500/20 text-red-400 border border-red-500/30': course().difficulty === 'Advanced' || course().difficulty === 'متقدم'
+        }"
+      >
+        {{ course().difficulty }}
+      </span>
+    </div>
+
+    <!-- XP Value Reward Badge -->
+    <div class="absolute bottom-xs end-xs px-xs py-1 rounded bg-tertiary-container/90 backdrop-blur-md border border-tertiary/30 text-[11px] font-bold text-tertiary flex items-center gap-1">
+      <svg class="w-3.5 h-3.5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke-width="2"/>
+        <path d="M12 6v12M15 9H11.5a2.5 2.5 0 0 0 0 5H13a2.5 2.5 0 0 1 0 5H9.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>+{{ course().xpReward }} {{ t().courseCard.xp }}</span>
+    </div>
+  </div>
+
+  <!-- Content Space -->
+  <div class="p-sm flex-1 flex flex-col justify-between">
+    <div>
+      <h3 class="text-headline-lg-mobile text-on-surface font-bold tracking-tight mb-xs hover:text-primary transition-colors">
+        {{ lang() === 'en' ? course().titleEn : course().titleAr }}
+      </h3>
+      
+      <!-- Instructor metadata -->
+      <div class="flex items-center gap-xs text-[12px] text-on-surface-variant mb-xs">
+        <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>{{ course().instructor }}</span>
+        <span>•</span>
+        <span>{{ course().duration }}</span>
+      </div>
+
+      <p class="text-body-sm text-on-surface-variant line-clamp-3 mb-sm">
+        {{ lang() === 'en' ? course().descriptionEn : course().descriptionAr }}
+      </p>
+    </div>
+
+    <!-- Progress Tracking & Action Area -->
+    <div class="space-y-sm">
+      <!-- Progress Bar & Labels -->
+      <div class="space-y-base">
+        <div class="flex justify-between items-center text-xs font-semibold">
+          <span class="text-on-surface-variant">
+            {{ t().courseCard.progress }}
+          </span>
+          <span [class.text-secondary]="course().progress === 100" class="text-primary tracking-wide">
+            {{ course().progress }}%
+          </span>
+        </div>
+        
+        <!-- Progress track container -->
+        <div class="w-full h-[6px] rounded-full bg-surface-container-lowest overflow-hidden border border-white/5">
+          <!-- Filled bar -->
+          <div 
+            [style.width.%]="course().progress" 
+            [ngClass]="course().progress === 100 ? 'bg-secondary' : (lang() === 'ar' ? 'bg-gradient-to-l from-primary-container to-secondary' : 'bg-gradient-to-r from-primary-container to-secondary')"
+            class="h-full rounded-full transition-all duration-700 ease-out"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-xs items-center pt-xs">
+        @if (course().progress < 100) {
+          <button 
+            (click)="studyLesson()"
+            class="flex-1 py-xs px-sm rounded text-xs font-bold text-center bg-primary-container hover:bg-blue-600 text-on-primary-container hover:shadow-md hover:shadow-blue-500/20 active:scale-95 transition-all select-none"
+          >
+            {{ t().courseCard.studyLesson }}
+          </button>
+        } @else {
+          <div class="flex-1 py-xs px-sm rounded text-xs font-bold text-center bg-secondary/15 text-secondary border border-secondary/30 flex items-center justify-center gap-1 select-none">
+            <svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>{{ t().courseCard.completed }}</span>
+          </div>
+        }
+
+        @if (course().progress > 0) {
+          <button 
+            (click)="resetProgress()"
+            [title]="t().courseCard.resetProgressTitle"
+            class="px-sm h-[32px] flex items-center justify-center rounded text-xs font-medium bg-surface-container-highest hover:bg-surface-bright text-on-surface border border-white/5 active:scale-95 transition-all"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.2"/>
+            </svg>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

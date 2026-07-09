@@ -1,0 +1,92 @@
+<div class="space-y-md animate-fade-in font-sans">
+  <div class="text-start">
+    <button (click)="goBack()" class="inline-flex items-center gap-xs text-xs text-primary hover:underline font-bold transition-all">
+      <svg class="w-4 h-4 shrink-0 flip-rtl" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+      </svg>
+      <span>Back to Instructors</span>
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="animate-pulse space-y-md">
+      <div class="glass-panel p-md rounded-2xl border border-white/5">
+        <div class="flex items-center gap-md">
+          <div class="w-24 h-24 rounded-full bg-surface-container-high"></div>
+          <div class="space-y-sm flex-1">
+            <div class="h-6 bg-surface-container-high rounded w-1/3"></div>
+            <div class="h-4 bg-surface-container-high rounded w-1/4"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else if (!instructor()) {
+    <div class="glass-panel p-lg text-center border border-white/5">
+      <p class="text-on-surface-variant">Instructor not found.</p>
+    </div>
+  } @else {
+    @let inst = instructor()!;
+    <div class="glass-panel p-md rounded-2xl border border-white/5">
+      <div class="flex flex-col md:flex-row items-center gap-md text-center md:text-start">
+        <div class="w-24 h-24 rounded-full overflow-hidden ring-4 ring-primary/30 bg-surface-container-high flex items-center justify-center">
+          <span class="text-display-lg font-bold text-primary">{{ inst.instructorName.charAt(0) }}</span>
+        </div>
+        <div class="flex-1 space-y-sm">
+          <h1 class="text-headline-lg font-bold text-on-surface">{{ inst.instructorName }}</h1>
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-md text-xs text-on-surface-variant">
+            <span class="flex items-center gap-xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+              {{ inst.coursesCount }} Courses
+            </span>
+            <span class="flex items-center gap-xs text-yellow-500">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+              {{ inst.averageRating.toFixed(1) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="text-headline-sm font-bold text-on-surface">Courses by {{ inst.instructorName }}</h2>
+
+    @if (courses().length === 0) {
+      <div class="glass-panel p-lg text-center border border-white/5">
+        <p class="text-on-surface-variant">No courses found for this instructor.</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-sm">
+        @for (course of courses(); track course.id) {
+          <div class="glass-panel rounded-xl overflow-hidden border border-white/5 hover:border-primary/25 transition-all cursor-pointer group"
+               (click)="viewCourse(course.id)">
+            <div class="h-36 bg-surface-container-low overflow-hidden">
+              <img [src]="course.thumbnailUrl || '/default-course.jpg'"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   onerror="this.src='/default-course.jpg'" />
+              @if (course.category) {
+                <span class="absolute top-xs start-xs px-xs py-base rounded bg-black/60 text-white text-[9px] font-bold uppercase tracking-wider backdrop-blur-md">
+                  {{ course.category }}
+                </span>
+              }
+            </div>
+            <div class="p-sm text-start space-y-base">
+              <h3 class="text-xs font-bold text-on-surface line-clamp-2">{{ course.title }}</h3>
+              <div class="flex items-center justify-between text-[10px] text-on-surface-variant">
+                <span class="flex items-center gap-[2px] text-yellow-500">
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                  {{ course.averageRating || '5.0' }}
+                </span>
+                <span class="font-bold">{{ course.price }} EGP</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
