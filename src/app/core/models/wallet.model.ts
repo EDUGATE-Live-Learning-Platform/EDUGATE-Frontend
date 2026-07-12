@@ -53,3 +53,15 @@ export interface ReviewBillRequest {
   IsApproved: boolean;
   Feedback: string;
 }
+
+export interface BillDto {
+  id: string;
+  amount: number;
+  description: string;
+  referenceNumber: string;
+  billImageUrl: string;
+  status: string;
+  adminFeedback?: string;
+  createdAt: string;
+  reviewedAt?: string;
+}

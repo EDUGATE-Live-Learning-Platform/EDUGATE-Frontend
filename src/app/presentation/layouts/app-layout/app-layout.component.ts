@@ -25,6 +25,8 @@ export class AppLayoutComponent {
   currentTheme = this.languageService.currentTheme;
   currentDir = this.languageService.currentDir;
 
+  showDropdown = signal<boolean>(false);
+
   constructor() {
     effect(() => {
       const user = this.authService.currentUser();
@@ -44,7 +46,16 @@ export class AppLayoutComponent {
     this.languageService.toggleTheme();
   }
 
+  toggleDropdown(): void {
+    this.showDropdown.update(v => !v);
+  }
+
+  closeDropdown(): void {
+    this.showDropdown.set(false);
+  }
+
   logout(): void {
     this.authService.logout();
+    this.closeDropdown();
   }
 }

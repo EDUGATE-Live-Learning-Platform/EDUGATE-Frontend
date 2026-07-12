@@ -10,7 +10,7 @@ import { CourseCatalogItem } from '../../../core/models/course-catalog.model';
 export class InstructorService {
   private http = inject(HttpClient);
 
-  getInstructorProfile(instructorId?: number): Observable<InstructorProfile> {
+  getInstructorProfile(instructorId?: string): Observable<InstructorProfile> {
     if (instructorId) {
       return this.http.get<InstructorProfile>(`/api/v1/instructors/${instructorId}/profile`);
     }
@@ -22,9 +22,10 @@ export class InstructorService {
       params: new HttpParams().set('pageSize', '100')
     }).pipe(
       map(courses => {
-        const map = new Map<number, { name: string; count: number; totalRating: number; coursesWithRating: number }>();
+        const map = new Map<string, { name: string; count: number; totalRating: number; coursesWithRating: number }>();
         courses.forEach(c => {
-          const id = Number(c.instructorId);
+          const id = c.instructorId;
+          if (!id) return;
           if (!map.has(id)) {
             map.set(id, { name: c.instructorName, count: 0, totalRating: 0, coursesWithRating: 0 });
           }
@@ -46,11 +47,11 @@ export class InstructorService {
     );
   }
 
-  getInstructorCourses(instructorId: number): Observable<CourseCatalogItem[]> {
+  getInstructorCourses(instructorId: string): Observable<CourseCatalogItem[]> {
     return this.http.get<CourseCatalogItem[]>('/api/v1/courses', {
       params: new HttpParams()
         .set('pageSize', '50')
-        .set('specialization', instructorId.toString())
+        .set('instructorId', instructorId)
     });
   }
 }

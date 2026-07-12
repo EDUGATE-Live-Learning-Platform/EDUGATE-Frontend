@@ -44,7 +44,7 @@ export class InstructorListComponent implements OnInit {
     });
   }
 
-  viewInstructor(id: number): void {
+  viewInstructor(id: string): void {
     this.router.navigate(['/instructors', id]);
   }
 }

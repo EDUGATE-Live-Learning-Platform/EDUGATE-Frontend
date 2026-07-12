@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { WalletResponse, WalletStatistics, TransactionDto, PendingBillResponse } from '../../../core/models/wallet.model';
+import { WalletResponse, WalletStatistics, TransactionDto, PendingBillResponse, BillDto } from '../../../core/models/wallet.model';
 
 @Injectable({
   providedIn: 'root'
@@ -62,5 +62,9 @@ export class WalletService {
 
   submitBill(formData: FormData): Observable<{ Message: string }> {
     return this.http.post<{ Message: string }>('/api/bills/submit', formData);
+  }
+
+  getUserBills(): Observable<BillDto[]> {
+    return this.http.get<BillDto[]>('/api/bills');
   }
 }
