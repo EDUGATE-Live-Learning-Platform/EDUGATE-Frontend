@@ -125,6 +125,16 @@
         <!-- Profile Avatar & Logout (If Logged In) -->
         @if (authService.currentUser(); as user) {
           <div class="flex items-center gap-xs border-s border-white/10 ps-sm">
+            <!-- Wallet Balance Pill -->
+            <a routerLink="/wallet" 
+               title="View Wallet"
+               class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 text-xs font-bold transition-all active:scale-95 select-none mr-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+              </svg>
+              <span>{{ walletService.balance() }} EGP</span>
+            </a>
+
             <img 
               [src]="user.ProfileImageUrl || '/default-avatar.svg'" 
               class="w-8 h-8 rounded-full border border-secondary/30 object-cover shadow-sm"

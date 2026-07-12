@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../infrastructure/auth/auth.service';
 import { LanguageService } from '../../../core/services/language.service';
 import { TranslationService } from '../../../core/services/translation.service';
+import { WalletService } from '../../../infrastructure/services/wallet/wallet.service';
 
 @Component({
   selector: 'app-layout',
@@ -17,11 +18,23 @@ export class AppLayoutComponent {
   authService = inject(AuthService);
   languageService = inject(LanguageService);
   translationService = inject(TranslationService);
+  walletService = inject(WalletService);
   
   t = this.translationService.translations;
   currentLang = this.languageService.currentLang;
   currentTheme = this.languageService.currentTheme;
   currentDir = this.languageService.currentDir;
+
+  constructor() {
+    effect(() => {
+      const user = this.authService.currentUser();
+      if (user) {
+        this.walletService.getBalance().subscribe({
+          error: (err) => console.error('Failed to load wallet balance', err)
+        });
+      }
+    });
+  }
 
   toggleLanguage(): void {
     this.languageService.toggleLanguage();

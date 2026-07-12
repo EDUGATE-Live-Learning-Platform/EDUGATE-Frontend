@@ -32,11 +32,14 @@ export class WalletService {
     return this.http.get<WalletStatistics>('/api/wallet/statistics');
   }
 
-  deposit(amount: number): Observable<{ Message: string }> {
-    const ref = `SIM-DEP-${Math.floor(100000 + Math.random() * 900000)}`;
+  deposit(amount: number, description?: string): Observable<{ Message: string }> {
+    const idempotencyKey = typeof crypto !== 'undefined' && crypto.randomUUID 
+      ? crypto.randomUUID() 
+      : `idemp-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
     return this.http.post<{ Message: string }>('/api/wallet/deposit', {
       Amount: amount,
-      ReferenceNumber: ref
+      Description: description || 'Wallet deposit',
+      IdempotencyKey: idempotencyKey
     }).pipe(
       tap(() => {
         this.getWallet().subscribe();

@@ -37,11 +37,24 @@ export class WalletComponent implements OnInit {
   billDescription = signal<string>('');
   billReference = signal<string>('');
   billFile = signal<File | null>(null);
+  billFilePreview = signal<string | null>(null);
   isSubmittingBill = signal<boolean>(false);
   billSuccess = signal<string | null>(null);
 
   tabs: ('overview' | 'transactions' | 'deposit')[] = ['overview', 'transactions', 'deposit'];
   activeTab = signal<'overview' | 'transactions' | 'deposit'>('overview');
+
+  // Filters and Pagination
+  filterType = signal<string>('');
+  filterStatus = signal<string>('');
+  page = signal<number>(1);
+  pageSize = 10;
+  hasMoreTransactions = signal<boolean>(true);
+  isLoadingMore = signal<boolean>(false);
+
+  // Transaction Details Modal
+  selectedTransaction = signal<TransactionDto | null>(null);
+  showDetailsModal = signal<boolean>(false);
 
   ngOnInit(): void {
     this.loadWallet();
@@ -53,7 +66,7 @@ export class WalletComponent implements OnInit {
       next: (res) => {
         this.wallet.set(res);
         this.loadStatistics();
-        this.loadTransactions();
+        this.loadTransactions(false);
       },
       error: () => {
         this.isLoading.set(false);
@@ -72,10 +85,42 @@ export class WalletComponent implements OnInit {
     });
   }
 
-  loadTransactions(): void {
-    this.walletService.getTransactions().subscribe({
-      next: (res) => this.transactions.set(res)
+  loadTransactions(append: boolean = false): void {
+    if (!append) {
+      this.page.set(1);
+      this.hasMoreTransactions.set(true);
+    }
+    const currentPage = this.page();
+    const typeVal = this.filterType() || undefined;
+    const statusVal = this.filterStatus() || undefined;
+
+    this.walletService.getTransactions(typeVal, statusVal, currentPage, this.pageSize).subscribe({
+      next: (res) => {
+        if (append) {
+          this.transactions.update(prev => [...prev, ...res]);
+        } else {
+          this.transactions.set(res);
+        }
+        if (res.length < this.pageSize) {
+          this.hasMoreTransactions.set(false);
+        }
+        this.isLoadingMore.set(false);
+      },
+      error: () => {
+        this.isLoadingMore.set(false);
+      }
     });
+  }
+
+  loadMoreTransactions(): void {
+    if (this.isLoadingMore() || !this.hasMoreTransactions()) return;
+    this.isLoadingMore.set(true);
+    this.page.update(p => p + 1);
+    this.loadTransactions(true);
+  }
+
+  onFilterChange(): void {
+    this.loadTransactions(false);
   }
 
   openDepositModal(): void {
@@ -90,7 +135,7 @@ export class WalletComponent implements OnInit {
   confirmDeposit(): void {
     if (this.isDepositing() || this.depositAmount() <= 0) return;
     this.isDepositing.set(true);
-    this.walletService.deposit(this.depositAmount()).subscribe({
+    this.walletService.deposit(this.depositAmount(), 'Direct simulation deposit').subscribe({
       next: () => {
         this.isDepositing.set(false);
         this.showDepositModal.set(false);
@@ -105,7 +150,19 @@ export class WalletComponent implements OnInit {
   onBillFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.billFile.set(input.files[0]);
+      const file = input.files[0];
+      this.billFile.set(file);
+
+      // Create preview for image files
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.billFilePreview.set(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.billFilePreview.set(null);
+      }
     }
   }
 
@@ -116,7 +173,7 @@ export class WalletComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('Amount', this.billAmount().toString());
-    formData.append('Description', this.billDescription());
+    formData.append('Description', this.billDescription() || 'Vodafone cash recharge');
     formData.append('ReferenceNumber', this.billReference() || `BILL-${Date.now()}`);
     formData.append('BillImage', this.billFile()!);
 
@@ -126,6 +183,7 @@ export class WalletComponent implements OnInit {
         this.billSuccess.set('Bill submitted successfully! Pending admin review.');
         this.showBillModal.set(false);
         this.billFile.set(null);
+        this.billFilePreview.set(null);
         this.billAmount.set(0);
         this.billDescription.set('');
         this.billReference.set('');
@@ -139,10 +197,22 @@ export class WalletComponent implements OnInit {
   openBillModal(): void {
     this.showBillModal.set(true);
     this.billSuccess.set(null);
+    this.billFilePreview.set(null);
   }
 
   closeBillModal(): void {
     this.showBillModal.set(false);
+    this.billFilePreview.set(null);
+  }
+
+  viewTransactionDetails(tx: TransactionDto): void {
+    this.selectedTransaction.set(tx);
+    this.showDetailsModal.set(true);
+  }
+
+  closeDetailsModal(): void {
+    this.showDetailsModal.set(false);
+    this.selectedTransaction.set(null);
   }
 
   setTab(tab: 'overview' | 'transactions' | 'deposit'): void {
@@ -154,6 +224,8 @@ export class WalletComponent implements OnInit {
       case 'deposit': return 'arrow-down-circle';
       case 'payment': return 'arrow-up-circle';
       case 'refund': return 'refresh';
+      case 'coursepurchase': return 'book';
+      case 'billcrediting': return 'plus-circle';
       default: return 'circle';
     }
   }
