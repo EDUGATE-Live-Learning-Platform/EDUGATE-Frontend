@@ -73,3 +73,21 @@ export interface StudentDashboardResponse {
   completedAtUtc?: string;
   progressPercentage: number;
 }
+
+export interface ResumeLearningResponse {
+  courseId: string;
+  courseTitle: string;
+  lessonId: string;
+  lessonTitle: string;
+  videoUrl?: string;
+  durationInSeconds: number;
+  lastAccessedSecond: number;
+}
+
+export interface StudentDashboardSummary {
+  activeCoursesCount: number;
+  completedCoursesCount: number;
+  totalLearningTimeSeconds: number;
+  walletBalance: number;
+  resumeLearning?: ResumeLearningResponse | null;
+}

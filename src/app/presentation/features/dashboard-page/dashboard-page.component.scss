@@ -1,4 +1,18 @@
-/* Scoped styles for DashboardPageComponent */
+.glass-panel {
+  background: rgba(23, 31, 51, 0.5);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ai-glow {
+  box-shadow: 0 0 20px rgba(107, 216, 203, 0.08);
+}
+
+.progress-ring-circle {
+  transition: stroke-dashoffset 0.5s ease-in-out;
+}
+
 .grid {
   transition: all 0.3s ease;
 }
+

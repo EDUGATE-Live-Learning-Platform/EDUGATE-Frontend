@@ -45,6 +45,10 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/features/home/home.component').then(m => m.HomeComponent)
       },
       {
+        path: 'dashboard',
+        loadComponent: () => import('./presentation/features/dashboard-page/dashboard-page.component').then(m => m.DashboardPageComponent)
+      },
+      {
         path: 'courses',
         loadComponent: () => import('./presentation/features/courses/course-list/course-list.component').then(m => m.CourseListComponent)
       },
