@@ -1,11 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WalletService } from '../../../infrastructure/services/wallet/wallet.service';
 import { AppLayoutComponent } from '../../layouts/app-layout/app-layout.component';
 import { TranslationService } from '../../../core/services/translation.service';
-import { WalletResponse, WalletStatistics, TransactionDto } from '../../../core/models/wallet.model';
+import { WalletResponse, WalletStatistics, TransactionDto, BillDto } from '../../../core/models/wallet.model';
 
 @Component({
   selector: 'app-wallet',
@@ -26,7 +26,10 @@ export class WalletComponent implements OnInit {
   wallet = signal<WalletResponse | null>(null);
   statistics = signal<WalletStatistics | null>(null);
   transactions = signal<TransactionDto[]>([]);
+  bills = signal<BillDto[]>([]);
   isLoading = signal<boolean>(false);
+
+  latestBill = computed(() => this.bills().length > 0 ? this.bills()[0] : null);
 
   showDepositModal = signal<boolean>(false);
   showBillModal = signal<boolean>(false);
@@ -34,7 +37,7 @@ export class WalletComponent implements OnInit {
   isDepositing = signal<boolean>(false);
 
   billAmount = signal<number>(0);
-  billDescription = signal<string>('');
+  billDescription = signal<string>('Vodafone Cash recharge');
   billReference = signal<string>('');
   billFile = signal<File | null>(null);
   billFilePreview = signal<string | null>(null);
@@ -43,6 +46,53 @@ export class WalletComponent implements OnInit {
 
   tabs: ('overview' | 'transactions' | 'deposit')[] = ['overview', 'transactions', 'deposit'];
   activeTab = signal<'overview' | 'transactions' | 'deposit'>('overview');
+
+  // Selected Payment Method for Recharge form
+  selectedPaymentMethod = signal<string>('vodafone');
+  copySuccessMap = signal<{ [key: string]: boolean }>({});
+
+  rechargeTransactions = computed(() => {
+    // 1. Get all recharge transactions (Deposit, BillCrediting, Refund)
+    const txs = this.transactions()
+      .filter(tx => tx.type === 'Deposit' || tx.type === 'BillCrediting' || tx.type === 'Refund')
+      .map(tx => ({
+        id: tx.id.toString(),
+        amount: tx.amount,
+        type: tx.type,
+        status: tx.status,
+        description: tx.description || '',
+        referenceNumber: tx.referenceNumber || '',
+        createdAt: tx.createdAt,
+        isBill: false,
+        adminFeedback: undefined as string | undefined
+      }));
+
+    // 2. Get all pending or rejected bills
+    const pendingOrRejectedBills = this.bills()
+      .filter(b => b.status === 'Pending' || b.status === 'Rejected')
+      .map(b => ({
+        id: b.id,
+        amount: b.amount,
+        type: 'Recharge Request',
+        status: b.status,
+        description: b.description || 'Manual recharge request',
+        referenceNumber: b.referenceNumber,
+        createdAt: b.createdAt,
+        isBill: true,
+        adminFeedback: b.adminFeedback
+      }));
+
+    // 3. Merge and sort by date descending
+    return [...pendingOrRejectedBills, ...txs].sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  });
+
+  purchaseTransactions = computed(() => 
+    this.transactions().filter(tx => 
+      tx.type === 'Payment' || tx.type === 'CoursePurchase'
+    )
+  );
 
   // Filters and Pagination
   filterType = signal<string>('');
@@ -53,7 +103,7 @@ export class WalletComponent implements OnInit {
   isLoadingMore = signal<boolean>(false);
 
   // Transaction Details Modal
-  selectedTransaction = signal<TransactionDto | null>(null);
+  selectedTransaction = signal<any | null>(null);
   showDetailsModal = signal<boolean>(false);
 
   ngOnInit(): void {
@@ -67,11 +117,19 @@ export class WalletComponent implements OnInit {
         this.wallet.set(res);
         this.loadStatistics();
         this.loadTransactions(false);
+        this.loadUserBills();
       },
       error: () => {
         this.isLoading.set(false);
         this.wallet.set(null);
       }
+    });
+  }
+
+  loadUserBills(): void {
+    this.walletService.getUserBills().subscribe({
+      next: (res) => this.bills.set(res),
+      error: (err) => console.error('Failed to load user bills', err)
     });
   }
 
@@ -147,6 +205,26 @@ export class WalletComponent implements OnInit {
     });
   }
 
+  onPaymentMethodChange(method: string): void {
+    this.selectedPaymentMethod.set(method);
+    let desc = 'Manual recharge';
+    if (method === 'vodafone') desc = 'Vodafone Cash recharge';
+    else if (method === 'instapay') desc = 'Instapay recharge';
+    else if (method === 'bank') desc = 'Bank transfer recharge';
+    this.billDescription.set(desc);
+  }
+
+  copyToClipboard(text: string, key: string): void {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.copySuccessMap.update(prev => ({ ...prev, [key]: true }));
+        setTimeout(() => {
+          this.copySuccessMap.update(prev => ({ ...prev, [key]: false }));
+        }, 2000);
+      });
+    }
+  }
+
   onBillFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -187,6 +265,7 @@ export class WalletComponent implements OnInit {
         this.billAmount.set(0);
         this.billDescription.set('');
         this.billReference.set('');
+        this.loadWallet();
       },
       error: () => {
         this.isSubmittingBill.set(false);
@@ -205,7 +284,7 @@ export class WalletComponent implements OnInit {
     this.billFilePreview.set(null);
   }
 
-  viewTransactionDetails(tx: TransactionDto): void {
+  viewTransactionDetails(tx: any): void {
     this.selectedTransaction.set(tx);
     this.showDetailsModal.set(true);
   }
@@ -234,7 +313,8 @@ export class WalletComponent implements OnInit {
     switch (status?.toLowerCase()) {
       case 'completed': return 'text-green-400';
       case 'pending': return 'text-yellow-400';
-      case 'failed': return 'text-red-400';
+      case 'failed':
+      case 'rejected': return 'text-red-400';
       default: return 'text-on-surface-variant';
     }
   }

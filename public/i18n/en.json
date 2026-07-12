@@ -434,6 +434,8 @@
     "depositAmount": "Top-up Deposit Amount (EGP)",
     "depositBtn": "Simulate Top-up & Checkout",
     "depositing": "Depositing Funds...",
-    "studentOnlyAlert": "Only Student accounts can purchase and enroll in courses."
+    "studentOnlyAlert": "Only Student accounts can purchase and enroll in courses.",
+    "enrolled": "Enrolled",
+    "previewBtn": "Preview"
   }
 }

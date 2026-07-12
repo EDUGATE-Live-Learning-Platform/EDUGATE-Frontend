@@ -39,7 +39,7 @@ export class InstructorDetailComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const id = params.get('id');
       if (id) {
-        this.loadInstructor(Number(id));
+        this.loadInstructor(id);
       }
     });
   }
@@ -49,7 +49,7 @@ export class InstructorDetailComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  loadInstructor(id: number): void {
+  loadInstructor(id: string): void {
     this.isLoading.set(true);
     this.instructorService.getInstructorProfile(id).subscribe({
       next: (profile) => {
@@ -57,8 +57,8 @@ export class InstructorDetailComponent implements OnInit, OnDestroy {
           instructorId: profile.instructorId,
           instructorName: profile.fullName,
           coursesCount: profile.activeCoursesCount,
-          averageRating: 0,
-          totalStudents: 0
+          averageRating: profile.rating || 0,
+          totalStudents: profile.studentCount || 0
         });
         this.loadCourses();
       },
@@ -73,10 +73,10 @@ export class InstructorDetailComponent implements OnInit, OnDestroy {
     const inst = this.instructor();
     if (!inst) return;
 
-    this.courseService.getCoursesCatalog({ pageSize: 50 }).subscribe({
+    this.instructorService.getInstructorCourses(inst.instructorId).subscribe({
       next: (res) => {
         this.isLoading.set(false);
-        this.courses.set(res.filter(c => Number(c.instructorId) === inst.instructorId));
+        this.courses.set(res);
       },
       error: () => {
         this.isLoading.set(false);

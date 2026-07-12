@@ -239,6 +239,18 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
     this.previewVideoUrl.set(null);
   }
 
+  formatDuration(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}m ${secs}s`;
+  }
+
+  watchPreview(lesson: any): void {
+    if (lesson.videoUrl) {
+      this.triggerPreview(lesson.videoUrl);
+    }
+  }
+
   goToStudy(): void {
     const course = this.course();
     if (course) {

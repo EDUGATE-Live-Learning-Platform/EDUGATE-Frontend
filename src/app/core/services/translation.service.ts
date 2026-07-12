@@ -323,6 +323,8 @@ export interface TranslationSchema {
     depositBtn: string;
     depositing: string;
     studentOnlyAlert: string;
+    enrolled: string;
+    previewBtn: string;
   };
   
   // Explicitly declared Landing page (Home) keys
@@ -478,7 +480,8 @@ const emptySchema: TranslationSchema = {
     processing: '', bullet1: '', bullet2: '', lessonPreviewTitle: '', authModalTitle: '', authModalSubtitle: '',
     confirmPurchaseTitle: '', confirmPurchaseDesc: '', courseLabel: '', priceLabel: '', walletBalance: '',
     confirmPurchaseBtn: '', completingPurchase: '', insufficientFundsTitle: '', insufficientFundsDesc: '',
-    coursePrice: '', currentBalance: '', amountNeeded: '', depositAmount: '', depositBtn: '', depositing: '', studentOnlyAlert: ''
+    coursePrice: '', currentBalance: '', amountNeeded: '', depositAmount: '', depositBtn: '', depositing: '', studentOnlyAlert: '',
+    enrolled: '', previewBtn: ''
   },
   
   // Empty values for explicitly declared Landing page (Home) keys

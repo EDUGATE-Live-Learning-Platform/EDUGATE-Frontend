@@ -1,42 +1,51 @@
 <div class="space-y-md animate-fade-in font-sans">
   
-  <!-- Heading Section -->
-  <div class="border-b border-white/5 pb-sm">
-    <h1 class="text-display-lg bg-gradient-to-r from-on-surface via-primary to-secondary bg-clip-text text-transparent mb-xs">
-      {{ t().catalog.title }}
-    </h1>
-    <p class="text-body-md text-on-surface-variant max-w-3xl">
-      {{ t().catalog.subtitle }}
-    </p>
+  <!-- Premium Hero Header -->
+  <div class="glass-card rounded-2xl p-md md:p-lg border border-white/10 relative overflow-hidden mb-md shadow-2xl flex flex-col justify-center items-start text-start min-h-[160px]">
+    <!-- Glowing background elements -->
+    <div class="absolute -right-12 -top-12 w-64 h-64 bg-primary/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute right-24 bottom-[-40px] w-48 h-48 bg-secondary/15 rounded-full blur-3xl pointer-events-none"></div>
+    
+    <div class="relative z-10 space-y-xs max-w-3xl">
+      <span class="inline-block px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider select-none border border-primary/20">
+        {{ lang() === 'ar' ? 'أكاديميتنا' : 'Explore Academy' }}
+      </span>
+      <h1 class="text-display-lg bg-gradient-to-r from-on-surface via-primary to-secondary bg-clip-text text-transparent font-extrabold tracking-tight">
+        {{ t().catalog.title }}
+      </h1>
+      <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed font-medium">
+        {{ t().catalog.subtitle }}
+      </p>
+    </div>
   </div>
 
   <!-- Main Grid Layout: Filters Left (1/4), Course Cards Right (3/4) -->
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-md">
     
     <!-- Left Column: Filtration Panel -->
-    <div class="glass-panel rounded-xl p-md flex flex-col gap-md border border-white/10 h-fit">
+    <div class="glass-card rounded-2xl p-md flex flex-col gap-md border border-white/10 h-fit shadow-xl">
       
-      <div class="flex justify-between items-center border-b border-white/5 pb-base">
+      <div class="flex justify-between items-center border-b border-white/5 pb-sm">
         <h3 class="text-xs font-bold uppercase tracking-wider text-primary">
           {{ t().catalog.filtersTitle }}
         </h3>
         <button 
           (click)="clearFilters()"
-          class="text-[10px] font-bold text-secondary hover:underline transition-all"
+          class="text-[10px] font-bold text-secondary hover:brightness-110 active:scale-95 transition-all"
         >
           {{ t().catalog.clearFilters }}
         </button>
       </div>
 
       <!-- Search Input -->
-      <div class="flex flex-col gap-base">
-        <label for="search" class="block text-xs font-semibold text-on-surface-variant text-start">
+      <div class="flex flex-col gap-xs">
+        <label for="search" class="block text-[11px] font-bold text-on-surface-variant text-start">
           {{ t().catalog.searchLabel }}
         </label>
         <div class="relative flex items-center">
-          <span class="absolute start-sm text-on-surface-variant/60 pointer-events-none select-none">
+          <span class="absolute start-sm text-on-surface-variant/50 pointer-events-none select-none">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
           </span>
           <input 
@@ -45,24 +54,24 @@
             [placeholder]="t().catalog.searchPlh"
             [value]="searchQuery()"
             (input)="onSearchChange($event)"
-            class="w-full h-10 ps-lg pe-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+            class="w-full h-10 ps-lg pe-sm text-xs bg-white/5 text-on-surface border border-white/10 rounded-xl focus:outline-none focus:border-primary/50 text-start transition-all"
           />
         </div>
       </div>
 
       <!-- Category Filter -->
-      <div class="flex flex-col gap-base">
-        <label for="category" class="block text-xs font-semibold text-on-surface-variant text-start">
+      <div class="flex flex-col gap-xs">
+        <label for="category" class="block text-[11px] font-bold text-on-surface-variant text-start">
           {{ t().catalog.categoryLabel }}
         </label>
         <select 
           id="category"
           [ngModel]="selectedCategory()"
           (ngModelChange)="selectedCategory.set($event)"
-          class="w-full h-10 px-sm text-xs bg-surface-container-lowest text-on-surface border border-white/10 rounded focus:outline-none focus:border-primary-container text-start"
+          class="w-full h-10 px-sm text-xs bg-white/5 text-on-surface border border-white/10 rounded-xl focus:outline-none focus:border-primary/50 text-start cursor-pointer transition-all"
         >
           @for (cat of categories; track cat.value) {
-            <option [value]="cat.value">
+            <option [value]="cat.value" class="bg-surface-container-high text-on-surface">
               {{ translateKey(cat.labelKey) }}
             </option>
           }
@@ -70,8 +79,8 @@
       </div>
 
       <!-- Max Price Slider -->
-      <div class="flex flex-col gap-base text-start">
-        <div class="flex justify-between items-center text-xs font-semibold text-on-surface-variant">
+      <div class="flex flex-col gap-xs text-start">
+        <div class="flex justify-between items-center text-[11px] font-bold text-on-surface-variant">
           <span>{{ t().catalog.maxPrice }}</span>
           <span class="text-primary font-bold">{{ maxPrice() }} EGP</span>
         </div>
@@ -82,35 +91,35 @@
           step="50"
           [ngModel]="maxPrice()"
           (ngModelChange)="maxPrice.set($event)"
-          class="w-full accent-primary bg-surface-container-lowest h-1.5 rounded-lg appearance-none cursor-pointer"
+          class="w-full accent-primary bg-white/10 h-1.5 rounded-lg appearance-none cursor-pointer"
         />
-        <div class="flex justify-between text-[9px] text-on-surface-variant/60">
+        <div class="flex justify-between text-[9px] text-on-surface-variant/50 font-bold">
           <span>0 EGP</span>
           <span>1500 EGP</span>
         </div>
       </div>
 
       <!-- Min Rating Filter -->
-      <div class="flex flex-col gap-base text-start">
-        <label class="block text-xs font-semibold text-on-surface-variant">
+      <div class="flex flex-col gap-xs text-start">
+        <label class="block text-[11px] font-bold text-on-surface-variant">
           {{ t().catalog.minRating }}
         </label>
         
-        <div class="flex flex-col gap-xs">
+        <div class="flex flex-col gap-xs mt-base">
           <!-- Star Filter Rows -->
           @for (stars of [0, 4, 3, 2, 1]; track stars) {
-            <label class="flex items-center gap-xs cursor-pointer select-none text-xs text-on-surface-variant hover:text-on-surface">
+            <label class="flex items-center gap-xs cursor-pointer select-none text-xs text-on-surface-variant hover:text-on-surface transition-all">
               <input 
                 type="radio" 
                 name="ratingFilter"
                 [value]="stars"
                 [checked]="minRating() === stars"
                 (change)="minRating.set(stars)"
-                class="w-4 h-4 text-primary bg-surface-container-lowest border-white/10 focus:ring-0"
+                class="w-4 h-4 text-primary bg-white/5 border border-white/10 focus:ring-0 cursor-pointer rounded-full"
               />
               <span class="flex items-center gap-base">
                 @if (stars === 0) {
-                  <span>{{ t().catalog.anyRating }}</span>
+                  <span class="text-xs font-semibold">{{ t().catalog.anyRating }}</span>
                 } @else {
                   <span class="flex items-center text-yellow-500">
                     @for (s of [1, 2, 3, 4, 5]; track s) {
@@ -119,7 +128,7 @@
                       </svg>
                     }
                   </span>
-                  <span class="text-[10px] text-on-surface-variant/80">& {{ t().catalog.up }}</span>
+                  <span class="text-[10px] text-on-surface-variant/80 font-bold">& {{ t().catalog.up }}</span>
                 }
               </span>
             </label>
@@ -136,8 +145,8 @@
         <!-- Skeleton Grid Loading State -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-sm animate-pulse">
           @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-            <div class="glass-panel p-sm rounded-xl border border-white/5 h-80 flex flex-col justify-between">
-              <div class="h-32 bg-surface-container-high rounded-lg mb-sm"></div>
+            <div class="glass-card p-sm rounded-2xl border border-white/5 h-[360px] flex flex-col justify-between">
+              <div class="h-32 bg-surface-container-high rounded-xl mb-sm"></div>
               <div class="h-4 bg-surface-container-high rounded w-3/4 mb-xs"></div>
               <div class="h-3 bg-surface-container-high rounded w-1/2 mb-md"></div>
               <div class="h-8 bg-surface-container-high rounded-full w-full"></div>
@@ -146,7 +155,7 @@
         </div>
       } @else if (courses().length === 0) {
         <!-- Empty catalog alert -->
-        <div class="glass-panel rounded-xl p-lg text-center border border-white/5 space-y-xs animate-fade-in">
+        <div class="glass-card rounded-2xl p-lg text-center border border-white/5 space-y-xs animate-fade-in shadow-xl">
           <svg class="w-12 h-12 text-on-surface-variant/30 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
@@ -155,24 +164,24 @@
         </div>
       } @else {
         <!-- Catalog Items Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-sm animate-fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-sm">
           
           @for (course of courses(); track course.id) {
             <!-- Catalog Card (Glassmorphic) -->
-            <div class="glass-panel rounded-xl overflow-hidden border border-white/5 hover:border-primary/25 shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 flex flex-col h-[23rem] group">
+            <div class="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/30 shadow-lg hover:shadow-primary/10 hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-[380px] group relative">
               
               <!-- Thumbnail Banner -->
               <div class="h-36 relative bg-surface-container-low overflow-hidden">
                 <img 
                   [src]="course.thumbnailUrl || '/default-course.jpg'" 
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" 
                   alt="Course Thumbnail"
                   onerror="this.src='/default-course.jpg'"
                 />
                 
                 <!-- Category Badge -->
                 @if (course.category) {
-                  <span class="absolute top-xs start-xs px-xs py-base rounded bg-black/60 text-white text-[9px] font-bold uppercase tracking-wider backdrop-blur-md">
+                  <span class="absolute top-xs start-xs px-xs py-base rounded bg-black/60 text-white text-[9px] font-bold uppercase tracking-wider backdrop-blur-md border border-white/10">
                     {{ course.category }}
                   </span>
                 }
@@ -181,9 +190,9 @@
               <!-- Card Body Content -->
               <div class="p-sm flex flex-col justify-between flex-1 text-start">
                 
-                <div class="space-y-base">
+                <div class="space-y-xs">
                   <!-- Instructor -->
-                  <span class="text-[10px] font-bold text-secondary uppercase tracking-wide">
+                  <span class="text-[9px] font-bold text-secondary uppercase tracking-wider">
                     {{ course.instructorName }}
                   </span>
 
@@ -199,10 +208,10 @@
                 </div>
 
                 <!-- Rating and Pricing Footer -->
-                <div class="border-t border-white/5 pt-xs mt-xs flex flex-col gap-base">
+                <div class="border-t border-white/5 pt-xs mt-xs flex flex-col gap-xs">
                   
                   <!-- Rating row -->
-                  <div class="flex items-center justify-between text-[10px] text-on-surface-variant">
+                  <div class="flex items-center justify-between text-[10px] text-on-surface-variant font-semibold">
                     <span class="flex items-center gap-[2px] text-yellow-500">
                       <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                         <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
@@ -226,7 +235,7 @@
                     <!-- CTA Action Button -->
                     <button 
                       (click)="viewDetails(course.id)"
-                      class="h-8 px-sm rounded-full bg-primary/10 hover:bg-primary hover:text-white border border-primary/20 text-primary text-[10px] font-bold tracking-wide active:scale-95 transition-all select-none"
+                      class="h-8 px-sm rounded-full bg-primary/10 hover:bg-primary hover:text-white border border-primary/20 text-primary text-[10px] font-bold tracking-wide active:scale-95 transition-all select-none shadow-sm"
                     >
                       {{ t().catalog.viewDetails }}
                     </button>
@@ -247,10 +256,10 @@
           <button 
             (click)="prevPage()"
             [disabled]="currentPage() === 1"
-            class="h-9 px-sm rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all border border-white/5 select-none flex items-center gap-xs"
+            class="h-9 px-sm rounded-full bg-white/5 hover:bg-surface-bright text-on-surface disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all border border-white/5 select-none flex items-center gap-xs"
           >
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
             </svg>
             <span>{{ t().catalog.prev }}</span>
           </button>
@@ -262,11 +271,11 @@
           <button 
             (click)="nextPage()"
             [disabled]="!hasMore()"
-            class="h-9 px-sm rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all border border-white/5 select-none flex items-center gap-xs"
+            class="h-9 px-sm rounded-full bg-white/5 hover:bg-surface-bright text-on-surface disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all border border-white/5 select-none flex items-center gap-xs"
           >
             <span>{{ t().catalog.next }}</span>
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
             </svg>
           </button>
 

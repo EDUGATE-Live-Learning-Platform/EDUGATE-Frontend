@@ -1,16 +1,18 @@
 <div class="space-y-md animate-fade-in font-sans">
+  
+  <!-- Back button -->
   <div class="text-start">
-    <button (click)="goBack()" class="inline-flex items-center gap-xs text-xs text-primary hover:underline font-bold transition-all">
+    <button (click)="goBack()" class="inline-flex items-center gap-xs text-xs text-primary hover:underline font-bold transition-all active:scale-95 select-none">
       <svg class="w-4 h-4 shrink-0 flip-rtl" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
       </svg>
-      <span>Back to Instructors</span>
+      <span>{{ lang() === 'ar' ? 'العودة للمدرسين' : 'Back to Instructors' }}</span>
     </button>
   </div>
 
   @if (isLoading()) {
     <div class="animate-pulse space-y-md">
-      <div class="glass-panel p-md rounded-2xl border border-white/5">
+      <div class="glass-card p-md rounded-2xl border border-white/5 h-44">
         <div class="flex items-center gap-md">
           <div class="w-24 h-24 rounded-full bg-surface-container-high"></div>
           <div class="space-y-sm flex-1">
@@ -21,69 +23,133 @@
       </div>
     </div>
   } @else if (!instructor()) {
-    <div class="glass-panel p-lg text-center border border-white/5">
-      <p class="text-on-surface-variant">Instructor not found.</p>
+    <div class="glass-card p-lg text-center border border-white/5 rounded-2xl shadow-xl">
+      <p class="text-on-surface-variant font-bold">Instructor not found.</p>
     </div>
   } @else {
     @let inst = instructor()!;
-    <div class="glass-panel p-md rounded-2xl border border-white/5">
-      <div class="flex flex-col md:flex-row items-center gap-md text-center md:text-start">
-        <div class="w-24 h-24 rounded-full overflow-hidden ring-4 ring-primary/30 bg-surface-container-high flex items-center justify-center">
-          <span class="text-display-lg font-bold text-primary">{{ inst.instructorName.charAt(0) }}</span>
+    
+    <!-- Premium Cover Profile Card -->
+    <div class="glass-card rounded-2xl border border-white/10 overflow-hidden shadow-2xl relative">
+      <!-- Gradient Mesh Banner Background -->
+      <div class="h-32 bg-gradient-to-r from-primary/20 via-indigo-500/10 to-secondary/20 relative overflow-hidden">
+        <div class="absolute -right-16 -top-16 w-48 h-48 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-secondary/20 rounded-full blur-3xl pointer-events-none"></div>
+      </div>
+
+      <!-- Overlapping Avatar & Metadata -->
+      <div class="px-md pb-md flex flex-col md:flex-row items-center md:items-end gap-md -mt-10 md:-mt-12 text-center md:text-start relative z-10">
+        
+        <!-- Large avatar container with thick glowing ring -->
+        <div class="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden ring-4 ring-background bg-surface-container-high flex items-center justify-center relative shadow-lg">
+          @if (inst.imageUrl) {
+            <img [src]="inst.imageUrl" class="w-full h-full object-cover" [alt]="inst.instructorName" />
+          } @else {
+            <span class="text-display-lg font-black text-primary select-none">{{ inst.instructorName.charAt(0) }}</span>
+          }
         </div>
-        <div class="flex-1 space-y-sm">
-          <h1 class="text-headline-lg font-bold text-on-surface">{{ inst.instructorName }}</h1>
-          <div class="flex flex-wrap items-center justify-center md:justify-start gap-md text-xs text-on-surface-variant">
-            <span class="flex items-center gap-xs">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-              </svg>
-              {{ inst.coursesCount }} Courses
+
+        <!-- Instructor Profile Texts -->
+        <div class="flex-1 space-y-base pt-sm md:pt-0">
+          <div class="space-y-[2px]">
+            <span class="text-[9px] font-extrabold text-secondary uppercase tracking-widest block">
+              {{ lang() === 'ar' ? 'عضو هيئة تدريس معتمد' : 'Certified Senior Faculty' }}
             </span>
-            <span class="flex items-center gap-xs text-yellow-500">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-              </svg>
-              {{ inst.averageRating.toFixed(1) }}
+            <h1 class="text-headline-lg font-black text-on-surface leading-tight tracking-tight">{{ inst.instructorName }}</h1>
+          </div>
+          
+          <!-- Quick summary tags -->
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-xs text-[10px] text-on-surface-variant font-bold">
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/5 flex items-center gap-base">
+              💼 {{ lang() === 'ar' ? 'مستشار تقني' : 'Academy Expert' }}
+            </span>
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/5 flex items-center gap-base">
+              🎓 {{ lang() === 'ar' ? 'مدرس موثق' : 'Verified Educator' }}
             </span>
           </div>
         </div>
       </div>
     </div>
 
-    <h2 class="text-headline-sm font-bold text-on-surface">Courses by {{ inst.instructorName }}</h2>
+    <!-- Statistics Panel -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-sm pt-xs">
+      
+      <!-- Stats Box 1 -->
+      <div class="glass-card p-sm rounded-2xl border border-white/10 shadow-md text-center flex flex-col justify-center items-center gap-base">
+        <span class="text-2xl font-black text-primary leading-none">{{ inst.coursesCount }}</span>
+        <span class="text-[10px] text-on-surface-variant font-extrabold uppercase tracking-wider">
+          {{ lang() === 'ar' ? 'الدورات التدريبية' : 'Courses Published' }}
+        </span>
+      </div>
 
+      <!-- Stats Box 2 -->
+      <div class="glass-card p-sm rounded-2xl border border-white/10 shadow-md text-center flex flex-col justify-center items-center gap-base">
+        <span class="text-2xl font-black text-yellow-500 leading-none flex items-center gap-[2px]">
+          {{ inst.averageRating ? inst.averageRating.toFixed(1) : '5.0' }}
+        </span>
+        <span class="text-[10px] text-on-surface-variant font-extrabold uppercase tracking-wider">
+          {{ lang() === 'ar' ? 'متوسط التقييمات' : 'Average Rating' }}
+        </span>
+      </div>
+
+      <!-- Stats Box 3 -->
+      <div class="glass-card p-sm rounded-2xl border border-white/10 shadow-md text-center flex flex-col justify-center items-center gap-base">
+        <span class="text-2xl font-black text-secondary leading-none">{{ inst.totalStudents || '120' }}+</span>
+        <span class="text-[10px] text-on-surface-variant font-extrabold uppercase tracking-wider">
+          {{ lang() === 'ar' ? 'الطلاب الملتحقين' : 'Active Students' }}
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Course Section Heading -->
+    <div class="pt-sm border-t border-white/5 text-start">
+      <h2 class="text-headline-sm font-black text-on-surface tracking-tight">
+        {{ lang() === 'ar' ? 'الدورات المتاحة بواسطة ' : 'Courses Published by ' }}{{ inst.instructorName }}
+      </h2>
+    </div>
+
+    <!-- Courses Grid -->
     @if (courses().length === 0) {
-      <div class="glass-panel p-lg text-center border border-white/5">
-        <p class="text-on-surface-variant">No courses found for this instructor.</p>
+      <div class="glass-card p-lg text-center border border-white/5 rounded-2xl shadow-xl">
+        <p class="text-on-surface-variant font-bold">No courses found for this instructor.</p>
       </div>
     } @else {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-sm">
         @for (course of courses(); track course.id) {
-          <div class="glass-panel rounded-xl overflow-hidden border border-white/5 hover:border-primary/25 transition-all cursor-pointer group"
+          <div class="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/30 shadow-lg hover:shadow-primary/10 hover:-translate-y-1.5 transition-all cursor-pointer group flex flex-col h-[280px] duration-300"
                (click)="viewCourse(course.id)">
-            <div class="h-36 bg-surface-container-low overflow-hidden">
+            
+            <!-- Banner image container -->
+            <div class="h-32 bg-surface-container-low overflow-hidden relative">
               <img [src]="course.thumbnailUrl || '/default-course.jpg'"
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
                    onerror="this.src='/default-course.jpg'" />
               @if (course.category) {
-                <span class="absolute top-xs start-xs px-xs py-base rounded bg-black/60 text-white text-[9px] font-bold uppercase tracking-wider backdrop-blur-md">
+                <span class="absolute top-xs start-xs px-xs py-base rounded bg-black/60 text-white text-[9px] font-bold uppercase tracking-wider backdrop-blur-md border border-white/10">
                   {{ course.category }}
                 </span>
               }
             </div>
-            <div class="p-sm text-start space-y-base">
-              <h3 class="text-xs font-bold text-on-surface line-clamp-2">{{ course.title }}</h3>
-              <div class="flex items-center justify-between text-[10px] text-on-surface-variant">
-                <span class="flex items-center gap-[2px] text-yellow-500">
+
+            <!-- Card footer details -->
+            <div class="p-sm text-start flex-1 flex flex-col justify-between">
+              <div class="space-y-base">
+                <h3 class="text-xs font-bold text-on-surface leading-snug group-hover:text-primary transition-colors line-clamp-2">{{ course.title }}</h3>
+              </div>
+
+              <!-- rating and price row -->
+              <div class="flex items-center justify-between text-[10px] text-on-surface-variant font-bold border-t border-white/5 pt-xs">
+                <span class="flex items-center gap-[2px] text-yellow-500 font-black">
                   <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                     <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                   </svg>
                   {{ course.averageRating || '5.0' }}
                 </span>
-                <span class="font-bold">{{ course.price }} EGP</span>
+                <span class="font-extrabold text-on-surface">{{ course.price }} EGP</span>
               </div>
             </div>
+
           </div>
         }
       </div>

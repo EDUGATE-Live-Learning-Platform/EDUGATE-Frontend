@@ -1,5 +1,5 @@
 export interface InstructorProfile {
-  instructorId: number;
+  instructorId: string;
   fullName: string;
   totalEarnings: number;
   activeCoursesCount: number;
@@ -11,7 +11,7 @@ export interface InstructorProfile {
 }
 
 export interface InstructorListItem {
-  instructorId: number;
+  instructorId: string;
   instructorName: string;
   coursesCount: number;
   averageRating: number;
