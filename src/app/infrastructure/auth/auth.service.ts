@@ -153,10 +153,10 @@ export class AuthService extends AuthPort {
   }
 
   /**
-   * Helper to inspect validation errors from FluentValidation schema (400 Bad Request)
+   * Helper to inspect validation errors from FluentValidation schema (400/422 Bad Request)
    */
   extractValidationErrors(error: HttpErrorResponse | unknown): Record<string, string[]> {
-    if (error instanceof HttpErrorResponse && error.status === 400 && error.error?.errors) {
+    if (error instanceof HttpErrorResponse && (error.status === 400 || error.status === 422) && error.error?.errors) {
       return error.error.errors;
     }
     return {};

@@ -63,14 +63,20 @@ export class LoginComponent {
       error: (err) => {
         this.isSubmitting.set(false);
         
-        // Extract validation errors if it was a 400 Bad Request
+        // Extract validation errors if it was a 400/422 Bad Request
         const errors = this.authService.extractValidationErrors(err);
         if (Object.keys(errors).length > 0) {
           this.validationErrors.set(errors);
         } else if (err.status === 401) {
           this.generalError.set(this.translationService.translate('login.unauthorizedError'));
         } else {
-          this.generalError.set(this.translationService.translate('login.serverError'));
+          // If the server returned a specific error message, show it. Otherwise show default.
+          const serverMessage = err.error?.message || err.error?.Message;
+          if (serverMessage) {
+            this.generalError.set(serverMessage);
+          } else {
+            this.generalError.set(this.translationService.translate('login.serverError'));
+          }
         }
       }
     });
