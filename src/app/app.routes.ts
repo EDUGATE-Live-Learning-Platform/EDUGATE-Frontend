@@ -75,6 +75,18 @@ export const routes: Routes = [
       {
         path: 'learn/:courseId',
         loadComponent: () => import('./presentation/features/student-course-content/student-course-content.component').then(m => m.StudentCourseContentComponent)
+      },
+      {
+        path: 'admin',
+        loadComponent: () => import('./presentation/features/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+      },
+      {
+        path: 'join-us',
+        loadComponent: () => import('./presentation/features/join-us/join-us.component').then(m => m.JoinUsComponent)
+      },
+      {
+        path: 'instructor/dashboard',
+        loadComponent: () => import('./presentation/features/instructor-dashboard/instructor-dashboard.component').then(m => m.InstructorDashboardComponent)
       }
     ]
   },

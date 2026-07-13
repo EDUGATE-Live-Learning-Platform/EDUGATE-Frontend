@@ -44,6 +44,14 @@ export class ProfileComponent implements OnInit {
   validationErrors = signal<Record<string, string[]>>({});
   imageUploadError = signal<string | null>(null);
 
+  getRoleLabel(role: string): string {
+    const r = String(role).trim().toLowerCase();
+    if (r === 'admin' || r === '0') return this.lang() === 'ar' ? 'مسؤول النظام' : 'Admin';
+    if (r === 'instructor' || r === '1') return this.lang() === 'ar' ? 'معلم' : 'Instructor';
+    if (r === 'student' || r === '2') return this.lang() === 'ar' ? 'طالب' : 'Student';
+    return String(role);
+  }
+
   constructor() {
     // Keep local form bindings in sync with reactive currentUser state changes
     effect(() => {

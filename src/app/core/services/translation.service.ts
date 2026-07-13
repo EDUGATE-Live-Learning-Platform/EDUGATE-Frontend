@@ -326,6 +326,24 @@ export interface TranslationSchema {
     enrolled: string;
     previewBtn: string;
   };
+  admin: {
+    title: string;
+    subtitle: string;
+    stats: string;
+    students: string;
+    instructors: string;
+    wallet: string;
+    calendar: string;
+    audit: string;
+    approve: string;
+    reject: string;
+    feedback: string;
+    globalEvent: string;
+    users: string;
+    wallets: string;
+    ban: string;
+    unban: string;
+  };
   
   // Explicitly declared Landing page (Home) keys
   heroTitlePart1: string;
@@ -482,6 +500,11 @@ const emptySchema: TranslationSchema = {
     confirmPurchaseBtn: '', completingPurchase: '', insufficientFundsTitle: '', insufficientFundsDesc: '',
     coursePrice: '', currentBalance: '', amountNeeded: '', depositAmount: '', depositBtn: '', depositing: '', studentOnlyAlert: '',
     enrolled: '', previewBtn: ''
+  },
+  admin: {
+    title: '', subtitle: '', stats: '', students: '', instructors: '', wallet: '', calendar: '', audit: '',
+    approve: '', reject: '', feedback: '', globalEvent: '',
+    users: '', wallets: '', ban: '', unban: ''
   },
   
   // Empty values for explicitly declared Landing page (Home) keys

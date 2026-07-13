@@ -1,0 +1,1109 @@
+<div [dir]="lang() === 'ar' ? 'rtl' : 'ltr'" 
+     [ngClass]="lang() === 'ar' ? 'rtl-mode' : 'ltr-mode'"
+     class="w-full flex flex-col lg:flex-row gap-gutter pt-sm transition-all duration-300">
+
+  <!-- Sidebar Tab Navigation (Desktop Only) -->
+  <aside class="hidden lg:flex w-64 shrink-0 glass-panel rounded-2xl flex-col space-y-2 py-6 px-4 border border-white/5 bg-surface-container/30 h-[calc(100vh-120px)] sticky top-20 shadow-xl transition-all duration-300">
+    <div class="px-xs mb-sm">
+      <div class="flex items-center gap-sm" [ngClass]="lang() === 'ar' ? 'flex-row-reverse text-right' : 'flex-row text-left'">
+        <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary-container shrink-0 font-bold shadow-md shadow-primary/10">
+          AD
+        </div>
+        <div class="min-w-0">
+          <p class="font-body-md text-sm font-bold text-on-surface truncate w-32">{{ user()?.FullName }}</p>
+          <p class="font-body-sm text-[10px] text-primary font-bold tracking-wider uppercase">
+            {{ lang() === 'ar' ? 'مسؤول النظام' : 'System Administrator' }}
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <nav class="flex-1 space-y-1">
+      <button (click)="setTab('stats')" 
+              [ngClass]="activeTab() === 'stats' ? 'text-primary font-bold border-primary bg-primary-container/20' : 'text-on-surface-variant hover:bg-surface-container-high/50'"
+              class="w-full flex items-center gap-md px-sm py-2 transition-colors rounded-lg border-transparent"
+              [ngClass]="lang() === 'ar' ? 'flex-row-reverse text-right border-r-4' : 'flex-row text-left border-l-4'">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+        <span class="font-body-md text-xs font-semibold">{{ lang() === 'ar' ? 'نظرة عامة والتدقيق' : 'Overview & Audits' }}</span>
+      </button>
+
+      <button (click)="setTab('students')" 
+              [ngClass]="activeTab() === 'students' ? 'text-primary font-bold border-primary bg-primary-container/20' : 'text-on-surface-variant hover:bg-surface-container-high/50'"
+              class="w-full flex items-center gap-md px-sm py-2 transition-colors rounded-lg border-transparent"
+              [ngClass]="lang() === 'ar' ? 'flex-row-reverse text-right border-r-4' : 'flex-row text-left border-l-4'">
+        <span class="material-symbols-outlined">badge</span>
+        <span class="font-body-md text-xs font-semibold">
+          {{ lang() === 'ar' ? 'التحقق من الطلاب' : 'Student Verification' }}
+          <span *ngIf="pendingStudents().length > 0" class="ms-xs px-1.5 py-0.5 bg-error text-on-error text-[9px] rounded-full font-bold">
+            {{ pendingStudents().length }}
+          </span>
+        </span>
+      </button>
+
+      <button (click)="setTab('instructors')" 
+              [ngClass]="activeTab() === 'instructors' ? 'text-primary font-bold border-primary bg-primary-container/20' : 'text-on-surface-variant hover:bg-surface-container-high/50'"
+              class="w-full flex items-center gap-md px-sm py-2 transition-colors rounded-lg border-transparent"
+              [ngClass]="lang() === 'ar' ? 'flex-row-reverse text-right border-r-4' : 'flex-row text-left border-l-4'">
+        <span class="material-symbols-outlined">group</span>
+        <span class="font-body-md text-xs font-semibold">
+          {{ lang() === 'ar' ? 'طلبات المعلمين' : 'Instructor Onboarding' }}
+          <span *ngIf="instructorApplications().length > 0" class="ms-xs px-1.5 py-0.5 bg-secondary text-on-secondary text-[9px] rounded-full font-bold">
+            {{ instructorApplications().length }}
+          </span>
+        </span>
+      </button>
+
+      <button (click)="setTab('wallet')" 
+              [ngClass]="activeTab() === 'wallet' ? 'text-primary font-bold border-primary bg-primary-container/20' : 'text-on-surface-variant hover:bg-surface-container-high/50'"
+              class="w-full flex items-center gap-md px-sm py-2 transition-colors rounded-lg border-transparent"
+              [ngClass]="lang() === 'ar' ? 'flex-row-reverse text-right border-r-4' : 'flex-row text-left border-l-4'">
+        <span class="material-symbols-outlined">account_balance_wallet</span>
+        <span class="font-body-md text-xs font-semibold">
+          {{ lang() === 'ar' ? 'مراجعة شحن الرصيد' : 'Recharge Reviews' }}
+          <span *ngIf="pendingBills().length > 0" class="ms-xs px-1.5 py-0.5 bg-primary text-on-primary text-[9px] rounded-full font-bold">
+            {{ pendingBills().length }}
+          </span>
+        </span>
+      </button>
+
+      <button (click)="setTab('users')" 
+              [ngClass]="activeTab() === 'users' ? 'text-primary font-bold border-primary bg-primary-container/20' : 'text-on-surface-variant hover:bg-surface-container-high/50'"
+              class="w-full flex items-center gap-md px-sm py-2 transition-colors rounded-lg border-transparent"
+              [ngClass]="lang() === 'ar' ? 'flex-row-reverse text-right border-r-4' : 'flex-row text-left border-l-4'">
+        <span class="material-symbols-outlined">person</span>
+        <span class="font-body-md text-xs font-semibold">{{ t().admin.users }}</span>
+      </button>
+
+      <button (click)="setTab('wallets')" 
+              [ngClass]="activeTab() === 'wallets' ? 'text-primary font-bold border-primary bg-primary-container/20' : 'text-on-surface-variant hover:bg-surface-container-high/50'"
+              class="w-full flex items-center gap-md px-sm py-2 transition-colors rounded-lg border-transparent"
+              [ngClass]="lang() === 'ar' ? 'flex-row-reverse text-right border-r-4' : 'flex-row text-left border-l-4'">
+        <span class="material-symbols-outlined">payments</span>
+        <span class="font-body-md text-xs font-semibold">{{ t().admin.wallets }}</span>
+      </button>
+
+      <button (click)="setTab('calendar')" 
+              [ngClass]="activeTab() === 'calendar' ? 'text-primary font-bold border-primary bg-primary-container/20' : 'text-on-surface-variant hover:bg-surface-container-high/50'"
+              class="w-full flex items-center gap-md px-sm py-2 transition-colors rounded-lg border-transparent"
+              [ngClass]="lang() === 'ar' ? 'flex-row-reverse text-right border-r-4' : 'flex-row text-left border-l-4'">
+        <span class="material-symbols-outlined">campaign</span>
+        <span class="font-body-md text-xs font-semibold">{{ lang() === 'ar' ? 'بث جدول المواعيد' : 'Broadcast Calendar' }}</span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- Mobile Tab Navigation Bar -->
+  <div class="lg:hidden w-full overflow-x-auto flex gap-sm py-xs mb-sm border-b border-white/5 scrollbar-hide px-xs" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+    <button (click)="setTab('stats')" [ngClass]="activeTab() === 'stats' ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface-variant'" class="px-md py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap active:scale-95">
+      {{ lang() === 'ar' ? 'الإحصائيات' : 'Stats' }}
+    </button>
+    <button (click)="setTab('students')" [ngClass]="activeTab() === 'students' ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface-variant'" class="px-md py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap active:scale-95 flex items-center gap-xs">
+      <span>{{ lang() === 'ar' ? 'الطلاب' : 'Students' }}</span>
+      <span *ngIf="pendingStudents().length > 0" class="px-1.5 py-[1px] bg-error text-on-error text-[9px] rounded-full font-bold">{{ pendingStudents().length }}</span>
+    </button>
+    <button (click)="setTab('instructors')" [ngClass]="activeTab() === 'instructors' ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface-variant'" class="px-md py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap active:scale-95 flex items-center gap-xs">
+      <span>{{ lang() === 'ar' ? 'المعلمون' : 'Instructors' }}</span>
+      <span *ngIf="instructorApplications().length > 0" class="px-1.5 py-[1px] bg-secondary text-on-secondary text-[9px] rounded-full font-bold">{{ instructorApplications().length }}</span>
+    </button>
+    <button (click)="setTab('wallet')" [ngClass]="activeTab() === 'wallet' ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface-variant'" class="px-md py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap active:scale-95 flex items-center gap-xs">
+      <span>{{ lang() === 'ar' ? 'الشحن' : 'Wallet' }}</span>
+      <span *ngIf="pendingBills().length > 0" class="px-1.5 py-[1px] bg-primary text-on-primary text-[9px] rounded-full font-bold">{{ pendingBills().length }}</span>
+    </button>
+    <button (click)="setTab('users')" [ngClass]="activeTab() === 'users' ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface-variant'" class="px-md py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap active:scale-95">
+      {{ lang() === 'ar' ? 'المستخدمين' : 'Users' }}
+    </button>
+    <button (click)="setTab('wallets')" [ngClass]="activeTab() === 'wallets' ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface-variant'" class="px-md py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap active:scale-95">
+      {{ lang() === 'ar' ? 'المحافظ' : 'Wallets' }}
+    </button>
+    <button (click)="setTab('calendar')" [ngClass]="activeTab() === 'calendar' ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface-variant'" class="px-md py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap active:scale-95">
+      {{ lang() === 'ar' ? 'البث' : 'Broadcast' }}
+    </button>
+  </div>
+
+  <!-- Main Administrative Content Area -->
+  <main class="flex-1 min-w-0" [ngClass]="lang() === 'ar' ? 'text-right' : 'text-left'">
+    
+    <!-- Welcome Admin Header -->
+    <header class="mb-lg border-b border-white/5 pb-sm">
+      <h1 class="text-display-lg bg-gradient-to-r from-on-surface via-primary to-secondary bg-clip-text text-transparent mb-xs font-bold">
+        {{ lang() === 'ar' ? 'بوابة الإدارة والمراقبة' : 'Administrative Console' }}
+      </h1>
+      <p class="text-body-md text-on-surface-variant">
+        {{ lang() === 'ar' ? 'إدارة المنظومة التعليمية، شؤون الطلاب، الفواتير، وبث جدول المحاضرات العام.' : 'Manage educational operations, verify student files, audit finances, and schedule notifications.' }}
+      </p>
+    </header>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading() && activeTab() !== 'calendar'" class="flex items-center justify-center h-64">
+      <div class="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
+    <!-- Active Tab Modules -->
+    <div *ngIf="!isLoading() || activeTab() === 'calendar'" class="animate-fade-in space-y-gutter">
+
+      <!-- ================== TAB 1: SYSTEM STATS & AUDITS ================== -->
+      <div *ngIf="activeTab() === 'stats'" class="space-y-gutter">
+        <!-- Stat Grid Cards - Row 1: Users -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+          
+          <div class="glass-panel p-md rounded-2xl flex flex-col justify-between hover:shadow-lg hover:shadow-primary/5 transition-all group">
+            <div class="flex justify-between items-center" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+              <span class="material-symbols-outlined text-primary text-xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">school</span>
+              <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{{ lang() === 'ar' ? 'الطلاب النشطون' : 'Active Students' }}</span>
+            </div>
+            <h3 class="text-3xl font-extrabold mt-md text-on-surface">{{ stats()?.activeStudentsCount || stats()?.ActiveStudentsCount || 0 }}</h3>
+          </div>
+
+          <div class="glass-panel p-md rounded-2xl flex flex-col justify-between hover:shadow-lg hover:shadow-secondary/5 transition-all group">
+            <div class="flex justify-between items-center" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+              <span class="material-symbols-outlined text-secondary text-xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">co_present</span>
+              <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{{ lang() === 'ar' ? 'المعلمون النشطون' : 'Active Instructors' }}</span>
+            </div>
+            <h3 class="text-3xl font-extrabold mt-md text-on-surface">{{ stats()?.activeInstructorsCount || stats()?.ActiveInstructorsCount || 0 }}</h3>
+          </div>
+
+          <div class="glass-panel p-md rounded-2xl flex flex-col justify-between hover:shadow-lg hover:shadow-tertiary/5 transition-all group">
+            <div class="flex justify-between items-center" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+              <span class="material-symbols-outlined text-tertiary text-xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+              <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{{ lang() === 'ar' ? 'المسؤولون' : 'System Admins' }}</span>
+            </div>
+            <h3 class="text-3xl font-extrabold mt-md text-on-surface">{{ stats()?.activeAdminsCount || stats()?.ActiveAdminsCount || 0 }}</h3>
+          </div>
+
+          <div class="glass-panel p-md rounded-2xl flex flex-col justify-between hover:shadow-lg hover:shadow-green-400/5 transition-all group">
+            <div class="flex justify-between items-center" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+              <span class="material-symbols-outlined text-green-400 text-xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">payments</span>
+              <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{{ lang() === 'ar' ? 'إيرادات المنصة' : 'Platform Revenue' }}</span>
+            </div>
+            <h3 class="text-3xl font-extrabold mt-md text-green-400">{{ stats()?.totalPlatformRevenue || stats()?.TotalPlatformRevenue || 0 }} EGP</h3>
+          </div>
+        </div>
+
+        <!-- Stat Grid Cards - Row 2: Courses & Queues -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+          <div class="glass-panel p-md rounded-2xl flex flex-col justify-between hover:shadow-lg transition-all group">
+            <div class="flex justify-between items-center" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+              <span class="material-symbols-outlined text-blue-400 text-xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+              <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{{ lang() === 'ar' ? 'إجمالي المقررات' : 'Total Courses' }}</span>
+            </div>
+            <h3 class="text-3xl font-extrabold mt-md text-on-surface">{{ stats()?.totalCoursesCount || stats()?.TotalCoursesCount || 0 }}</h3>
+            <div class="flex gap-sm mt-xs text-[10px]">
+              <span class="text-green-400 font-bold">{{ stats()?.publishedCoursesCount || stats()?.PublishedCoursesCount || 0 }} {{ lang() === 'ar' ? 'منشور' : 'Published' }}</span>
+              <span class="text-outline">•</span>
+              <span class="text-yellow-400 font-bold">{{ stats()?.draftCoursesCount || stats()?.DraftCoursesCount || 0 }} {{ lang() === 'ar' ? 'مسودة' : 'Draft' }}</span>
+            </div>
+          </div>
+
+          <div class="glass-panel p-md rounded-2xl flex flex-col justify-between hover:shadow-lg transition-all group">
+            <div class="flex justify-between items-center" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+              <span class="material-symbols-outlined text-amber-400 text-xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
+              <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{{ lang() === 'ar' ? 'قائمة الانتظار' : 'Pending Queues' }}</span>
+            </div>
+            <div class="mt-md space-y-xs">
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-on-surface-variant">{{ lang() === 'ar' ? 'طلاب معلقون' : 'Pending Students' }}</span>
+                <span class="font-bold text-on-surface px-2 py-[1px] rounded-full bg-surface-container-high text-[10px]">{{ queues()?.pendingStudentsCount || queues()?.PendingStudentsCount || 0 }}</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-on-surface-variant">{{ lang() === 'ar' ? 'معلمون معلقون' : 'Pending Instructors' }}</span>
+                <span class="font-bold text-on-surface px-2 py-[1px] rounded-full bg-surface-container-high text-[10px]">{{ queues()?.pendingInstructorsCount || queues()?.PendingInstructorsCount || 0 }}</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-on-surface-variant">{{ lang() === 'ar' ? 'فواتير معلقة' : 'Pending Bills' }}</span>
+                <span class="font-bold text-on-surface px-2 py-[1px] rounded-full bg-surface-container-high text-[10px]">{{ queues()?.pendingBillsCount || queues()?.PendingBillsCount || 0 }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-panel p-md rounded-2xl flex flex-col justify-between hover:shadow-lg transition-all group">
+            <div class="flex justify-between items-center" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+              <span class="material-symbols-outlined text-purple-400 text-xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">group</span>
+              <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{{ lang() === 'ar' ? 'إجمالي المستخدمين' : 'Total Users' }}</span>
+            </div>
+            <h3 class="text-3xl font-extrabold mt-md text-on-surface">
+              {{ (stats()?.activeStudentsCount || stats()?.ActiveStudentsCount || 0) + (stats()?.activeInstructorsCount || stats()?.ActiveInstructorsCount || 0) + (stats()?.activeAdminsCount || stats()?.ActiveAdminsCount || 0) }}
+            </h3>
+            <p class="text-[10px] text-on-surface-variant mt-xs">{{ lang() === 'ar' ? 'طلاب + معلمون + مسؤولون' : 'Students + Instructors + Admins' }}</p>
+          </div>
+        </div>
+
+        <!-- Ledger Financial Matching Auditor -->
+        <div *ngIf="auditResult()" class="glass-panel p-md rounded-2xl border border-white/5 bg-surface-container/30">
+          <div class="flex items-center gap-xs mb-sm pb-xs border-b border-white/5" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+            <span class="material-symbols-outlined" [ngClass]="auditResult()?.Discrepancy === 0 ? 'text-green-400' : 'text-error'">
+              {{ auditResult()?.Discrepancy === 0 ? 'verified_user' : 'warning' }}
+            </span>
+            <h3 class="text-sm font-bold text-on-surface">{{ lang() === 'ar' ? 'سجل التدقيق المالي ومطابقة الأرصدة' : 'Platform Ledger Balance Auditor' }}</h3>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-md py-sm">
+            <div class="p-sm bg-surface-container-low rounded-xl text-center">
+              <span class="text-[10px] text-on-surface-variant uppercase block mb-xs">{{ lang() === 'ar' ? 'مجموع أرصدة المحافظ' : 'Aggregate Wallets Sum' }}</span>
+              <strong class="text-lg text-on-surface">{{ auditResult()?.TotalWalletsBalance || 0 }} EGP</strong>
+            </div>
+            <div class="p-sm bg-surface-container-low rounded-xl text-center">
+              <span class="text-[10px] text-on-surface-variant uppercase block mb-xs">{{ lang() === 'ar' ? 'السجلات المالية للمنصة' : 'Platform Cash Registers' }}</span>
+              <strong class="text-lg text-on-surface">{{ auditResult()?.PlatformCashRegisters || 0 }} EGP</strong>
+            </div>
+            <div class="p-sm bg-surface-container-low rounded-xl text-center border"
+                 [ngClass]="auditResult()?.Discrepancy === 0 ? 'border-green-500/20 bg-green-500/5' : 'border-error/20 bg-error/5'">
+              <span class="text-[10px] text-on-surface-variant uppercase block mb-xs">{{ lang() === 'ar' ? 'فارق المطابقة' : 'Discrepancy Match' }}</span>
+              <strong class="text-lg" [ngClass]="auditResult()?.Discrepancy === 0 ? 'text-green-400' : 'text-error'">
+                {{ auditResult()?.Discrepancy || 0 }} EGP
+              </strong>
+            </div>
+          </div>
+
+          <div class="p-sm mt-xs rounded-xl text-xs bg-surface-container-low/50" [ngClass]="lang() === 'ar' ? 'text-right' : 'text-left'">
+            <p class="text-on-surface-variant leading-relaxed">
+              <strong>{{ lang() === 'ar' ? 'تقرير المطابقة:' : 'Audit Status Note:' }}</strong>
+              <span *ngIf="auditResult()?.Discrepancy === 0" class="text-green-400 font-bold">
+                {{ lang() === 'ar' ? ' أرصدة جميع المحافظ الرقمية تطابق الحسابات المصرفية تماماً. لا توجد أي تسريبات مالية.' : ' All user ledger accounts match system bank registers perfectly. Secure state confirmed.' }}
+              </span>
+              <span *ngIf="auditResult()?.Discrepancy !== 0" class="text-error font-bold">
+                {{ lang() === 'ar' ? ' تنبيه! هناك فارق حسابي غير متطابق. يرجى مراجعة سجلات Vodafone Cash المعلقة للتسوية.' : ' Warning! Cash discrepancy detected. Check Vodafone Cash submitted logs immediately.' }}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Fallback if Audit fails to compile/fetch -->
+        <div *ngIf="!auditResult()" class="glass-panel p-lg rounded-2xl text-center">
+          <span class="material-symbols-outlined text-4xl text-outline mb-xs">error</span>
+          <h3 class="font-bold text-on-surface">{{ lang() === 'ar' ? 'سجل التدقيق غير متاح' : 'Financial Ledger Unavailable' }}</h3>
+          <p class="text-xs text-on-surface-variant mt-xs">{{ lang() === 'ar' ? 'لا يمكن تحميل تقرير التدقيق المالي حالياً. يرجى التحقق من اتصال الخادم.' : 'Unable to compile ledger balance reports. Verify server logs and database availability.' }}</p>
+        </div>
+      </div>
+
+
+      <!-- ================== TAB 2: STUDENTS VERIFICATION ================== -->
+      <div *ngIf="activeTab() === 'students'" class="space-y-sm">
+        <h2 class="text-headline-lg font-bold text-on-surface">{{ lang() === 'ar' ? 'طلبات التسجيل المعلقة' : 'Pending Student Registrations' }}</h2>
+        
+        @if (pendingStudents().length === 0) {
+          <div class="glass-panel p-lg rounded-2xl text-center">
+            <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-xs">verified</span>
+            <h3 class="font-bold text-on-surface">{{ lang() === 'ar' ? 'لا توجد طلبات معلقة حالياً' : 'All Students Verified' }}</h3>
+            <p class="text-xs text-on-surface-variant mt-base">{{ lang() === 'ar' ? 'تمت مراجعة والتحقق من ملفات جميع الطلاب المقيدين بالنظام.' : 'No student registration files require administrative reviews at this time.' }}</p>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+            @for (student of pendingStudents(); track student.userId) {
+              <div class="glass-panel p-md rounded-2xl flex flex-col justify-between gap-md relative overflow-hidden bg-surface-container/30">
+                <div class="flex items-start gap-md" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+                  <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-md shrink-0">
+                    {{ student.fullName?.substring(0,2) || 'ST' }}
+                  </div>
+                  <div class="min-w-0 text-start">
+                    <h4 class="font-bold text-sm text-on-surface truncate">{{ student.fullName }}</h4>
+                    <p class="text-xs text-on-surface-variant truncate">{{ student.email }}</p>
+                    <p class="text-[11px] text-primary-color font-semibold mt-xs">
+                      {{ student.academicGrade }} • {{ student.academicDivision }}
+                    </p>
+                    <p class="text-[10px] text-on-surface-variant mt-[2px]">
+                      {{ student.schoolName }} ({{ student.governorate }})
+                    </p>
+                  </div>
+                </div>
+
+                <!-- National ID Image View -->
+                <div *ngIf="student.studentIdImageUrl" class="relative group cursor-pointer overflow-hidden rounded-xl border border-white/10 max-h-36 bg-surface-container-low">
+                  <img [src]="getReceiptUrl(student.studentIdImageUrl)" alt="Student ID" class="w-full h-32 object-cover group-hover:scale-105 transition-transform" />
+                  <a [href]="getReceiptUrl(student.studentIdImageUrl)" target="_blank" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs text-white font-bold gap-xs">
+                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    <span>{{ lang() === 'ar' ? 'عرض المستند بالحجم الكامل' : 'Open Full Image' }}</span>
+                  </a>
+                </div>
+
+                <!-- Action Button Controls -->
+                <div class="flex gap-sm pt-xs" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+                  <button (click)="openReviewModal('student', student.userId, false)" 
+                          class="flex-1 py-2 bg-error/15 text-error hover:bg-error/25 rounded-xl text-xs font-bold transition-all active:scale-95">
+                    {{ lang() === 'ar' ? 'رفض وأرشفة' : 'Reject' }}
+                  </button>
+                  <button (click)="openReviewModal('student', student.userId, true)" 
+                          class="flex-1 py-2 bg-primary text-on-primary hover:brightness-110 rounded-xl text-xs font-bold transition-all active:scale-95">
+                    {{ lang() === 'ar' ? 'قبول وتفعيل' : 'Approve' }}
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+
+
+      <!-- ================== TAB 3: INSTRUCTOR APPLICATIONS ================== -->
+      <div *ngIf="activeTab() === 'instructors'" class="space-y-sm">
+        <h2 class="text-headline-lg font-bold text-on-surface">{{ lang() === 'ar' ? 'طلبات انضمام كادر التدريس' : 'Instructor Onboarding Desk' }}</h2>
+
+        <!-- Filters for Instructor Applications -->
+        <div class="glass-panel p-sm rounded-2xl flex flex-col md:flex-row gap-sm items-center justify-between bg-surface-container/30 border border-white/5">
+          <div class="flex gap-sm w-full md:w-auto flex-wrap">
+            <select [(ngModel)]="instructorStatusFilter" (change)="loadInstructorApplications()"
+                    class="h-10 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors">
+              <option value="">{{ lang() === 'ar' ? 'كل الحالات' : 'All Statuses' }}</option>
+              <option value="PendingReview">{{ lang() === 'ar' ? 'قيد المراجعة' : 'Pending Review' }}</option>
+              <option value="Approved">{{ lang() === 'ar' ? 'مقبول' : 'Approved' }}</option>
+              <option value="Rejected">{{ lang() === 'ar' ? 'مرفوض' : 'Rejected' }}</option>
+            </select>
+            <input type="text" [(ngModel)]="instructorSpecFilter" (input)="loadInstructorApplications()"
+                   class="h-10 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors w-44"
+                   [placeholder]="lang() === 'ar' ? 'التخصص...' : 'Specialization...'" />
+            <input type="text" [(ngModel)]="instructorGovFilter" (input)="loadInstructorApplications()"
+                   class="h-10 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors w-44"
+                   [placeholder]="lang() === 'ar' ? 'المحافظة...' : 'Governorate...'" />
+          </div>
+        </div>
+
+        @if (instructorApplications().length === 0) {
+          <div class="glass-panel p-lg rounded-2xl text-center">
+            <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-xs">assignment_turned_in</span>
+            <h3 class="font-bold text-on-surface">{{ lang() === 'ar' ? 'لا توجد طلبات معلمين قيد المراجعة' : 'Onboarding Pipeline Clear' }}</h3>
+            <p class="text-xs text-on-surface-variant mt-base">{{ lang() === 'ar' ? 'تم الانتهاء من مراجعة وقبول جميع ملفات المعلمين المتقدمين.' : 'All pending instructor CVs and applications have been processed.' }}</p>
+          </div>
+        } @else {
+          <div class="space-y-md">
+            @for (app of instructorApplications(); track app.applicationId || app.ApplicationId || app.id) {
+              <div class="glass-panel p-md rounded-2xl flex flex-col gap-sm bg-surface-container/30 border border-outline-variant">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-sm" [ngClass]="lang() === 'ar' ? 'md:flex-row-reverse' : 'md:flex-row'">
+                  
+                  <div class="flex items-start gap-md text-start">
+                    <!-- Profile Image -->
+                    <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-outline-variant shrink-0 mt-[2px]">
+                      <img *ngIf="app.profileImageUrl || app.ProfileImageUrl" [src]="getReceiptUrl(app.profileImageUrl || app.ProfileImageUrl)" alt="Avatar" class="w-full h-full object-cover" />
+                      <span *ngIf="!(app.profileImageUrl || app.ProfileImageUrl)" class="material-symbols-outlined text-lg text-outline">person</span>
+                    </div>
+
+                    <div>
+                      <div class="flex items-center gap-sm flex-wrap">
+                        <h4 class="font-bold text-md text-on-surface">
+                          {{ app.fullName || app.FullName || (app.firstName + ' ' + (app.secondName || '') + ' ' + app.lastName) }}
+                        </h4>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                              [ngClass]="(app.status || app.Status) === 'Approved' ? 'bg-green-500/20 text-green-400' : ((app.status || app.Status) === 'Rejected' ? 'bg-error/20 text-error' : 'bg-yellow-500/20 text-yellow-400')">
+                          {{ app.status || app.Status }}
+                        </span>
+                      </div>
+                      <p class="text-xs text-on-surface-variant">
+                        {{ app.emailAddress || app.EmailAddress }} • {{ app.phoneNumber || app.PhoneNumber }}
+                      </p>
+                      <div class="flex items-center gap-xs mt-xs flex-wrap">
+                        <span class="inline-block px-2 py-0.5 bg-secondary-container/20 text-secondary text-[10px] rounded font-bold uppercase tracking-wider">
+                          {{ app.specialization || app.Specialization }}
+                        </span>
+                        <span class="inline-block px-2 py-0.5 bg-primary-container/20 text-primary text-[10px] rounded font-bold">
+                          {{ app.governorate || app.Governorate }}
+                        </span>
+                      </div>
+                      <p class="text-[10px] text-outline mt-xs font-mono">
+                        {{ lang() === 'ar' ? 'تاريخ التقديم:' : 'Submitted:' }} {{ (app.submissionDateUtc || app.SubmissionDateUtc) | date:'mediumDate' }}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div *ngIf="(app.status || app.Status) === 'PendingReview'" class="flex gap-xs w-full md:w-auto">
+                    <button (click)="openReviewModal('instructor', app.applicationId || app.ApplicationId || app.id, false)" 
+                            class="px-lg py-2 bg-error/15 text-error rounded-xl text-xs font-bold hover:bg-error/25 active:scale-95 transition-all w-full md:w-auto">
+                      {{ lang() === 'ar' ? 'رفض' : 'Reject' }}
+                    </button>
+                    <button (click)="openReviewModal('instructor', app.applicationId || app.ApplicationId || app.id, true)" 
+                            class="px-lg py-2 bg-primary text-on-primary rounded-xl text-xs font-bold hover:brightness-110 active:scale-95 transition-all w-full md:w-auto">
+                      {{ lang() === 'ar' ? 'قبول وإنشاء حساب' : 'Approve Application' }}
+                    </button>
+                  </div>
+                </div>
+
+                <div class="p-sm bg-surface-container-low rounded-xl text-xs space-y-sm text-start">
+                  <div class="space-y-xs">
+                    <p *ngIf="app.previousExperienceText || app.PreviousExperienceText" class="text-on-surface-variant">
+                      <strong>{{ lang() === 'ar' ? 'الخبرات السابقة:' : 'Previous Experience:' }}</strong> {{ app.previousExperienceText || app.PreviousExperienceText }}
+                    </p>
+                    <p *ngIf="app.valueAdditionText || app.ValueAdditionText" class="text-on-surface-variant">
+                      <strong>{{ lang() === 'ar' ? 'الإضافة المقترحة للمنصة:' : 'Value Add proposal:' }}</strong> {{ app.valueAdditionText || app.ValueAdditionText }}
+                    </p>
+                  </div>
+                  
+                  <!-- ID Card Preview Section -->
+                  <div *ngIf="app.nationalIdCardImageUrl || app.NationalIdCardImageUrl" class="pt-xs">
+                    <span class="text-[10px] font-bold text-on-surface-variant block uppercase mb-[4px]">
+                      {{ lang() === 'ar' ? 'صورة بطاقة الرقم القومي:' : 'National ID Card Image:' }}
+                    </span>
+                    <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-outline-variant max-w-xs h-28 bg-surface-container">
+                      <img [src]="getReceiptUrl(app.nationalIdCardImageUrl || app.NationalIdCardImageUrl)" alt="National ID Card" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      <a [href]="getReceiptUrl(app.nationalIdCardImageUrl || app.NationalIdCardImageUrl)" target="_blank" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs text-white font-bold gap-xs">
+                        <span class="material-symbols-outlined text-[16px]">visibility</span>
+                        <span>{{ lang() === 'ar' ? 'عرض بالحجم الكامل' : 'View Full Image' }}</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <!-- Portfolio and CV links -->
+                  <div class="border-t border-outline-variant/30 pt-xs flex flex-col gap-xs">
+                    <span class="text-[10px] font-bold text-on-surface-variant block uppercase">
+                      {{ lang() === 'ar' ? 'الملفات وروابط التواصل:' : 'Documents & Contacts:' }}
+                    </span>
+                    <div class="flex gap-md pt-xs flex-wrap items-center">
+                      <!-- Facebook Link -->
+                      <a *ngIf="app.facebookLink || app.FacebookLink" [href]="app.facebookLink || app.FacebookLink" target="_blank" class="text-primary hover:underline font-bold flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-[14px]">link</span>
+                        <span>Facebook</span>
+                      </a>
+                      
+                      <!-- Instagram Link -->
+                      <a *ngIf="app.instagramLink || app.InstagramLink" [href]="app.instagramLink || app.InstagramLink" target="_blank" class="text-primary hover:underline font-bold flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-[14px]">link</span>
+                        <span>Instagram</span>
+                      </a>
+                      
+                      <!-- Website/Behance Link -->
+                      <a *ngIf="app.personalWebsiteOrBehanceLink || app.PersonalWebsiteOrBehanceLink" [href]="app.personalWebsiteOrBehanceLink || app.PersonalWebsiteOrBehanceLink" target="_blank" class="text-primary hover:underline font-bold flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-[14px]">link</span>
+                        <span>Website/Portfolio</span>
+                      </a>
+                      
+                      <!-- CV File Link -->
+                      <a *ngIf="app.cvOrPortfolioUrl || app.CvOrPortfolioUrl || app.cvOrPortfolioFile" [href]="getReceiptUrl(app.cvOrPortfolioUrl || app.CvOrPortfolioUrl || app.cvOrPortfolioFile)" target="_blank" class="text-secondary hover:underline font-bold flex items-center gap-[2px]">
+                        <span class="material-symbols-outlined text-[14px]">picture_as_pdf</span>
+                        <span>{{ lang() === 'ar' ? 'تحميل / معاينة السيرة الذاتية (CV)' : 'Download / Preview CV File' }}</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+
+      <!-- ================== TAB 4: RECHARGE CLAIMS REVIEW ================== -->
+      <div *ngIf="activeTab() === 'wallet'" class="space-y-sm">
+        <h2 class="text-headline-lg font-bold text-on-surface">{{ lang() === 'ar' ? 'مطالبات شحن الرصيد اليدوي' : 'Manual Wallet Recharge Claims' }}</h2>
+        <p class="text-xs text-on-surface-variant">
+          {{ lang() === 'ar' ? 'قم بمراجعة إيصالات الدفع اليدوية المرفوعة من قبل الطلاب لشحن محافظهم الرقمية.' : 'Audit Vodafone Cash / Fawry receipts submitted by students to top up their digital wallets.' }}
+        </p>
+
+        <!-- Filters Section for Recharge Claims -->
+        <div class="glass-panel p-sm rounded-2xl flex flex-col md:flex-row gap-sm items-center justify-between bg-surface-container/30 border border-white/5 shadow-md">
+          <div class="flex gap-sm w-full md:w-auto flex-wrap items-center">
+            <div class="flex items-center gap-xs">
+              <span class="text-[10px] uppercase font-bold text-on-surface-variant">{{ lang() === 'ar' ? 'من:' : 'From:' }}</span>
+              <input type="date" [(ngModel)]="billsDateFrom"
+                     class="h-10 px-xs text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors" />
+            </div>
+            <div class="flex items-center gap-xs">
+              <span class="text-[10px] uppercase font-bold text-on-surface-variant">{{ lang() === 'ar' ? 'إلى:' : 'To:' }}</span>
+              <input type="date" [(ngModel)]="billsDateTo"
+                     class="h-10 px-xs text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors" />
+            </div>
+            <select [(ngModel)]="billsSortOrder"
+                    class="h-10 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors">
+              <option value="latest">{{ lang() === 'ar' ? 'الأحدث أولاً' : 'Latest First' }}</option>
+              <option value="oldest">{{ lang() === 'ar' ? 'الأقدم أولاً' : 'Oldest First' }}</option>
+            </select>
+          </div>
+        </div>
+
+        @if (filteredBills().length === 0) {
+          <div class="glass-panel p-lg rounded-2xl text-center">
+            <span class="material-symbols-outlined text-4xl text-on-surface-variant mb-xs">account_balance</span>
+            <h3 class="font-bold text-on-surface">{{ lang() === 'ar' ? 'لا توجد فواتير معلقة للمراجعة' : 'Claims Queue Clear' }}</h3>
+            <p class="text-xs text-on-surface-variant mt-base">{{ lang() === 'ar' ? 'تم التحقق من وتأكيد جميع إيصالات الدفع المقدمة.' : 'No manual Vodafone Cash/Fawry receipts are pending reviews.' }}</p>
+          </div>
+        } @else {
+          <!-- Redesigned Responsive Data Table -->
+          <div class="glass-panel rounded-2xl overflow-hidden bg-surface-container/30 border border-white/5 shadow-xl animate-fade-in">
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse text-xs text-start">
+                <thead>
+                  <tr class="bg-surface-container-low text-on-surface-variant font-bold border-b border-white/5">
+                    <th class="p-sm text-start">{{ lang() === 'ar' ? 'صاحب الطلب' : 'User Information' }}</th>
+                    <th class="p-sm text-start">{{ lang() === 'ar' ? 'القيمة المطلوبة' : 'Requested Amount' }}</th>
+                    <th class="p-sm text-start">{{ lang() === 'ar' ? 'وسيلة الدفع' : 'Payment Method' }}</th>
+                    <th class="p-sm text-start">{{ lang() === 'ar' ? 'التفاصيل / المرجع' : 'Description & Ref' }}</th>
+                    <th class="p-sm text-center">{{ lang() === 'ar' ? 'صورة الإيصال' : 'Receipt Document' }}</th>
+                    <th class="p-sm text-center">{{ lang() === 'ar' ? 'الإجراءات' : 'Actions' }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (bill of filteredBills(); track bill.id) {
+                    <tr class="border-b border-white/5 hover:bg-surface-bright/20 transition-colors">
+                      <!-- User Information -->
+                      <td class="p-sm">
+                        <div class="flex items-center gap-xs">
+                          <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0 overflow-hidden">
+                            <img *ngIf="bill.userProfileImageUrl" [src]="getReceiptUrl(bill.userProfileImageUrl)" alt="Avatar" class="w-full h-full object-cover" />
+                            <span *ngIf="!bill.userProfileImageUrl">{{ bill.userFullName?.substring(0, 2) || 'US' }}</span>
+                          </div>
+                          <div class="min-w-0">
+                            <p class="font-bold text-on-surface truncate">{{ bill.userFullName }}</p>
+                            <p class="text-[10px] text-on-surface-variant truncate font-mono">{{ bill.userEmail || '-' }}</p>
+                          </div>
+                        </div>
+                      </td>
+
+                      <!-- Requested Amount & Date -->
+                      <td class="p-sm">
+                        <p class="font-bold text-green-400 text-sm">{{ bill.amount }} EGP</p>
+                        <p class="text-[9px] text-outline mt-[2px] font-mono">{{ bill.createdAt | date:'short' }}</p>
+                      </td>
+
+                      <!-- Payment Method -->
+                      <td class="p-sm">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-secondary-container/20 text-secondary uppercase tracking-wider">
+                          {{ bill.description?.toLowerCase().includes('vodafone') ? 'Vodafone Cash' : (bill.description?.toLowerCase().includes('fawry') ? 'Fawry Pay' : 'Manual Transfer') }}
+                        </span>
+                      </td>
+
+                      <!-- Details & Reference -->
+                      <td class="p-sm">
+                        <p class="text-on-surface-variant leading-relaxed line-clamp-1 max-w-[200px]" [title]="bill.description">{{ bill.description }}</p>
+                        <p class="text-[10px] text-primary font-mono mt-[2px]">{{ lang() === 'ar' ? 'المرجع:' : 'Ref:' }} {{ bill.referenceNumber }}</p>
+                      </td>
+
+                      <!-- Receipt Image Thumbnail -->
+                      <td class="p-sm text-center">
+                        <div *ngIf="bill.billImageUrl" (click)="previewReceiptUrl.set(getReceiptUrl(bill.billImageUrl))" 
+                             class="inline-block relative cursor-pointer overflow-hidden rounded-lg border border-white/10 w-12 h-12 bg-surface-container-low hover:border-primary transition-colors group">
+                          <img [src]="getReceiptUrl(bill.billImageUrl)" alt="Receipt" class="w-full h-full object-cover" />
+                          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white text-xs">visibility</span>
+                          </div>
+                        </div>
+                        <span *ngIf="!bill.billImageUrl" class="text-outline text-[10px] font-bold">-</span>
+                      </td>
+
+                      <!-- Action review controls -->
+                      <td class="p-sm text-center">
+                        <div class="flex items-center justify-center gap-xs">
+                          <button (click)="openReviewModal('bill', bill.id, false)" 
+                                  class="h-8 w-8 flex items-center justify-center bg-error/15 text-error hover:bg-error/25 rounded-lg active:scale-95 transition-all"
+                                  [title]="lang() === 'ar' ? 'رفض الطلب' : 'Reject Receipt'">
+                            <span class="material-symbols-outlined text-sm">close</span>
+                          </button>
+                          <button (click)="openReviewModal('bill', bill.id, true)" 
+                                  class="h-8 w-8 flex items-center justify-center bg-primary text-on-primary hover:brightness-110 rounded-lg active:scale-95 transition-all"
+                                  [title]="lang() === 'ar' ? 'قبول وتفعيل الإيداع' : 'Approve Deposit'">
+                            <span class="material-symbols-outlined text-sm">done</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+
+
+      <!-- ================== TAB 5: BROADCAST CALENDAR EVENTS ================== -->
+      <div *ngIf="activeTab() === 'calendar'" class="space-y-sm">
+        <h2 class="text-headline-lg font-bold text-on-surface">{{ lang() === 'ar' ? 'بث حدث وجدول مواعيد عام' : 'Broadcast Global Calendar Event' }}</h2>
+        <p class="text-xs text-on-surface-variant">
+          {{ lang() === 'ar' ? 'قم بإنشاء ونشر مواعيد الامتحانات أو تسليم المشروعات لجميع الطلاب المقيدين على المنصة.' : 'Publish announcements, midterm exams, or summer training deliverables targeting all registered students.' }}
+        </p>
+
+        <div class="glass-panel p-md rounded-2xl max-w-xl mx-auto text-start bg-surface-container/30 border border-white/5 shadow-xl">
+          
+          <div *ngIf="broadcastSuccess()" class="p-sm mb-sm bg-green-500/20 text-green-300 text-xs rounded border border-green-500/30">
+            {{ broadcastSuccess() }}
+          </div>
+
+          <div *ngIf="broadcastError()" class="p-sm mb-sm bg-error/15 text-error-container text-xs rounded border border-error/30">
+            {{ broadcastError() }}
+          </div>
+
+          <form (ngSubmit)="submitBroadcastEvent()" class="space-y-sm">
+            <!-- Event Title -->
+            <div class="flex flex-col gap-xs">
+              <label class="text-xs font-semibold text-on-surface-variant">
+                {{ lang() === 'ar' ? 'عنوان الحدث / التنبيه' : 'Event Title' }}
+              </label>
+              <input type="text" [(ngModel)]="eventTitle" name="title" required
+                     class="w-full h-11 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl focus:outline-none focus:border-primary placeholder:text-outline transition-colors"
+                     [placeholder]="lang() === 'ar' ? 'مثال: موعد تسليم مشروع الذكاء الاصطناعي' : 'e.g., AI Final Project Submission Deadline'" />
+            </div>
+
+            <!-- Event Type selection -->
+            <div class="flex flex-col gap-xs">
+              <label class="text-xs font-semibold text-on-surface-variant">
+                {{ lang() === 'ar' ? 'نوع الحدث الدراسي' : 'Event Type' }}
+              </label>
+              <select [(ngModel)]="eventType" name="type"
+                      class="w-full h-11 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl focus:outline-none focus:border-primary transition-colors">
+                <option value="Exam">{{ lang() === 'ar' ? 'امتحان / اختبار (Exam)' : 'Exam' }}</option>
+                <option value="Assignment">{{ lang() === 'ar' ? 'تسليم مشروع أو واجب (Assignment)' : 'Assignment' }}</option>
+                <option value="Internship">{{ lang() === 'ar' ? 'تدريب صيفي (Internship)' : 'Summer Internship' }}</option>
+              </select>
+            </div>
+
+            <!-- Date & Time -->
+            <div class="grid grid-cols-2 gap-sm">
+              <div class="flex flex-col gap-xs">
+                <label class="text-xs font-semibold text-on-surface-variant">
+                  {{ lang() === 'ar' ? 'التاريخ المحدد' : 'Scheduled Date' }}
+                </label>
+                <input type="date" [(ngModel)]="eventDate" name="date" required
+                       class="w-full h-11 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl focus:outline-none focus:border-primary transition-colors" />
+              </div>
+              <div class="flex flex-col gap-xs">
+                <label class="text-xs font-semibold text-on-surface-variant">
+                  {{ lang() === 'ar' ? 'توقيت البدء' : 'Start Time' }}
+                </label>
+                <input type="time" [(ngModel)]="eventTime" name="time"
+                       class="w-full h-11 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl focus:outline-none focus:border-primary transition-colors" />
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="flex flex-col gap-xs">
+              <label class="text-xs font-semibold text-on-surface-variant">
+                {{ lang() === 'ar' ? 'وصف التنبيه والتفاصيل' : 'Announcement Description' }}
+              </label>
+              <textarea [(ngModel)]="eventDescription" name="description" rows="3"
+                        class="w-full p-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl focus:outline-none focus:border-primary placeholder:text-outline transition-colors resize-none"
+                        [placeholder]="lang() === 'ar' ? 'اكتب تفاصيل إضافية للطلاب هنا...' : 'Write additional instructions or information for students here...'"></textarea>
+            </div>
+
+            <!-- Submit Button Broadcast -->
+            <button type="submit" [disabled]="isBroadcasting() || !eventTitle().trim()"
+                    class="w-full h-12 rounded-xl bg-primary text-on-primary text-xs font-bold disabled:opacity-35 hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-xs">
+              <span *ngIf="isBroadcasting()" class="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></span>
+              <span>{{ lang() === 'ar' ? 'نشر وبث الحدث للطلاب' : 'Broadcast to Calendar' }}</span>
+              <span class="material-symbols-outlined text-sm">campaign</span>
+            </button>
+          </form>
+
+        </div>
+      </div>
+
+      <!-- ================== TAB 6: SYSTEM USERS DIRECTORY ================== -->
+      <div *ngIf="activeTab() === 'users'" class="space-y-sm">
+        <h2 class="text-headline-lg font-bold text-on-surface">{{ lang() === 'ar' ? 'دليل مستخدمي النظام' : 'System Users Directory' }}</h2>
+        <p class="text-xs text-on-surface-variant">
+          {{ lang() === 'ar' ? 'عرض والتحقق من حسابات جميع الطلاب والمعلمين والمسؤولين على المنصة، مع صلاحية حظر أو تفعيل الحسابات.' : 'View all registered students, instructors, and administrators, with permissions to ban or restore accounts.' }}
+        </p>
+
+        <!-- Filters Section -->
+        <div class="glass-panel p-sm rounded-2xl flex flex-col md:flex-row gap-sm items-center justify-between bg-surface-container/30 border border-white/5">
+          <div class="w-full md:w-72 flex items-center gap-xs bg-surface-container-low px-sm py-[6px] border border-white/10 rounded-xl">
+            <span class="material-symbols-outlined text-xs text-on-surface-variant">search</span>
+            <input type="text" [(ngModel)]="usersSearchQuery" (input)="loadUsers()"
+                   class="w-full text-xs bg-transparent text-on-surface border-none outline-none placeholder:text-outline"
+                   [placeholder]="lang() === 'ar' ? 'بحث بالاسم، البريد أو الهاتف...' : 'Search by name, email, or mobile...'" />
+          </div>
+
+          <div class="flex gap-sm w-full md:w-auto">
+            <!-- Role filter -->
+            <select [(ngModel)]="usersRoleFilter" (change)="loadUsers()"
+                    class="h-10 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors">
+              <option value="">{{ lang() === 'ar' ? 'كل الصلاحيات' : 'All Roles' }}</option>
+              <option value="Student">{{ lang() === 'ar' ? 'طالب' : 'Student' }}</option>
+              <option value="Instructor">{{ lang() === 'ar' ? 'معلم' : 'Instructor' }}</option>
+              <option value="Admin">{{ lang() === 'ar' ? 'مسؤول' : 'Admin' }}</option>
+            </select>
+
+            <!-- Status filter -->
+            <select [(ngModel)]="usersStatusFilter" (change)="loadUsers()"
+                    class="h-10 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors">
+              <option value="">{{ lang() === 'ar' ? 'كل الحالات' : 'All Statuses' }}</option>
+              <option value="Active">{{ lang() === 'ar' ? 'نشط' : 'Active' }}</option>
+              <option value="Inactive">{{ lang() === 'ar' ? 'محظور / غير نشط' : 'Banned / Inactive' }}</option>
+              <option value="PendingApproval">{{ lang() === 'ar' ? 'معلق' : 'Pending' }}</option>
+              <option value="Rejected">{{ lang() === 'ar' ? 'مرفوض' : 'Rejected' }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="glass-panel rounded-2xl overflow-hidden bg-surface-container/30 border border-white/5 shadow-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-xs text-start">
+              <thead>
+                <tr class="bg-surface-container-low text-on-surface-variant font-bold border-b border-white/5">
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'المستخدم' : 'User' }}</th>
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'رقم الهاتف' : 'Phone' }}</th>
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'الصلاحية' : 'Role' }}</th>
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'الحالة' : 'Status' }}</th>
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'تاريخ الإنشاء' : 'Joined Date' }}</th>
+                  <th class="p-sm text-center">{{ lang() === 'ar' ? 'الإجراءات' : 'Actions' }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (usr of usersList(); track usr.id) {
+                  <tr class="border-b border-white/5 hover:bg-surface-bright/20 transition-colors">
+                    <td class="p-sm">
+                      <div class="flex items-center gap-xs">
+                        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0">
+                          {{ usr.fullName?.substring(0, 2) || 'US' }}
+                        </div>
+                        <div class="min-w-0">
+                          <p class="font-bold text-on-surface truncate">{{ usr.fullName }}</p>
+                          <p class="text-[10px] text-on-surface-variant truncate">{{ usr.email }}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-sm text-on-surface-variant font-mono">{{ usr.mobileNumber || '-' }}</td>
+                    <td class="p-sm">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                            [ngClass]="(usr.role === 'Admin' || usr.role === '0') ? 'bg-primary-container/20 text-primary' : ((usr.role === 'Instructor' || usr.role === '1') ? 'bg-secondary-container/20 text-secondary' : 'bg-surface-container-highest text-on-surface-variant')">
+                        {{ getRoleLabel(usr.role) }}
+                      </span>
+                    </td>
+                    <td class="p-sm">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                            [ngClass]="isUserActive(usr.status) ? 'bg-green-500/20 text-green-400' : (usr.status === 'Inactive' || usr.status === '3' ? 'bg-error/20 text-error' : (usr.status === 'PendingApproval' || usr.status === '0' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-surface-container-highest text-on-surface-variant'))">
+                        {{ getStatusLabel(usr.status) }}
+                      </span>
+                    </td>
+                    <td class="p-sm text-on-surface-variant font-mono">{{ usr.createdAt | date:'shortDate' }}</td>
+                    <td class="p-sm text-center">
+                      <!-- Ban / Unban Toggle Action -->
+                      <button *ngIf="getRoleLabel(usr.role) !== 'Admin'" (click)="toggleUserBan(usr.id, usr.status)" [disabled]="isUpdatingUserStatus() === usr.id"
+                              [ngClass]="isUserActive(usr.status) ? 'bg-error/15 text-error hover:bg-error/25' : 'bg-green-500/15 text-green-400 hover:bg-green-500/25'"
+                              class="px-sm py-1.5 rounded-xl font-bold text-[10px] transition-all min-w-20 active:scale-95 disabled:opacity-50 inline-flex items-center gap-[4px] justify-center">
+                        <span *ngIf="isUpdatingUserStatus() === usr.id" class="w-3 h-3 border-2 border-t-transparent animate-spin rounded-full inline-block" [ngClass]="isUserActive(usr.status) ? 'border-error' : 'border-green-400'"></span>
+                        <span *ngIf="isUpdatingUserStatus() !== usr.id" class="material-symbols-outlined text-[12px]">{{ isUserActive(usr.status) ? 'block' : 'lock_open' }}</span>
+                        <span>{{ isUserActive(usr.status) ? (lang() === 'ar' ? 'حظر الحساب' : 'Ban') : (lang() === 'ar' ? 'إلغاء الحظر' : 'Unban') }}</span>
+                      </button>
+                      <span *ngIf="getRoleLabel(usr.role) === 'Admin'" class="text-[10px] text-outline font-bold">{{ lang() === 'ar' ? 'غير مسموح' : 'System Admin' }}</span>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="6" class="p-lg text-center text-on-surface-variant">
+                      {{ lang() === 'ar' ? 'لا يوجد مستخدمين يطابقون خيارات البحث' : 'No users found matching current filters' }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================== TAB 7: USER WALLETS AUDITS ================== -->
+      <div *ngIf="activeTab() === 'wallets'" class="space-y-sm">
+        <h2 class="text-headline-lg font-bold text-on-surface">{{ lang() === 'ar' ? 'تدقيق محافظ المستخدمين' : 'User Wallets Audits' }}</h2>
+        <p class="text-xs text-on-surface-variant">
+          {{ lang() === 'ar' ? 'مراقبة وتتبع الميزانيات المالية لجميع المستخدمين، والأرصدة المتاحة للخصم من المنصة.' : 'Monitor and audit the current financial balances, registration dates, and transaction logs across all digital wallets.' }}
+        </p>
+
+        <!-- Filters Section -->
+        <div class="glass-panel p-sm rounded-2xl flex flex-col md:flex-row gap-sm items-center justify-between bg-surface-container/30 border border-white/5">
+          <div class="w-full md:w-72 flex items-center gap-xs bg-surface-container-low px-sm py-[6px] border border-white/10 rounded-xl">
+            <span class="material-symbols-outlined text-xs text-on-surface-variant">search</span>
+            <input type="text" [(ngModel)]="walletsSearchQuery"
+                   class="w-full text-xs bg-transparent text-on-surface border-none outline-none placeholder:text-outline"
+                   [placeholder]="lang() === 'ar' ? 'بحث باسم العميل، بريده أو معرف المحفظة...' : 'Search by owner name, email, or wallet ID...'" />
+          </div>
+
+          <div class="flex gap-sm w-full md:w-auto">
+            <!-- Status filter -->
+            <select [(ngModel)]="walletsStatusFilter"
+                    class="h-10 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors">
+              <option value="">{{ lang() === 'ar' ? 'كل الحالات' : 'All Statuses' }}</option>
+              <option value="Active">{{ lang() === 'ar' ? 'نشط' : 'Active' }}</option>
+              <option value="Suspended">{{ lang() === 'ar' ? 'موقوف / غير نشط' : 'Suspended' }}</option>
+            </select>
+
+            <!-- Sort order selector -->
+            <select [(ngModel)]="walletsSortOrder"
+                    class="h-10 px-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl outline-none focus:border-primary transition-colors">
+              <option value="latest">{{ lang() === 'ar' ? 'الأحدث إنشائاً' : 'Latest Created' }}</option>
+              <option value="oldest">{{ lang() === 'ar' ? 'الأقدم إنشائاً' : 'Oldest Created' }}</option>
+              <option value="balance_high">{{ lang() === 'ar' ? 'الرصيد: الأعلى للأقل' : 'Balance: High to Low' }}</option>
+              <option value="balance_low">{{ lang() === 'ar' ? 'الرصيد: الأقل للأعلى' : 'Balance: Low to High' }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Wallets Table -->
+        <div class="glass-panel rounded-2xl overflow-hidden bg-surface-container/30 border border-white/5 shadow-xl">
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-xs text-start">
+              <thead>
+                <tr class="bg-surface-container-low text-on-surface-variant font-bold border-b border-white/5">
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'معرف المحفظة' : 'Wallet ID' }}</th>
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'صاحب المحفظة' : 'Wallet Owner' }}</th>
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'الرصيد المتاح' : 'Available Balance' }}</th>
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'الحالة' : 'Status' }}</th>
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'تاريخ الإنشاء' : 'Created At' }}</th>
+                  <th class="p-sm text-start">{{ lang() === 'ar' ? 'آخر حركة مالية' : 'Last Transaction' }}</th>
+                  <th class="p-sm text-center">{{ lang() === 'ar' ? 'الإدارة والتحكم' : 'Details & Audits' }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (wl of filteredWallets(); track wl.walletId) {
+                  <tr class="border-b border-white/5 hover:bg-surface-bright/20 transition-colors">
+                    <td class="p-sm font-mono text-[10px] text-on-surface-variant truncate max-w-[120px]">{{ wl.walletId }}</td>
+                    <td class="p-sm">
+                      <div class="min-w-0">
+                        <p class="font-bold text-on-surface truncate">{{ wl.userFullName }}</p>
+                        <p class="text-[10px] text-on-surface-variant truncate">{{ wl.userEmail }}</p>
+                      </div>
+                    </td>
+                    <td class="p-sm font-bold text-sm" [ngClass]="wl.balance > 0 ? 'text-green-400' : 'text-on-surface'">
+                      {{ wl.balance }} EGP
+                    </td>
+                    <td class="p-sm">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                            [ngClass]="wl.status === 'Active' ? 'bg-green-500/20 text-green-400' : 'bg-error/20 text-error'">
+                        {{ wl.status }}
+                      </span>
+                    </td>
+                    <td class="p-sm text-on-surface-variant font-mono">{{ wl.createdAt | date:'shortDate' }}</td>
+                    <td class="p-sm text-on-surface-variant font-mono">
+                      {{ wl.lastTransactionAt ? (wl.lastTransactionAt | date:'medium') : '-' }}
+                    </td>
+                    <td class="p-sm text-center">
+                      <button (click)="openWalletDetails(wl)" 
+                              class="px-sm py-1 bg-primary/10 text-primary hover:bg-primary/25 rounded-lg font-bold text-[10px] active:scale-95 transition-all">
+                        {{ lang() === 'ar' ? 'التفاصيل والتحكم' : 'Manage & Audit' }}
+                      </button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="7" class="p-lg text-center text-on-surface-variant">
+                      {{ lang() === 'ar' ? 'لا توجد محافظ رقمية مطابقة لخيارات البحث' : 'No wallet logs found matching current filters' }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Dynamic administrative review modal overlay -->
+  @if (showReviewModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-sm backdrop-blur-sm animate-fade-in">
+      <div class="glass-panel w-full max-w-md p-md rounded-2xl border border-white/10 space-y-md text-start relative bg-surface-container/95 animate-scale-in">
+        
+        <div class="flex justify-between items-center border-b border-white/5 pb-xs" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+          <h3 class="text-sm font-bold text-on-surface">
+            {{ reviewStatus() ? (lang() === 'ar' ? 'تأكيد وقبول الطلب' : 'Confirm Approval Decision') : (lang() === 'ar' ? 'رفض وأرشفة الطلب' : 'Confirm Rejection Decision') }}
+          </h3>
+          <button (click)="closeReviewModal()" class="w-7 h-7 rounded-full hover:bg-surface-bright flex items-center justify-center">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+
+        @if (reviewError()) {
+          <div class="p-xs text-xs bg-error/15 text-error-container rounded border border-error/30">
+            {{ reviewError() }}
+          </div>
+        }
+
+        <div class="space-y-sm text-xs">
+          <p class="text-on-surface-variant leading-relaxed">
+            {{ lang() === 'ar' ? 'أدخل ملاحظات المراجعة أو أسباب الرفض لإرسالها بالبريد الإلكتروني:' : 'Enter review comments or administrative notes to be communicated/logged:' }}
+          </p>
+
+          <div class="flex flex-col gap-xs">
+            <label class="text-[10px] font-bold text-on-surface-variant uppercase">{{ lang() === 'ar' ? 'ملاحظات الإدارة' : 'Review Feedback Notes' }}</label>
+            <textarea [(ngModel)]="feedbackText" name="feedback" rows="3"
+                      class="w-full p-sm text-xs bg-surface-container-low text-on-surface border border-white/10 rounded-xl focus:outline-none focus:border-primary resize-none"
+                      [placeholder]="lang() === 'ar' ? 'اكتب ملاحظاتك هنا...' : 'Write notes here...'"></textarea>
+          </div>
+        </div>
+
+        <div class="flex gap-sm pt-xs" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+          <button (click)="closeReviewModal()"
+                  class="flex-1 h-10 rounded-full bg-surface-container-high border border-white/10 text-on-surface text-xs font-bold hover:bg-white/5 active:scale-95 transition-all">
+            {{ lang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+          </button>
+          <button (click)="submitReview()" [disabled]="isSubmittingReview()"
+                  [ngClass]="reviewStatus() ? 'bg-primary text-on-primary' : 'bg-error text-on-error'"
+                  class="flex-1 h-10 rounded-full text-xs font-bold hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-xs">
+            <span *ngIf="isSubmittingReview()" class="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin" [ngClass]="reviewStatus() ? 'border-on-primary' : 'border-on-error'"></span>
+            <span>{{ lang() === 'ar' ? 'تأكيد القرار الإداري' : 'Process Decision' }}</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- Standard lightbox modal overlay for receipt images -->
+  <div *ngIf="previewReceiptUrl()" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-md backdrop-blur-md animate-fade-in" (click)="previewReceiptUrl.set(null)">
+    <div class="relative max-w-3xl max-h-[85vh] overflow-hidden rounded-2xl border border-white/10 shadow-2xl bg-surface-container-lowest/80" (click)="$event.stopPropagation()">
+      <img [src]="previewReceiptUrl()" alt="Receipt Zoom" class="max-w-full max-h-[75vh] object-contain rounded-t-xl" />
+      <div class="p-sm flex justify-between items-center bg-surface-container text-xs font-semibold text-on-surface" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+        <span>{{ lang() === 'ar' ? 'معاينة المستند' : 'Receipt Document Preview' }}</span>
+        <button (click)="previewReceiptUrl.set(null)" class="px-md py-1.5 bg-primary text-on-primary rounded-lg font-bold hover:brightness-110 active:scale-95 transition-all">
+          {{ lang() === 'ar' ? 'إغلاق' : 'Close' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standard lightbox modal overlay for CV documents (PDFs / Images) -->
+  <div *ngIf="viewingCvUrl()" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-md backdrop-blur-md animate-fade-in" (click)="viewingCvUrl.set(null)">
+    <div class="relative w-full max-w-4xl h-[85vh] overflow-hidden rounded-2xl border border-white/10 shadow-2xl bg-surface-container flex flex-col" (click)="$event.stopPropagation()">
+      <div class="p-sm flex justify-between items-center bg-surface-container-high text-xs font-semibold text-on-surface border-b border-white/5" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+        <span>{{ lang() === 'ar' ? 'معاينة السيرة الذاتية المقدمة' : 'Submitted CV Document Preview' }}</span>
+        <button (click)="viewingCvUrl.set(null)" class="px-md py-1.5 bg-primary text-on-primary rounded-lg font-bold hover:brightness-110 active:scale-95 transition-all">
+          {{ lang() === 'ar' ? 'إغلاق' : 'Close' }}
+        </button>
+      </div>
+      <div class="flex-1 bg-surface-container-lowest relative flex items-center justify-center overflow-auto p-xs">
+        <iframe *ngIf="isPdfCv()" [src]="getSafeCvUrl()" class="w-full h-full border-none rounded-b-xl" style="background: white;"></iframe>
+        <img *ngIf="!isPdfCv()" [src]="viewingCvUrl()" alt="CV Image Document" class="max-w-full max-h-full object-contain rounded-b-xl" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet Details & Audit Administration Modal -->
+  <div *ngIf="selectedWallet()" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-sm backdrop-blur-sm animate-fade-in" (click)="closeWalletDetails()">
+    <div class="glass-panel w-full max-w-2xl p-md rounded-2xl border border-white/10 flex flex-col gap-md text-start relative bg-surface-container/95 animate-scale-in" (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center border-b border-white/5 pb-xs" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+        <h3 class="text-sm font-bold text-on-surface flex items-center gap-xs">
+          <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+          <span>{{ lang() === 'ar' ? 'تفاصيل المحفظة والتدقيق المالي' : 'Wallet Details & Financial Auditing' }}</span>
+        </h3>
+        <button (click)="closeWalletDetails()" class="w-7 h-7 rounded-full hover:bg-surface-bright flex items-center justify-center">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <!-- Wallet Quick Info card -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-sm bg-surface-container-low p-sm rounded-xl border border-white/5" [ngClass]="lang() === 'ar' ? 'text-right' : 'text-left'">
+        <div class="space-y-[4px]">
+          <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">{{ lang() === 'ar' ? 'صاحب المحفظة' : 'Wallet Owner' }}</p>
+          <h4 class="text-sm font-bold text-on-surface">{{ selectedWallet().userFullName }}</h4>
+          <p class="text-xs text-on-surface-variant font-mono">{{ selectedWallet().userEmail }}</p>
+          <p class="text-[10px] text-outline font-mono">ID: {{ selectedWallet().walletId }}</p>
+        </div>
+
+        <div class="flex flex-col justify-between md:items-end gap-xs">
+          <div class="md:text-end space-y-[2px]">
+            <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">{{ lang() === 'ar' ? 'الرصيد الحالي' : 'Current Balance' }}</p>
+            <h3 class="text-lg font-bold text-green-400">{{ selectedWallet().balance }} EGP</h3>
+          </div>
+
+          <!-- Suspension / Freeze state toggle -->
+          <div class="flex items-center gap-xs">
+            <span class="text-xs font-semibold" [ngClass]="selectedWallet().status === 'Active' ? 'text-green-400' : 'text-error'">
+              {{ selectedWallet().status === 'Active' ? (lang() === 'ar' ? 'نشطة (قابلة للاستخدام)' : 'Active (Open)') : (lang() === 'ar' ? 'مجمدة (موقوفة)' : 'Suspended (Frozen)') }}
+            </span>
+            <button (click)="toggleWalletSuspension(selectedWallet())" [disabled]="isTogglingWalletSuspension()"
+                    [ngClass]="selectedWallet().status === 'Active' ? 'bg-error/15 text-error hover:bg-error/25' : 'bg-green-500/15 text-green-400 hover:bg-green-500/25'"
+                    class="px-sm py-1 rounded-lg font-bold text-[10px] active:scale-95 transition-all disabled:opacity-50 flex items-center gap-[2px]">
+              <span *ngIf="isTogglingWalletSuspension()" class="w-3 h-3 border-2 border-t-transparent animate-spin rounded-full inline-block" [ngClass]="selectedWallet().status === 'Active' ? 'border-error' : 'border-green-400'"></span>
+              <span>{{ selectedWallet().status === 'Active' ? (lang() === 'ar' ? 'تجميد المحفظة' : 'Freeze') : (lang() === 'ar' ? 'إلغاء التجميد' : 'Unfreeze') }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chronological Transactions Log -->
+      <div class="space-y-xs flex-1 flex flex-col min-h-[300px]">
+        <div class="flex justify-between items-center border-b border-white/5 pb-xs">
+          <h4 class="text-xs font-bold text-on-surface flex items-center gap-xs" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+            <span class="material-symbols-outlined text-[14px]">history</span>
+            <span>{{ lang() === 'ar' ? 'سجل العمليات المالية للمحفظة' : 'Chronological Transaction Log' }}</span>
+          </h4>
+        </div>
+
+        <!-- Transaction Filters -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-xs p-xs bg-surface-container-low rounded-xl border border-white/5">
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[8px] uppercase font-bold text-on-surface-variant">{{ lang() === 'ar' ? 'النوع' : 'Type' }}</label>
+            <select [ngModel]="walletTxnsTypeFilter()" (ngModelChange)="walletTxnsTypeFilter.set($event); loadWalletTransactions()"
+                    class="h-8 px-xs text-[10px] bg-surface-container text-on-surface border border-white/10 rounded-lg outline-none">
+              <option value="">{{ lang() === 'ar' ? 'الكل' : 'All' }}</option>
+              <option value="Deposit">{{ lang() === 'ar' ? 'إيداع' : 'Deposit' }}</option>
+              <option value="Withdraw">{{ lang() === 'ar' ? 'سحب' : 'Withdraw' }}</option>
+              <option value="Purchase">{{ lang() === 'ar' ? 'شراء' : 'Purchase' }}</option>
+              <option value="Commission">{{ lang() === 'ar' ? 'عمولة' : 'Commission' }}</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[8px] uppercase font-bold text-on-surface-variant">{{ lang() === 'ar' ? 'من' : 'From' }}</label>
+            <input type="date" [ngModel]="walletTxnsDateFrom()" (ngModelChange)="walletTxnsDateFrom.set($event); loadWalletTransactions()"
+                   class="h-8 px-xs text-[10px] bg-surface-container text-on-surface border border-white/10 rounded-lg outline-none" />
+          </div>
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[8px] uppercase font-bold text-on-surface-variant">{{ lang() === 'ar' ? 'إلى' : 'To' }}</label>
+            <input type="date" [ngModel]="walletTxnsDateTo()" (ngModelChange)="walletTxnsDateTo.set($event); loadWalletTransactions()"
+                   class="h-8 px-xs text-[10px] bg-surface-container text-on-surface border border-white/10 rounded-lg outline-none" />
+          </div>
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[8px] uppercase font-bold text-on-surface-variant">{{ lang() === 'ar' ? 'الترتيب' : 'Sort' }}</label>
+            <select [ngModel]="walletTxnsSortOrder()" (ngModelChange)="walletTxnsSortOrder.set($event); loadWalletTransactions()"
+                    class="h-8 px-xs text-[10px] bg-surface-container text-on-surface border border-white/10 rounded-lg outline-none">
+              <option value="latest">{{ lang() === 'ar' ? 'الأحدث أولاً' : 'Latest' }}</option>
+              <option value="oldest">{{ lang() === 'ar' ? 'الأقدم أولاً' : 'Oldest' }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Spinner -->
+        <div *ngIf="isLoadingWalletTransactions()" class="flex-1 flex flex-col items-center justify-center py-lg">
+          <span class="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></span>
+          <p class="text-xs text-on-surface-variant mt-sm">{{ lang() === 'ar' ? 'جاري تحميل سجل المعاملات...' : 'Loading financial audit records...' }}</p>
+        </div>
+
+        <!-- Scrollable Transactions List -->
+        <div *ngIf="!isLoadingWalletTransactions()" class="flex-1 overflow-y-auto max-h-[300px] border border-white/5 rounded-xl bg-surface-container-low/50">
+          <table class="w-full border-collapse text-xs text-start">
+            <thead>
+              <tr class="bg-surface-container text-on-surface-variant font-bold border-b border-white/5 sticky top-0 z-10">
+                <th class="p-xs text-start">{{ lang() === 'ar' ? 'العملية' : 'Type' }}</th>
+                <th class="p-xs text-start">{{ lang() === 'ar' ? 'القيمة' : 'Amount' }}</th>
+                <th class="p-xs text-start">{{ lang() === 'ar' ? 'التاريخ' : 'Date' }}</th>
+                <th class="p-xs text-start">{{ lang() === 'ar' ? 'البيان / المرجع' : 'Description / Ref' }}</th>
+                <th class="p-xs text-center">{{ lang() === 'ar' ? 'الحالة' : 'Status' }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tx of selectedWalletTransactions(); track tx.id) {
+                <tr class="border-b border-white/5 hover:bg-surface-bright/20 transition-colors">
+                  <td class="p-xs">
+                    <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider"
+                          [ngClass]="tx.type === 'Deposit' ? 'bg-green-500/20 text-green-400' : 'bg-primary-container/20 text-primary'">
+                      {{ tx.type }}
+                    </span>
+                  </td>
+                  <td class="p-xs font-bold font-mono" [ngClass]="tx.type === 'Deposit' ? 'text-green-400' : 'text-on-surface'">
+                    {{ tx.type === 'Deposit' ? '+' : '-' }}{{ tx.amount }} EGP
+                  </td>
+                  <td class="p-xs text-[10px] text-on-surface-variant font-mono">{{ tx.createdAt | date:'short' }}</td>
+                  <td class="p-xs text-[10px] text-on-surface-variant">
+                    <p class="font-bold line-clamp-1 max-w-[150px]" [title]="tx.description">{{ tx.description }}</p>
+                    <p class="text-[9px] text-outline font-mono">Ref: {{ tx.referenceNumber || '-' }}</p>
+                  </td>
+                  <td class="p-xs text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[9px] font-bold"
+                          [ngClass]="tx.status === 'Completed' ? 'bg-green-500/20 text-green-400' : (tx.status === 'Pending' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-error/20 text-error')">
+                      {{ tx.status }}
+                    </span>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="p-lg text-center text-on-surface-variant">
+                    {{ lang() === 'ar' ? 'لا توجد معاملات مسجلة لهذه المحفظة' : 'No transactions recorded for this wallet' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

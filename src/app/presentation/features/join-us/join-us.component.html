@@ -1,0 +1,370 @@
+<div class="min-h-[80vh] flex items-center justify-center p-sm md:p-lg bg-surface animate-fade-in" [dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+  <div class="w-full max-w-6xl glass-panel rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 border border-outline-variant shadow-2xl min-h-[70vh]">
+    
+    <!-- Column 1: Marketing / Benefits Side (50%) -->
+    <div class="relative bg-gradient-to-tr from-[#0b1329] via-[#1a233d] to-[#2e1f47] p-lg text-white flex flex-col justify-between overflow-hidden group select-none">
+      <!-- Decorative Backdrop Blur Elements -->
+      <div class="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-white/10 blur-xl group-hover:scale-110 transition-transform duration-700"></div>
+      <div class="absolute -bottom-16 -left-16 w-60 h-60 rounded-full bg-secondary-container/20 blur-2xl"></div>
+
+      <!-- Header branding -->
+      <div class="space-y-sm text-start">
+        <div class="inline-flex items-center gap-xs px-sm py-[4px] bg-white/10 rounded-full backdrop-blur-md border border-white/10">
+          <span class="material-symbols-outlined text-[14px]">school</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider">{{ lang() === 'ar' ? 'بوابة المعلمين' : 'Instructor Portal' }}</span>
+        </div>
+        <h1 class="text-4xl font-extrabold tracking-tight mt-sm bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+          JoinUS <span class="text-white font-sans">EDUGATE</span>
+        </h1>
+        <p class="text-xs text-white/80 max-w-sm leading-relaxed">
+          {{ lang() === 'ar' 
+            ? 'انضم إلى أكبر منصة تعليمية تفاعلية بمصر والشرق الأوسط، وابدأ رحلة نجاحك في تدريس آلاف الطلاب من مكانك.' 
+            : 'Join the premier e-learning environment in Egypt. Expand your reach, inspire thousands of students, and build your digital teaching career.' }}
+        </p>
+      </div>
+
+      <!-- Benefits Stack -->
+      <div class="space-y-md my-lg text-start">
+        <!-- Benefit 1 -->
+        <div class="flex items-start gap-sm">
+          <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center border border-white/15 shrink-0">
+            <span class="material-symbols-outlined text-md">payments</span>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm">{{ lang() === 'ar' ? 'عوائد مادية مجزية' : 'Attractive Revenue Share' }}</h4>
+            <p class="text-[11px] text-white/70 mt-[2px]">{{ lang() === 'ar' ? 'احصل على عمولات تنافسية وسحب فوري لأرباحك مع فوادفون كاش وفوري.' : 'Enjoy high split percentages and instant withdrawals via local digital wallets.' }}</p>
+          </div>
+        </div>
+
+        <!-- Benefit 2 -->
+        <div class="flex items-start gap-sm">
+          <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center border border-white/15 shrink-0">
+            <span class="material-symbols-outlined text-md">group</span>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm">{{ lang() === 'ar' ? 'قاعدة طلابية واسعة' : 'Massive Student Base' }}</h4>
+            <p class="text-[11px] text-white/70 mt-[2px]">{{ lang() === 'ar' ? 'تواصل مع آلاف الطلاب المسجلين بالمنصة في مختلف المحافظات والشهادات.' : 'Reach registered students across all Egyptian Governorates instantly.' }}</p>
+          </div>
+        </div>
+
+        <!-- Benefit 3 -->
+        <div class="flex items-start gap-sm">
+          <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center border border-white/15 shrink-0">
+            <span class="material-symbols-outlined text-md">videocam</span>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm">{{ lang() === 'ar' ? 'أدوات واستوديو متطور' : 'Premium Video Hosting' }}</h4>
+            <p class="text-[11px] text-white/70 mt-[2px]">{{ lang() === 'ar' ? 'رفع المحاضرات وحماية فيديوهاتك من السرقة وتتبع تقدم الطلاب بدقة.' : 'Secure lesson delivery, content protection, and robust analytics.' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer note -->
+      <div class="text-white/60 text-[10px] text-start font-mono">
+        © 2026 EDUGATE Academy System Onboarding Pipeline
+      </div>
+    </div>
+
+    <!-- Column 2: Form & Wizard Steps Side (50%) -->
+    <div class="p-lg flex flex-col justify-between bg-surface-container-lowest/40 relative">
+      
+      <!-- Stepper Header -->
+      <div class="w-full mb-md">
+        <!-- Stepper circles and lines -->
+        <div class="flex items-center justify-between max-w-sm mx-auto relative select-none">
+          <!-- Connector line -->
+          <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-outline-variant -z-10"></div>
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 h-[2px] bg-primary -z-10 transition-all duration-300"
+               [style.width.%]="(step() - 1) * 33.33"></div>
+
+          <!-- Step Indicators -->
+          <button *ngFor="let s of [1,2,3,4]" (click)="goToStep(s)"
+                  [disabled]="successMessage() ? true : false"
+                  class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all relative"
+                  [ngClass]="step() === s ? 'bg-primary text-on-primary ring-4 ring-primary/20 scale-105' : (step() > s ? 'bg-green-500 text-white' : 'bg-surface-container-high text-on-surface-variant border border-outline-variant')">
+            <span *ngIf="step() > s" class="material-symbols-outlined text-[14px]">done</span>
+            <span *ngIf="step() <= s">{{ s }}</span>
+          </button>
+        </div>
+
+        <!-- Step Titles -->
+        <div class="flex justify-between max-w-md mx-auto text-[9px] uppercase tracking-wider font-bold text-on-surface-variant mt-sm">
+          <span [ngClass]="{'text-primary': step() === 1}">{{ lang() === 'ar' ? 'البيانات الشخصية' : 'Personal' }}</span>
+          <span [ngClass]="{'text-primary': step() === 2}">{{ lang() === 'ar' ? 'التخصص' : 'Professional' }}</span>
+          <span [ngClass]="{'text-primary': step() === 3}">{{ lang() === 'ar' ? 'التواصل' : 'Social' }}</span>
+          <span [ngClass]="{'text-primary': step() === 4}">{{ lang() === 'ar' ? 'الملفات' : 'Documents' }}</span>
+        </div>
+      </div>
+
+      <!-- Success Screen -->
+      <div *ngIf="successMessage()" class="flex-1 flex flex-col items-center justify-center text-center space-y-md animate-scale-in max-w-md mx-auto">
+        <div class="w-16 h-16 rounded-full bg-green-500/10 text-green-500 border border-green-500/20 flex items-center justify-center shadow-lg">
+          <span class="material-symbols-outlined text-4xl">check_circle</span>
+        </div>
+        <div class="space-y-xs">
+          <h2 class="text-xl font-bold text-on-surface">{{ lang() === 'ar' ? 'تم تقديم طلبك!' : 'Application Sent!' }}</h2>
+          <p class="text-xs text-on-surface-variant leading-relaxed">{{ successMessage() }}</p>
+        </div>
+        <div class="flex gap-sm w-full pt-md">
+          <button (click)="goBackToHome()" class="flex-1 h-10 rounded-xl bg-surface-container-high border border-outline-variant text-xs font-bold hover:bg-white/5 active:scale-95 transition-all text-on-surface">
+            {{ lang() === 'ar' ? 'الرئيسية' : 'Go Home' }}
+          </button>
+          <button (click)="resetForm()" class="flex-1 h-10 rounded-xl bg-primary text-on-primary text-xs font-bold hover:brightness-110 active:scale-95 transition-all">
+            {{ lang() === 'ar' ? 'طلب جديد' : 'Submit Another' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Steps -->
+      <form *ngIf="!successMessage()" class="flex-1 flex flex-col justify-between max-w-md mx-auto w-full text-start" (submit)="$event.preventDefault()">
+        
+        <!-- Error Alerts -->
+        <div *ngIf="errorMessage()" class="p-xs text-xs bg-error/15 text-error-container rounded-xl border border-error/20 flex items-start gap-xs mb-sm animate-shake">
+          <span class="material-symbols-outlined text-[16px] shrink-0 mt-[2px]">error</span>
+          <span>{{ errorMessage() }}</span>
+        </div>
+
+        <!-- ================== STEP 1: PERSONAL INFO ================== -->
+        <div *ngIf="step() === 1" class="space-y-sm animate-fade-in">
+          <div class="border-b border-outline-variant pb-xs">
+            <h3 class="font-bold text-sm text-on-surface">{{ lang() === 'ar' ? 'المعلومات الشخصية والاتصال' : 'Personal & Contact Information' }}</h3>
+            <p class="text-[10px] text-on-surface-variant">{{ lang() === 'ar' ? 'أدخل معلوماتك الأساسية كما هي مسجلة في بطاقتك الشخصية.' : 'Enter your name exactly as written in your National ID.' }}</p>
+          </div>
+
+          <!-- Profile Image Preview and Input -->
+          <div class="flex items-center gap-md bg-surface-container-low/50 p-xs rounded-2xl border border-outline-variant">
+            <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0 overflow-hidden border border-outline-variant">
+              <img *ngIf="profileImagePreview()" [src]="profileImagePreview()" alt="Avatar" class="w-full h-full object-cover" />
+              <span *ngIf="!profileImagePreview()" class="material-symbols-outlined text-lg">add_a_photo</span>
+            </div>
+            <div class="text-start">
+              <span class="text-[10px] font-bold text-on-surface-variant block uppercase">{{ lang() === 'ar' ? 'الصورة الشخصية (اختياري)' : 'Profile Photo (Optional)' }}</span>
+              <input type="file" accept="image/*" (change)="onFileSelected($event, 'profile')" class="hidden" #profileInput />
+              <button type="button" (click)="profileInput.click()" class="inline-block mt-xs px-sm py-1.5 bg-surface-container border border-outline-variant text-[10px] rounded-lg font-bold cursor-pointer hover:border-primary transition-colors text-on-surface">
+                {{ lang() === 'ar' ? 'اختر صورة...' : 'Upload Image...' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-xs">
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الاسم الأول *' : 'First Name *' }}</label>
+              <input type="text" [ngModel]="firstName()" (ngModelChange)="firstName.set($event)" name="firstName"
+                     [placeholder]="lang() === 'ar' ? 'مثال: أحمد' : 'e.g. Ahmed'"
+                     class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+              <p *ngIf="validationErrors()['FirstName']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['FirstName'][0] }}</p>
+            </div>
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'اسم الأب *' : 'Second Name *' }}</label>
+              <input type="text" [ngModel]="secondName()" (ngModelChange)="secondName.set($event)" name="secondName"
+                     [placeholder]="lang() === 'ar' ? 'مثال: محمد' : 'e.g. Mohamed'"
+                     class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+              <p *ngIf="validationErrors()['SecondName']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['SecondName'][0] }}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-xs">
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الاسم الثالث' : 'Third Name' }}</label>
+              <input type="text" [ngModel]="thirdName()" (ngModelChange)="thirdName.set($event)" name="thirdName"
+                     [placeholder]="lang() === 'ar' ? 'مثال: حسن' : 'e.g. Hassan'"
+                     class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+            </div>
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'العائلة / اللقب *' : 'Last Name *' }}</label>
+              <input type="text" [ngModel]="lastName()" (ngModelChange)="lastName.set($event)" name="lastName"
+                     [placeholder]="lang() === 'ar' ? 'مثال: سيف' : 'e.g. Seif'"
+                     class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+              <p *ngIf="validationErrors()['LastName']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['LastName'][0] }}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-xs">
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'البريد الإلكتروني *' : 'Email Address *' }}</label>
+              <input type="email" [ngModel]="emailAddress()" (ngModelChange)="emailAddress.set($event)" name="emailAddress"
+                     [placeholder]="lang() === 'ar' ? 'example@email.com' : 'example@email.com'"
+                     class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+              <p *ngIf="validationErrors()['EmailAddress']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['EmailAddress'][0] }}</p>
+            </div>
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'رقم الهاتف المحمول *' : 'Mobile Number *' }}</label>
+              <input type="tel" [ngModel]="phoneNumber()" (ngModelChange)="phoneNumber.set($event)" name="phoneNumber"
+                     [placeholder]="lang() === 'ar' ? 'مثال: 01012345678' : 'e.g. 01012345678'"
+                     class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+              <p *ngIf="validationErrors()['PhoneNumber']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['PhoneNumber'][0] }}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-xs">
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'المحافظة *' : 'Governorate *' }}</label>
+              <select [ngModel]="governorate()" (ngModelChange)="governorate.set($event)" name="governorate"
+                      class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary">
+                <option value="">{{ lang() === 'ar' ? 'اختر محافظة...' : 'Select Governorate...' }}</option>
+                <option *ngFor="let gov of governorates" [value]="gov.en">
+                  {{ lang() === 'ar' ? gov.ar : gov.en }}
+                </option>
+              </select>
+              <p *ngIf="validationErrors()['Governorate']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['Governorate'][0] }}</p>
+            </div>
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'العنوان التفصيلي *' : 'Address *' }}</label>
+              <input type="text" [ngModel]="address()" (ngModelChange)="address.set($event)" name="address"
+                     [placeholder]="lang() === 'ar' ? 'مثال: 12 شارع الجلاء، مصر الجديدة' : 'e.g. 12 El-Galaa St, Heliopolis'"
+                     class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+              <p *ngIf="validationErrors()['Address']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['Address'][0] }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================== STEP 2: PROFESSIONAL INFO ================== -->
+        <div *ngIf="step() === 2" class="space-y-sm animate-fade-in">
+          <div class="border-b border-outline-variant pb-xs">
+            <h3 class="font-bold text-sm text-on-surface">{{ lang() === 'ar' ? 'الخبرات والتخصص الأكاديمي' : 'Academic & Professional Profile' }}</h3>
+            <p class="text-[10px] text-on-surface-variant">{{ lang() === 'ar' ? 'أدخل تخصصك العلمي وخبراتك التي ترغب في توثيقها بالمنصة.' : 'Enter your course specializations and value addition strategy.' }}</p>
+          </div>
+
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'التخصص الرئيسي *' : 'Specialization / Main Subject *' }}</label>
+            <input type="text" [ngModel]="specialization()" (ngModelChange)="specialization.set($event)" name="specialization"
+                   class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary"
+                   [placeholder]="lang() === 'ar' ? 'مثال: فيزياء، لغة عربية...' : 'e.g. Physics, Arabic...'" />
+            <p *ngIf="validationErrors()['Specialization']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['Specialization'][0] }}</p>
+          </div>
+
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الخبرات السابقة بالتفصيل' : 'Previous Experience Text' }}</label>
+            <textarea [ngModel]="previousExperienceText()" (ngModelChange)="previousExperienceText.set($event)" name="previousExperienceText" rows="3"
+                      class="p-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary resize-none"
+                      [placeholder]="lang() === 'ar' ? 'اكتب تفاصيل خبراتك التدريسية السابقة...' : 'Write down previous academies/platforms you worked at...'"></textarea>
+          </div>
+
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الإضافة المقترحة للمنصة *' : 'Value Addition Text *' }}</label>
+            <textarea [ngModel]="valueAdditionText()" (ngModelChange)="valueAdditionText.set($event)" name="valueAdditionText" rows="3"
+                      class="p-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary resize-none"
+                      [placeholder]="lang() === 'ar' ? 'ما هي الإضافة المميزة التي ستقدمها للمنصة؟' : 'How will you make a unique impact for students on EDUGATE?'"></textarea>
+            <p *ngIf="validationErrors()['ValueAdditionText']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['ValueAdditionText'][0] }}</p>
+          </div>
+        </div>
+
+        <!-- ================== STEP 3: SOCIAL LINKS ================== -->
+        <div *ngIf="step() === 3" class="space-y-sm animate-fade-in">
+          <div class="border-b border-outline-variant pb-xs">
+            <h3 class="font-bold text-sm text-on-surface">{{ lang() === 'ar' ? 'حسابات التواصل والمعرض الرقمي' : 'Social & Portfolio Links' }}</h3>
+            <p class="text-[10px] text-on-surface-variant">{{ lang() === 'ar' ? 'أضف روابط حساباتك لمساعدتنا في تقييم مدى انتشارك وتفاعل الطلاب معك (اختياري).' : 'Add your professional links to assist our onboarding team (Optional).' }}</p>
+          </div>
+
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-xs uppercase font-bold text-on-surface">Facebook Page / Profile Link</label>
+            <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-sm h-9">
+              <span class="material-symbols-outlined text-xs text-outline mr-1">link</span>
+              <input type="url" [ngModel]="facebookLink()" (ngModelChange)="facebookLink.set($event)" name="facebookLink"
+                     class="w-full text-xs bg-transparent text-on-surface border-none outline-none"
+                     placeholder="https://facebook.com/..." />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-xs uppercase font-bold text-on-surface">Instagram Page Link</label>
+            <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-sm h-9">
+              <span class="material-symbols-outlined text-xs text-outline mr-1">link</span>
+              <input type="url" [ngModel]="instagramLink()" (ngModelChange)="instagramLink.set($event)" name="instagramLink"
+                     class="w-full text-xs bg-transparent text-on-surface border-none outline-none"
+                     placeholder="https://instagram.com/..." />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-xs uppercase font-bold text-on-surface">Personal Website / Behance / YouTube Channel</label>
+            <div class="flex items-center bg-surface-container-low border border-outline-variant rounded-xl px-sm h-9">
+              <span class="material-symbols-outlined text-xs text-outline mr-1">link</span>
+              <input type="url" [ngModel]="personalWebsiteOrBehanceLink()" (ngModelChange)="personalWebsiteOrBehanceLink.set($event)" name="personalWebsiteOrBehanceLink"
+                     class="w-full text-xs bg-transparent text-on-surface border-none outline-none"
+                     placeholder="https://behance.net/... or website url" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ================== STEP 4: FILE UPLOAD ================== -->
+        <div *ngIf="step() === 4" class="space-y-sm animate-fade-in">
+          <div class="border-b border-outline-variant pb-xs">
+            <h3 class="font-bold text-sm text-on-surface">{{ lang() === 'ar' ? 'رفع المستندات الرسمية والسيرة الذاتية' : 'Official Document Uploads' }}</h3>
+            <p class="text-[10px] text-on-surface-variant">{{ lang() === 'ar' ? 'الرجاء إرفاق المستندات المطلوبة للتحقق من هويتك ومؤهلاتك الأكاديمية.' : 'Upload official files to verify your identity and teaching background.' }}</p>
+          </div>
+
+          <!-- National ID Image file upload card -->
+          <div class="flex flex-col gap-xs">
+            <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'صورة بطاقة الرقم القومي (وجه) *' : 'National ID Card Image *' }}</label>
+            <div class="flex items-center gap-md bg-surface-container-low p-sm rounded-2xl border border-outline-variant">
+              <div class="w-16 h-12 rounded-lg bg-surface-container flex items-center justify-center overflow-hidden border border-outline-variant shrink-0">
+                <img *ngIf="nationalIdPreview()" [src]="nationalIdPreview()" alt="National ID Preview" class="w-full h-full object-cover" />
+                <span *ngIf="!nationalIdPreview()" class="material-symbols-outlined text-lg text-outline">badge</span>
+              </div>
+              <div class="text-start">
+                <input type="file" accept="image/*" (change)="onFileSelected($event, 'nationalId')" class="hidden" #nationalIdInput />
+                <button type="button" (click)="nationalIdInput.click()" class="inline-block px-sm py-1.5 bg-primary text-on-primary text-[10px] rounded-lg font-bold cursor-pointer hover:brightness-110 active:scale-95 transition-all">
+                  {{ lang() === 'ar' ? 'اختر صورة البطاقة...' : 'Select ID Image...' }}
+                </button>
+                <p class="text-[8px] text-outline mt-xs">{{ lang() === 'ar' ? 'يجب أن تكون الصورة واضحة والبيانات مقروءة.' : 'Image must be legible with all text readable.' }}</p>
+              </div>
+            </div>
+            <p *ngIf="validationErrors()['NationalIdCardImage']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['NationalIdCardImage'][0] }}</p>
+          </div>
+
+          <!-- CV or Portfolio Upload card -->
+          <div class="flex flex-col gap-xs">
+            <label class="text-xs uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'السيرة الذاتية أو معرض الأعمال (PDF / Doc) *' : 'CV / Portfolio File (PDF / Word) *' }}</label>
+            <div class="flex items-center gap-md bg-surface-container-low p-sm rounded-2xl border border-outline-variant">
+              <div class="w-16 h-12 rounded-lg bg-surface-container flex items-center justify-center border border-outline-variant shrink-0">
+                <span class="material-symbols-outlined text-lg text-outline" [ngClass]="{'text-green-400': cvFileName()}">
+                  {{ cvFileName() ? 'picture_as_pdf' : 'description' }}
+                </span>
+              </div>
+              <div class="text-start">
+                <input type="file" accept=".pdf,.doc,.docx" (change)="onFileSelected($event, 'cv')" class="hidden" #cvInput />
+                <button type="button" (click)="cvInput.click()" class="inline-block px-sm py-1.5 bg-surface-container border border-outline-variant text-[10px] rounded-lg font-bold cursor-pointer hover:border-primary active:scale-95 transition-all text-on-surface">
+                  {{ lang() === 'ar' ? 'اختر الملف...' : 'Select File...' }}
+                </button>
+                <p class="text-[9px] font-bold text-on-surface mt-xs font-mono truncate max-w-[200px]" *ngIf="cvFileName()">{{ cvFileName() }}</p>
+                <p class="text-[8px] text-outline mt-xs" *ngIf="!cvFileName()">{{ lang() === 'ar' ? 'الحد الأقصى للملف: 5 ميجابايت (يفضل صيغة PDF).' : 'Max file size 5MB (PDF strongly preferred).' }}</p>
+              </div>
+            </div>
+            <p *ngIf="validationErrors()['CvOrPortfolio']" class="text-[9px] text-error mt-[2px]">{{ validationErrors()['CvOrPortfolio'][0] }}</p>
+          </div>
+        </div>
+
+        <!-- Stepper Buttons controls -->
+        <div class="flex gap-sm border-t border-outline-variant pt-md mt-lg" [ngClass]="lang() === 'ar' ? 'flex-row-reverse' : 'flex-row'">
+          <!-- Back button -->
+          <button type="button" *ngIf="step() > 1" (click)="prevStep()"
+                  class="flex-1 h-10 rounded-xl bg-surface-container-high border border-outline-variant text-xs font-bold hover:bg-white/5 active:scale-95 transition-all text-on-surface">
+            {{ lang() === 'ar' ? 'السابق' : 'Previous' }}
+          </button>
+          
+          <!-- Cancel/Home button (only on step 1) -->
+          <button type="button" *ngIf="step() === 1" (click)="goBackToHome()"
+                  class="flex-1 h-10 rounded-xl bg-surface-container-high border border-outline-variant text-xs font-bold hover:bg-white/5 active:scale-95 transition-all text-on-surface">
+            {{ lang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+          </button>
+
+          <!-- Next button -->
+          <button type="button" *ngIf="step() < 4" (click)="nextStep()"
+                  class="flex-1 h-10 rounded-xl bg-primary text-on-primary text-xs font-bold hover:brightness-110 active:scale-95 transition-all">
+            {{ lang() === 'ar' ? 'التالي' : 'Next Step' }}
+          </button>
+
+          <!-- Submit button -->
+          <button type="button" *ngIf="step() === 4" (click)="submitApplication()" [disabled]="isSubmitting()"
+                  class="flex-1 h-10 rounded-xl bg-primary text-on-primary text-xs font-bold disabled:opacity-35 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-xs">
+            <span *ngIf="isSubmitting()" class="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></span>
+            <span>{{ lang() === 'ar' ? 'إرسال الطلب' : 'Submit Application' }}</span>
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>

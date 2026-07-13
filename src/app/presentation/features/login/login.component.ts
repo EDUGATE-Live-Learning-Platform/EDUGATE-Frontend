@@ -58,7 +58,12 @@ export class LoginComponent {
     this.authService.login(payload).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/home']);
+        const user = this.authService.currentUser();
+        if (user && user.Role === 'Admin') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/home']);
+        }
       },
       error: (err) => {
         this.isSubmitting.set(false);

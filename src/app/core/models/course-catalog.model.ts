@@ -91,3 +91,13 @@ export interface StudentDashboardSummary {
   walletBalance: number;
   resumeLearning?: ResumeLearningResponse | null;
 }
+
+export interface CalendarEvent {
+  id?: string;
+  title: string;
+  description: string;
+  eventDate: string;
+  eventType: string; // 'Exam' | 'Assignment' | 'Internship' | 'Personal'
+  userId?: string | null;
+  createdAt?: string;
+}

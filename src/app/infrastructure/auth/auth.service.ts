@@ -1,5 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { tap, switchMap, map, catchError } from 'rxjs/operators';
 import { AuthPort } from '../../core/ports/auth.port';
@@ -16,6 +17,7 @@ import { environment } from '../../../environments/environment';
 })
 export class AuthService extends AuthPort {
   private http = inject(HttpClient);
+  private router = inject(Router);
 
   // Private signal for user state management
   private currentUserState = signal<UserProfile | null>(null);
@@ -152,6 +154,7 @@ export class AuthService extends AuthPort {
     eraseCookie('AccessToken');
     eraseCookie('RefreshToken');
     this.currentUserState.set(null);
+    this.router.navigate(['/']);
   }
 
   /**

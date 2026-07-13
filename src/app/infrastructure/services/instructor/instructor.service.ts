@@ -54,4 +54,8 @@ export class InstructorService {
         .set('instructorId', instructorId)
     });
   }
+
+  submitInstructorApplication(formData: FormData): Observable<any> {
+    return this.http.post<any>('/api/v1/instructor-applications', formData);
+  }
 }

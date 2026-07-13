@@ -2,7 +2,7 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Course } from '../../../core/models/course.model';
-import { CourseCatalogItem, CourseDetails, StudentDashboardResponse } from '../../../core/models/course-catalog.model';
+import { CourseCatalogItem, CourseDetails, StudentDashboardResponse, CalendarEvent } from '../../../core/models/course-catalog.model';
 
 @Injectable({
   providedIn: 'root'
@@ -155,5 +155,13 @@ export class CourseService {
       LastAccessedLessonId: lessonId,
       LastAccessedSecond: second
     });
+  }
+
+  getCalendarEvents(): Observable<{ Data: CalendarEvent[] }> {
+    return this.http.get<{ Data: CalendarEvent[] }>('/api/v1/student/calendar');
+  }
+
+  addCalendarEvent(event: CalendarEvent): Observable<{ Data: CalendarEvent }> {
+    return this.http.post<{ Data: CalendarEvent }>('/api/v1/student/calendar', event);
   }
 }
