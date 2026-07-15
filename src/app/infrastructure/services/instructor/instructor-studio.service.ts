@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import {
   CreateCourseDto,
   UpdateCourseDto,
@@ -17,6 +18,14 @@ import {
 export class InstructorStudioService {
   private http = inject(HttpClient);
 
+  private getAbsoluteUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+      return url;
+    }
+    return `${environment.apiUrl}/${url.replace(/^\//, '')}`;
+  }
+
   // ----------------- Dashboard Data -----------------
   
   getDashboardSummary(): Observable<InstructorDashboardSummary> {
@@ -24,7 +33,12 @@ export class InstructorStudioService {
   }
 
   getCoursesReport(): Observable<InstructorCourseReportItem[]> {
-    return this.http.get<InstructorCourseReportItem[]>('/api/v1/instructor/dashboard/courses-report');
+    return this.http.get<InstructorCourseReportItem[]>('/api/v1/instructor/dashboard/courses-report').pipe(
+      map(items => (items || []).map(item => ({
+        ...item,
+        thumbnailUrl: this.getAbsoluteUrl(item.thumbnailUrl) || undefined
+      })))
+    );
   }
 
   getRecentReviews(): Observable<InstructorReviewFeedItem[]> {

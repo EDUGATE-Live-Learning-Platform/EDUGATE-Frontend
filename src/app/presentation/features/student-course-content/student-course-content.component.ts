@@ -10,6 +10,7 @@ import { AuthService } from '../../../infrastructure/auth/auth.service';
 import { getCookie } from '../../../infrastructure/auth/cookie.utils';
 import { AppLayoutComponent } from '../../layouts/app-layout/app-layout.component';
 import { TranslationService } from '../../../core/services/translation.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { CourseDetails, SectionResponse, LessonResponse, LessonAttachmentResponse } from '../../../core/models/course-catalog.model';
 import Hls from 'hls.js';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -30,6 +31,7 @@ export class StudentCourseContentComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private layout = inject(AppLayoutComponent);
   private translationService = inject(TranslationService);
+  private toastService = inject(ToastService);
 
   private destroy$ = new Subject<void>();
   private hls: Hls | null = null;
@@ -198,7 +200,7 @@ export class StudentCourseContentComponent implements OnInit, OnDestroy {
         );
 
         if (hasWatermarkRemoved) {
-          alert('Security modification detected. Access suspended.');
+          this.toastService.error('Security Alert', 'Security modification detected. Access suspended.');
           this.router.navigate(['/home']);
         }
       });
@@ -256,18 +258,16 @@ export class StudentCourseContentComponent implements OnInit, OnDestroy {
           // Block context menu specifically on video tag
           videoElement.addEventListener('contextmenu', e => e.preventDefault());
 
-          if (Hls.isSupported()) {
+          const isHls = signedUrl.includes('.m3u8');
+          if (isHls && Hls.isSupported()) {
             this.hls = new Hls({
               maxBufferSize: 4 * 1024 * 1024, // 4MB buffer limit
               enableWorker: true
             });
             this.hls.loadSource(signedUrl);
             this.hls.attachMedia(videoElement);
-          } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-            // iOS native HLS streaming
-            videoElement.src = signedUrl;
           } else {
-            // Standard progressive fallback
+            // Standard progressive MP4 streaming or native Safari HLS
             videoElement.src = signedUrl;
           }
         }, 100);

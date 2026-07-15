@@ -61,16 +61,7 @@ export class CourseListComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  constructor() {
-    // Reload courses whenever category, maxPrice, or minRating changes
-    effect(() => {
-      this.selectedCategory();
-      this.maxPrice();
-      this.minRating();
-      this.currentPage.set(1); // Reset page on filter change
-      this.loadCourses();
-    }, { allowSignalWrites: true });
-  }
+  constructor() {}
 
   ngOnInit(): void {
     // Debounce search input to avoid spamming the backend
@@ -80,8 +71,7 @@ export class CourseListComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(val => {
       this.searchQuery.set(val);
-      this.currentPage.set(1);
-      this.loadCourses();
+      this.resetAndLoad();
     });
 
     this.loadCourses();
@@ -95,6 +85,26 @@ export class CourseListComponent implements OnInit, OnDestroy {
   onSearchChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchSubject.next(input.value);
+  }
+
+  onCategoryChange(cat: string): void {
+    this.selectedCategory.set(cat);
+    this.resetAndLoad();
+  }
+
+  onPriceChange(price: number): void {
+    this.maxPrice.set(price);
+    this.resetAndLoad();
+  }
+
+  onRatingChange(rating: number): void {
+    this.minRating.set(rating);
+    this.resetAndLoad();
+  }
+
+  resetAndLoad(): void {
+    this.currentPage.set(1);
+    this.loadCourses();
   }
 
   loadCourses(): void {

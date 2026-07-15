@@ -6,6 +6,7 @@ import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { switchMap, filter, tap } from 'rxjs/operators';
 import { InstructorStudioService } from '../../../infrastructure/services/instructor/instructor-studio.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { CourseService } from '../../../infrastructure/services/course/course.service';
 import { AuthService } from '../../../infrastructure/auth/auth.service';
 import { AppLayoutComponent } from '../../layouts/app-layout/app-layout.component';
@@ -35,6 +36,7 @@ export class InstructorDashboardComponent implements OnInit {
   private layout = inject(AppLayoutComponent);
   private translationService = inject(TranslationService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   lang = this.layout.currentLang;
   t = this.translationService.translations;
@@ -301,12 +303,13 @@ export class InstructorDashboardComponent implements OnInit {
           if (this.selectedThumbnailFile) {
             this.uploadCourseThumbnail(this.editingCourseId());
           } else {
-            this.finishCourseSave();
+            this.finishCourseSave('Course updated successfully!');
           }
         },
         error: (err) => {
           this.isSubmitting.set(false);
           this.formErrorMessage.set(err.error?.message || 'Failed to update course.');
+          this.toastService.error('Update Failed', err.error?.message || 'Failed to update course.');
         }
       });
     } else {
@@ -316,12 +319,13 @@ export class InstructorDashboardComponent implements OnInit {
           if (this.selectedThumbnailFile && newCourseId) {
             this.uploadCourseThumbnail(newCourseId);
           } else {
-            this.finishCourseSave();
+            this.finishCourseSave('Course created successfully!');
           }
         },
         error: (err) => {
           this.isSubmitting.set(false);
           this.formErrorMessage.set(err.error?.message || 'Failed to create course.');
+          this.toastService.error('Creation Failed', err.error?.message || 'Failed to create course.');
         }
       });
     }
@@ -330,17 +334,19 @@ export class InstructorDashboardComponent implements OnInit {
   uploadCourseThumbnail(courseId: string): void {
     if (!this.selectedThumbnailFile) return;
     this.studioService.uploadCourseMedia(courseId, this.selectedThumbnailFile).subscribe({
-      next: () => this.finishCourseSave(),
+      next: () => this.finishCourseSave(this.isEditingCourse() ? 'Course updated successfully!' : 'Course created successfully!'),
       error: (err) => {
         this.isSubmitting.set(false);
         this.formErrorMessage.set('Course saved, but thumbnail upload failed.');
+        this.toastService.warning('Partial Success', 'Course saved, but thumbnail upload failed.');
       }
     });
   }
 
-  finishCourseSave(): void {
+  finishCourseSave(message = 'Course saved successfully!'): void {
     this.isSubmitting.set(false);
     this.showCourseModal.set(false);
+    this.toastService.success('Success', message);
     this.loadAllDashboardData();
   }
 
@@ -352,12 +358,16 @@ export class InstructorDashboardComponent implements OnInit {
 
     request$.subscribe({
       next: () => {
+        this.toastService.success('Status Updated', isPublished ? 'Course unpublished.' : 'Course published!');
         this.loadAllDashboardData();
         if (this.selectedCourseId() === course.courseId) {
           this.loadCourseCurriculumTree(course.courseId);
         }
       },
-      error: (err) => console.error('Failed to change course publish status', err)
+      error: (err) => {
+        console.error('Failed to change course publish status', err);
+        this.toastService.error('Status Change Failed', 'Could not update publish status.');
+      }
     });
   }
 
@@ -387,11 +397,13 @@ export class InstructorDashboardComponent implements OnInit {
       next: () => {
         this.isSubmitting.set(false);
         this.showSectionModal.set(false);
+        this.toastService.success('Section Created', 'New section added to curriculum.');
         this.loadCourseCurriculumTree(this.selectedCourseId());
       },
       error: (err) => {
         this.isSubmitting.set(false);
         this.formErrorMessage.set(err.error?.message || 'Failed to create section.');
+        this.toastService.error('Section Error', err.error?.message || 'Failed to create section.');
       }
     });
   }
@@ -476,11 +488,13 @@ export class InstructorDashboardComponent implements OnInit {
       next: () => {
         this.isSubmitting.set(false);
         this.showLessonModal.set(false);
+        this.toastService.success('Lesson Saved', this.isEditingLesson() ? 'Lesson updated.' : 'New lesson created.');
         this.loadCourseCurriculumTree(this.selectedCourseId());
       },
       error: (err) => {
         this.isSubmitting.set(false);
         this.formErrorMessage.set(err.error?.message || 'Failed to save lesson.');
+        this.toastService.error('Lesson Error', err.error?.message || 'Failed to save lesson.');
       }
     });
   }
@@ -493,10 +507,12 @@ export class InstructorDashboardComponent implements OnInit {
     this.isLoadingCurriculum.set(true);
     this.studioService.deleteLesson(lessonId).subscribe({
       next: () => {
+        this.toastService.success('Lesson Deleted', 'The lesson has been removed.');
         this.loadCourseCurriculumTree(this.selectedCourseId());
       },
       error: (err) => {
         console.error('Failed to delete lesson', err);
+        this.toastService.error('Delete Failed', 'Could not delete the lesson.');
         this.isLoadingCurriculum.set(false);
       }
     });
@@ -532,11 +548,13 @@ export class InstructorDashboardComponent implements OnInit {
       next: () => {
         this.isSubmitting.set(false);
         this.showAttachmentModal.set(false);
+        this.toastService.success('Attachment Uploaded', 'File attached to lesson.');
         this.loadCourseCurriculumTree(this.selectedCourseId());
       },
       error: (err) => {
         this.isSubmitting.set(false);
         this.formErrorMessage.set(err.error?.message || 'Failed to upload attachment.');
+        this.toastService.error('Upload Failed', err.error?.message || 'Failed to upload attachment.');
       }
     });
   }

@@ -7,7 +7,9 @@ import { takeUntil } from 'rxjs/operators';
 import { CourseService } from '../../../../infrastructure/services/course/course.service';
 import { AuthService } from '../../../../infrastructure/auth/auth.service';
 import { WalletService } from '../../../../infrastructure/services/wallet/wallet.service';
+import { SecureMediaService } from '../../../../infrastructure/services/security/secure-media.service';
 import { TranslationService } from '../../../../core/services/translation.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { AppLayoutComponent } from '../../../layouts/app-layout/app-layout.component';
 import { CourseDetails } from '../../../../core/models/course-catalog.model';
 
@@ -25,7 +27,9 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   courseService = inject(CourseService);
   authService = inject(AuthService);
   walletService = inject(WalletService);
+  secureMediaService = inject(SecureMediaService);
   translationService = inject(TranslationService);
+  toastService = inject(ToastService);
   layout = inject(AppLayoutComponent);
 
   private destroy$ = new Subject<void>();
@@ -145,7 +149,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
     }
 
     if (user.Role !== 'Student') {
-      alert(this.translationService.translate('detail.studentOnlyAlert'));
+      this.toastService.warning('Access Restricted', this.translationService.translate('detail.studentOnlyAlert'));
       return;
     }
 
@@ -208,7 +212,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isPurchasing.set(false);
-        alert(err.error?.message || 'Purchase failed.');
+        this.toastService.error('Purchase Failed', err.error?.message || 'Something went wrong. Please try again.');
       }
     });
   }
@@ -226,7 +230,7 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isDepositing.set(false);
-        alert('Deposit failed.');
+        this.toastService.error('Deposit Failed', 'Could not process your deposit. Please try again.');
       }
     });
   }
@@ -246,9 +250,15 @@ export class CourseDetailComponent implements OnInit, OnDestroy {
   }
 
   watchPreview(lesson: any): void {
-    if (lesson.videoUrl) {
-      this.triggerPreview(lesson.videoUrl);
-    }
+    this.secureMediaService.getSignedUrl(lesson.id).subscribe({
+      next: (signedUrl) => {
+        this.triggerPreview(signedUrl);
+      },
+      error: (err) => {
+        console.error('Failed to load signed preview URL', err);
+        this.toastService.error('Preview Unavailable', 'Failed to load preview video.');
+      }
+    });
   }
 
   goToStudy(): void {

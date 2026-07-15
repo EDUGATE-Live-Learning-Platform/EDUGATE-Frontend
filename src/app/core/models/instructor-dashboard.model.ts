@@ -36,6 +36,7 @@ export interface InstructorCourseReportItem {
   progressAverage: number;
   isPublished: boolean;
   price: number;
+  thumbnailUrl?: string;
 }
 
 export interface InstructorReviewFeedItem {
