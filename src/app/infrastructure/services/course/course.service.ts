@@ -151,9 +151,8 @@ export class CourseService {
 
   updateProgress(courseId: string, lessonId: string, second: number): Observable<any> {
     return this.http.post('/api/v1/student/courses/progress', {
-      CourseId: courseId,
-      LastAccessedLessonId: lessonId,
-      LastAccessedSecond: second
+      LessonId: lessonId,
+      Seconds: second
     });
   }
 
@@ -163,5 +162,9 @@ export class CourseService {
 
   addCalendarEvent(event: CalendarEvent): Observable<{ Data: CalendarEvent }> {
     return this.http.post<{ Data: CalendarEvent }>('/api/v1/student/calendar', event);
+  }
+
+  getSignedAttachmentBlob(lessonId: string, attachmentId: string): Observable<Blob> {
+    return this.http.get(`/api/v1/lessons/${lessonId}/attachments/${attachmentId}/download`, { responseType: 'blob' });
   }
 }

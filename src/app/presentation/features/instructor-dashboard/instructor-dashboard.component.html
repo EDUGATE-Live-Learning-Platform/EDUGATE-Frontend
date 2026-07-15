@@ -377,31 +377,31 @@
 
         <div class="flex flex-col gap-[2px]">
           <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'عنوان الكورس *' : 'Course Title *' }}</label>
-          <input type="text" [(ngModel)]="courseTitle" name="courseTitle"
+          <input type="text" [formControl]="courseForm.controls.title" name="courseTitle"
                  class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
         </div>
 
         <div class="flex flex-col gap-[2px]">
           <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'العنوان الفرعي' : 'Subtitle' }}</label>
-          <input type="text" [(ngModel)]="courseSubtitle" name="courseSubtitle"
+          <input type="text" [formControl]="courseForm.controls.subtitle" name="courseSubtitle"
                  class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
         </div>
 
         <div class="flex flex-col gap-[2px]">
           <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الوصف والتفاصيل *' : 'Description *' }}</label>
-          <textarea [(ngModel)]="courseDescription" name="courseDescription" rows="3"
+          <textarea [formControl]="courseForm.controls.description" name="courseDescription" rows="3"
                     class="p-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary resize-none"></textarea>
         </div>
 
         <div class="grid grid-cols-2 gap-sm">
           <div class="flex flex-col gap-[2px]">
             <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'السعر (EGP) *' : 'Price (EGP) *' }}</label>
-            <input type="number" [(ngModel)]="coursePrice" name="coursePrice" min="0"
+            <input type="number" [formControl]="courseForm.controls.price" name="coursePrice" min="0"
                    class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
           </div>
           <div class="flex flex-col gap-[2px]">
             <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'التصنيف / التخصص *' : 'Category *' }}</label>
-            <input type="text" [(ngModel)]="courseCategory" name="courseCategory"
+            <input type="text" [formControl]="courseForm.controls.category" name="courseCategory"
                    class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
           </div>
         </div>
@@ -425,30 +425,30 @@
           <div class="grid grid-cols-3 gap-xs">
             <div class="flex flex-col gap-[2px]">
               <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'سعر الخصم' : 'Discount Price' }}</label>
-              <input type="number" [(ngModel)]="courseDiscountPrice" name="courseDiscountPrice"
+              <input type="number" [formControl]="courseForm.controls.discountPrice" name="courseDiscountPrice"
                      class="h-8 px-sm text-[11px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary" />
             </div>
             <div class="flex flex-col gap-[2px]">
               <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'بداية الخصم' : 'Start Date' }}</label>
-              <input type="datetime-local" [(ngModel)]="courseDiscountStart" name="courseDiscountStart"
+              <input type="datetime-local" [formControl]="courseForm.controls.discountStartDateUtc" name="courseDiscountStart"
                      class="h-8 px-xs text-[9px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary" />
             </div>
             <div class="flex flex-col gap-[2px]">
               <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'نهاية الخصم' : 'End Date' }}</label>
-              <input type="datetime-local" [(ngModel)]="courseDiscountEnd" name="courseDiscountEnd"
+              <input type="datetime-local" [formControl]="courseForm.controls.discountEndDateUtc" name="courseDiscountEnd"
                      class="h-8 px-xs text-[9px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary" />
             </div>
           </div>
 
           <div class="flex flex-col gap-[2px]">
             <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'شروط ومتطلبات الكورس (سطر لكل شرط)' : 'Requirements (One per line)' }}</label>
-            <textarea [(ngModel)]="courseRequirements" name="courseRequirements" rows="2"
+            <textarea [formControl]="courseForm.controls.requirements" name="courseRequirements" rows="2"
                       class="p-xs text-[10px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary resize-none"></textarea>
           </div>
 
           <div class="flex flex-col gap-[2px]">
             <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'ماذا سيتعلم الطالب (سطر لكل نتيجة)' : 'Learning Outcomes (One per line)' }}</label>
-            <textarea [(ngModel)]="courseOutcomes" name="courseOutcomes" rows="2"
+            <textarea [formControl]="courseForm.controls.outcomes" name="courseOutcomes" rows="2"
                       class="p-xs text-[10px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary resize-none"></textarea>
           </div>
         </div>
@@ -483,7 +483,7 @@
 
         <div class="flex flex-col gap-[2px]">
           <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'عنوان الفصل *' : 'Section Title *' }}</label>
-          <input type="text" [(ngModel)]="sectionTitle" name="sectionTitle"
+          <input type="text" [formControl]="sectionForm.controls.title" name="sectionTitle"
                  class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
         </div>
       </div>
@@ -519,32 +519,32 @@
 
         <div class="flex flex-col gap-[2px]">
           <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'عنوان الدرس *' : 'Lesson Title *' }}</label>
-          <input type="text" [(ngModel)]="lessonTitle" name="lessonTitle"
+          <input type="text" [formControl]="lessonForm.controls.title" name="lessonTitle"
                  class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
         </div>
 
         <div class="flex flex-col gap-[2px]">
           <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الشرح أو الملاحظات' : 'Description / Notes' }}</label>
-          <textarea [(ngModel)]="lessonDescription" name="lessonDescription" rows="2"
+          <textarea [formControl]="lessonForm.controls.description" name="lessonDescription" rows="2"
                     class="p-xs text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary resize-none"></textarea>
         </div>
 
         <div class="grid grid-cols-2 gap-sm">
           <div class="flex flex-col gap-[2px]">
             <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'المدة (بالثواني)' : 'Duration (Seconds)' }}</label>
-            <input type="number" [(ngModel)]="lessonDuration" name="lessonDuration"
+            <input type="number" [formControl]="lessonForm.controls.durationInSeconds" name="lessonDuration"
                    class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
           </div>
           <div class="flex flex-col gap-[2px]">
             <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الترتيب' : 'Display Order' }}</label>
-            <input type="number" [(ngModel)]="lessonOrder" name="lessonOrder"
+            <input type="number" [formControl]="lessonForm.controls.order" name="lessonOrder"
                    class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
           </div>
         </div>
 
         <!-- Preview Toggle -->
         <div class="flex items-center gap-xs pt-xs">
-          <input type="checkbox" [(ngModel)]="lessonIsPreview" name="lessonIsPreview" id="lessonIsPreview" class="w-4 h-4 rounded text-primary" />
+          <input type="checkbox" [formControl]="lessonForm.controls.isPreview" name="lessonIsPreview" id="lessonIsPreview" class="w-4 h-4 rounded text-primary" />
           <label for="lessonIsPreview" class="text-[10px] font-bold text-on-surface-variant cursor-pointer select-none uppercase">
             {{ lang() === 'ar' ? 'السماح بمعاينة الفيديو مجاناً' : 'Free Preview Lesson' }}
           </label>

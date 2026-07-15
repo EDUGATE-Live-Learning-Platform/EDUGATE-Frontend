@@ -47,7 +47,7 @@ export class InstructorStudioService {
 
   uploadCourseMedia(courseId: string, thumbnailFile: File): Observable<any> {
     const formData = new FormData();
-    formData.append('file', thumbnailFile);
+    formData.append('thumbnail', thumbnailFile);
     return this.http.post<any>(`/api/v1/courses/${courseId}/media`, formData);
   }
 

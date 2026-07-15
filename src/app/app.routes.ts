@@ -73,6 +73,10 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/features/wallet/wallet.component').then(m => m.WalletComponent)
       },
       {
+        path: 'devices',
+        loadComponent: () => import('./presentation/features/active-devices/active-devices.component').then(m => m.ActiveDevicesComponent)
+      },
+      {
         path: 'learn/:courseId',
         loadComponent: () => import('./presentation/features/student-course-content/student-course-content.component').then(m => m.StudentCourseContentComponent)
       },

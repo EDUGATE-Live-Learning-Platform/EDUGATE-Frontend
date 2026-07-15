@@ -1,7 +1,10 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit, untracked, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { forkJoin } from 'rxjs';
+import { switchMap, filter, tap } from 'rxjs/operators';
 import { InstructorStudioService } from '../../../infrastructure/services/instructor/instructor-studio.service';
 import { CourseService } from '../../../infrastructure/services/course/course.service';
 import { AuthService } from '../../../infrastructure/auth/auth.service';
@@ -20,7 +23,7 @@ import { CourseDetails, SectionResponse, LessonResponse } from '../../../core/mo
 @Component({
   selector: 'app-instructor-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './instructor-dashboard.component.html',
   styleUrls: ['./instructor-dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -40,17 +43,44 @@ export class InstructorDashboardComponent implements OnInit {
   // Active Tab
   activeTab = signal<'overview' | 'courses' | 'curriculum' | 'profile'>('overview');
 
-  // Stats / Dashboard Signals
-  summary = signal<InstructorDashboardSummary | null>(null);
-  coursesReport = signal<InstructorCourseReportItem[]>([]);
-  recentReviews = signal<InstructorReviewFeedItem[]>([]);
-  profile = signal<InstructorProfileView | null>(null);
+  // Trigger to reload stats data reactively
+  private refreshTrigger = signal<number>(0);
   isLoading = signal<boolean>(true);
+
+  // Declarative parallel coordinated state loading
+  private dashboardData = toSignal(
+    toObservable(this.refreshTrigger).pipe(
+      tap(() => this.isLoading.set(true)),
+      switchMap(() => forkJoin({
+        summary: this.studioService.getDashboardSummary(),
+        coursesReport: this.studioService.getCoursesReport(),
+        recentReviews: this.studioService.getRecentReviews(),
+        profile: this.studioService.getInstructorProfile()
+      })),
+      tap(() => this.isLoading.set(false))
+    )
+  );
+
+  // Deriving read-only computed signals from dashboardData
+  summary = computed(() => this.dashboardData()?.summary ?? null);
+  coursesReport = computed(() => this.dashboardData()?.coursesReport ?? []);
+  recentReviews = computed(() => this.dashboardData()?.recentReviews ?? []);
+  profile = computed(() => this.dashboardData()?.profile ?? null);
 
   // Curriculum Builder Selected Course
   selectedCourseId = signal<string>('');
-  selectedCourseDetails = signal<CourseDetails | null>(null);
   isLoadingCurriculum = signal<boolean>(false);
+
+  selectedCourseDetails = toSignal(
+    toObservable(this.selectedCourseId).pipe(
+      filter(id => !!id),
+      tap(() => this.isLoadingCurriculum.set(true)),
+      switchMap(id => this.courseService.getCourseDetails(id)),
+      tap(() => this.isLoadingCurriculum.set(false))
+    ),
+    { initialValue: null }
+  );
+
   expandedSections = signal<Record<string, boolean>>({});
 
   // Dialog Modals State
@@ -64,34 +94,36 @@ export class InstructorDashboardComponent implements OnInit {
   editingLessonId = signal<string>('');
   selectedSectionIdForLesson = signal<string>('');
 
-  // Course Form Inputs
-  courseTitle = signal<string>('');
-  courseSubtitle = signal<string>('');
-  courseDescription = signal<string>('');
-  coursePrice = signal<number>(0);
-  courseCategory = signal<string>('');
-  
-  // Advanced Edit Inputs
-  courseDiscountPrice = signal<number>(0);
-  courseDiscountStart = signal<string>('');
-  courseDiscountEnd = signal<string>('');
-  courseRequirements = signal<string>('');
-  courseOutcomes = signal<string>('');
-  
-  // Section Form Inputs
-  sectionTitle = signal<string>('');
-  sectionOrder = signal<number>(1);
+  // Reactive Form Groups
+  courseForm = new FormGroup({
+    title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    subtitle: new FormControl(''),
+    description: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    price: new FormControl(99, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
+    category: new FormControl('Development', { nonNullable: true, validators: [Validators.required] }),
+    discountPrice: new FormControl(0),
+    discountStartDateUtc: new FormControl(''),
+    discountEndDateUtc: new FormControl(''),
+    requirements: new FormControl(''),
+    outcomes: new FormControl('')
+  });
 
-  // Lesson Form Inputs
-  lessonTitle = signal<string>('');
-  lessonDescription = signal<string>('');
-  lessonDuration = signal<number>(180);
-  lessonOrder = signal<number>(1);
-  lessonIsPreview = signal<boolean>(false);
+  sectionForm = new FormGroup({
+    title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    order: new FormControl(1, { nonNullable: true, validators: [Validators.required, Validators.min(1)] })
+  });
+
+  lessonForm = new FormGroup({
+    title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    description: new FormControl(''),
+    durationInSeconds: new FormControl(180, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
+    order: new FormControl(1, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
+    isPreview: new FormControl(false, { nonNullable: true })
+  });
+
+  // Upload references
   selectedVideoFile: File | null = null;
   selectedThumbnailFile: File | null = null;
-
-  // File preview references
   videoFileName = signal<string>('');
   thumbnailFileName = signal<string>('');
 
@@ -105,54 +137,42 @@ export class InstructorDashboardComponent implements OnInit {
   selectedAttachmentFile: File | null = null;
   attachmentFileName = signal<string>('');
 
+  constructor() {
+    // Auto-select the first course when coursesReport gets loaded
+    effect(() => {
+      const report = this.coursesReport();
+      if (report && report.length > 0 && !this.selectedCourseId()) {
+        untracked(() => {
+          this.selectCourseForCurriculum(report[0].courseId);
+        });
+      }
+    });
+
+    // Auto-expand all sections when details loaded
+    effect(() => {
+      const details = this.selectedCourseDetails();
+      if (details && details.sections) {
+        untracked(() => {
+          const expandMap: Record<string, boolean> = {};
+          details.sections.forEach(s => {
+            expandMap[s.id] = true;
+          });
+          this.expandedSections.set(expandMap);
+        });
+      }
+    });
+  }
+
   ngOnInit(): void {
-    // Re-verify that user has instructor permissions, otherwise boot to home
     const currentUser = this.user();
     if (!currentUser || currentUser.Role !== 'Instructor') {
       this.router.navigate(['/home']);
       return;
     }
-    this.loadAllDashboardData();
   }
 
   loadAllDashboardData(): void {
-    this.isLoading.set(true);
-    
-    // Load summary metrics
-    this.studioService.getDashboardSummary().subscribe({
-      next: (res) => this.summary.set(res),
-      error: (err) => console.error('Failed to load dashboard summary', err)
-    });
-
-    // Load course statistics report
-    this.studioService.getCoursesReport().subscribe({
-      next: (res) => {
-        this.coursesReport.set(res || []);
-        // Automatically select the first course for curriculum builder if available
-        if (res && res.length > 0 && !this.selectedCourseId()) {
-          this.selectCourseForCurriculum(res[0].courseId);
-        }
-      },
-      error: (err) => console.error('Failed to load courses report', err)
-    });
-
-    // Load recent reviews
-    this.studioService.getRecentReviews().subscribe({
-      next: (res) => this.recentReviews.set(res || []),
-      error: (err) => console.error('Failed to load recent reviews', err)
-    });
-
-    // Load profile
-    this.studioService.getInstructorProfile().subscribe({
-      next: (res) => {
-        this.profile.set(res);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load instructor profile', err);
-        this.isLoading.set(false);
-      }
-    });
+    this.refreshTrigger.update(n => n + 1);
   }
 
   // ----------------- Tab Navigation -----------------
@@ -166,29 +186,12 @@ export class InstructorDashboardComponent implements OnInit {
   // ----------------- Curriculum Navigation -----------------
   selectCourseForCurriculum(courseId: string): void {
     this.selectedCourseId.set(courseId);
-    this.loadCourseCurriculumTree(courseId);
   }
 
+  // Helper trigger to explicitly reload the curriculum tree
   loadCourseCurriculumTree(courseId: string): void {
-    this.isLoadingCurriculum.set(true);
-    this.courseService.getCourseDetails(courseId).subscribe({
-      next: (details) => {
-        this.selectedCourseDetails.set(details);
-        this.isLoadingCurriculum.set(false);
-        // By default expand all sections
-        if (details && details.sections) {
-          const expandMap: Record<string, boolean> = {};
-          details.sections.forEach(s => {
-            expandMap[s.id] = true;
-          });
-          this.expandedSections.set(expandMap);
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load course details for curriculum', err);
-        this.isLoadingCurriculum.set(false);
-      }
-    });
+    this.selectedCourseId.set('');
+    setTimeout(() => this.selectedCourseId.set(courseId), 0);
   }
 
   toggleSectionExpanded(sectionId: string): void {
@@ -203,16 +206,18 @@ export class InstructorDashboardComponent implements OnInit {
   openCreateCourseModal(): void {
     this.isEditingCourse.set(false);
     this.editingCourseId.set('');
-    this.courseTitle.set('');
-    this.courseSubtitle.set('');
-    this.courseDescription.set('');
-    this.coursePrice.set(99);
-    this.courseCategory.set('Development');
-    this.courseDiscountPrice.set(0);
-    this.courseDiscountStart.set('');
-    this.courseDiscountEnd.set('');
-    this.courseRequirements.set('');
-    this.courseOutcomes.set('');
+    this.courseForm.reset({
+      title: '',
+      subtitle: '',
+      description: '',
+      price: 99,
+      category: 'Development',
+      discountPrice: 0,
+      discountStartDateUtc: '',
+      discountEndDateUtc: '',
+      requirements: '',
+      outcomes: ''
+    });
     this.selectedThumbnailFile = null;
     this.thumbnailFileName.set('');
     this.formErrorMessage.set('');
@@ -227,16 +232,18 @@ export class InstructorDashboardComponent implements OnInit {
 
     this.courseService.getCourseDetails(course.courseId).subscribe({
       next: (details) => {
-        this.courseTitle.set(details.title);
-        this.courseSubtitle.set(details.subtitle || '');
-        this.courseDescription.set(details.description);
-        this.coursePrice.set(details.price);
-        this.courseCategory.set(details.category || 'Development');
-        this.courseDiscountPrice.set(details.discountPrice || 0);
-        this.courseDiscountStart.set(details.discountStartDateUtc ? details.discountStartDateUtc.substring(0, 16) : '');
-        this.courseDiscountEnd.set(details.discountEndDateUtc ? details.discountEndDateUtc.substring(0, 16) : '');
-        this.courseRequirements.set(details.requirements ? details.requirements.join('\n') : '');
-        this.courseOutcomes.set(details.outcomes ? details.outcomes.join('\n') : '');
+        this.courseForm.patchValue({
+          title: details.title,
+          subtitle: details.subtitle || '',
+          description: details.description,
+          price: details.price,
+          category: details.category || 'Development',
+          discountPrice: details.discountPrice || 0,
+          discountStartDateUtc: details.discountStartDateUtc ? details.discountStartDateUtc.substring(0, 16) : '',
+          discountEndDateUtc: details.discountEndDateUtc ? details.discountEndDateUtc.substring(0, 16) : '',
+          requirements: details.requirements ? details.requirements.join('\n') : '',
+          outcomes: details.outcomes ? details.outcomes.join('\n') : ''
+        });
         this.selectedThumbnailFile = null;
         this.thumbnailFileName.set('');
         
@@ -259,7 +266,8 @@ export class InstructorDashboardComponent implements OnInit {
   }
 
   saveCourse(): void {
-    if (!this.courseTitle().trim() || !this.courseDescription().trim() || !this.courseCategory().trim()) {
+    const raw = this.courseForm.getRawValue();
+    if (!raw.title.trim() || !raw.description.trim() || !raw.category.trim()) {
       this.formErrorMessage.set('Please fill in all required fields.');
       return;
     }
@@ -268,22 +276,22 @@ export class InstructorDashboardComponent implements OnInit {
     this.formErrorMessage.set('');
 
     const baseDto: CreateCourseDto = {
-      title: this.courseTitle().trim(),
-      subtitle: this.courseSubtitle().trim(),
-      description: this.courseDescription().trim(),
-      price: this.coursePrice(),
-      category: this.courseCategory().trim()
+      title: raw.title.trim(),
+      subtitle: raw.subtitle ? raw.subtitle.trim() : '',
+      description: raw.description.trim(),
+      price: raw.price,
+      category: raw.category.trim()
     };
 
     if (this.isEditingCourse()) {
-      const requirementsList = this.courseRequirements().split('\n').map(r => r.trim()).filter(Boolean);
-      const outcomesList = this.courseOutcomes().split('\n').map(o => o.trim()).filter(Boolean);
+      const requirementsList = raw.requirements ? raw.requirements.split('\n').map(r => r.trim()).filter(Boolean) : [];
+      const outcomesList = raw.outcomes ? raw.outcomes.split('\n').map(o => o.trim()).filter(Boolean) : [];
       
       const updateDto: UpdateCourseDto = {
         ...baseDto,
-        discountPrice: this.courseDiscountPrice(),
-        discountStartDateUtc: this.courseDiscountStart() ? new Date(this.courseDiscountStart()).toISOString() : undefined,
-        discountEndDateUtc: this.courseDiscountEnd() ? new Date(this.courseDiscountEnd()).toISOString() : undefined,
+        discountPrice: raw.discountPrice || 0,
+        discountStartDateUtc: raw.discountStartDateUtc ? new Date(raw.discountStartDateUtc).toISOString() : undefined,
+        discountEndDateUtc: raw.discountEndDateUtc ? new Date(raw.discountEndDateUtc).toISOString() : undefined,
         requirements: requirementsList,
         outcomes: outcomesList
       };
@@ -356,22 +364,25 @@ export class InstructorDashboardComponent implements OnInit {
   // ----------------- Section Management -----------------
   openCreateSectionModal(): void {
     if (!this.selectedCourseId()) return;
-    this.sectionTitle.set('');
-    this.sectionOrder.set((this.selectedCourseDetails()?.sections?.length || 0) + 1);
+    this.sectionForm.reset({
+      title: '',
+      order: (this.selectedCourseDetails()?.sections?.length || 0) + 1
+    });
     this.formErrorMessage.set('');
     this.showSectionModal.set(true);
   }
 
   saveSection(): void {
-    if (!this.sectionTitle().trim()) {
+    const raw = this.sectionForm.getRawValue();
+    if (!raw.title.trim()) {
       this.formErrorMessage.set('Section title is required.');
       return;
     }
 
     this.isSubmitting.set(true);
     this.studioService.createSection(this.selectedCourseId(), {
-      title: this.sectionTitle().trim(),
-      order: this.sectionOrder()
+      title: raw.title.trim(),
+      order: raw.order
     }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
@@ -390,15 +401,16 @@ export class InstructorDashboardComponent implements OnInit {
     this.isEditingLesson.set(false);
     this.editingLessonId.set('');
     this.selectedSectionIdForLesson.set(sectionId);
-    this.lessonTitle.set('');
-    this.lessonDescription.set('');
-    this.lessonDuration.set(120);
     
-    // Find next order
     const section = this.selectedCourseDetails()?.sections?.find(s => s.id === sectionId);
-    this.lessonOrder.set((section?.lessons?.length || 0) + 1);
+    this.lessonForm.reset({
+      title: '',
+      description: '',
+      durationInSeconds: 120,
+      order: (section?.lessons?.length || 0) + 1,
+      isPreview: false
+    });
     
-    this.lessonIsPreview.set(false);
     this.selectedVideoFile = null;
     this.videoFileName.set('');
     this.formErrorMessage.set('');
@@ -409,11 +421,15 @@ export class InstructorDashboardComponent implements OnInit {
     this.isEditingLesson.set(true);
     this.editingLessonId.set(lesson.id);
     this.selectedSectionIdForLesson.set(sectionId);
-    this.lessonTitle.set(lesson.title);
-    this.lessonDescription.set(lesson.description || '');
-    this.lessonDuration.set(lesson.durationInSeconds);
-    this.lessonOrder.set(lesson.order);
-    this.lessonIsPreview.set(lesson.isPreview);
+    
+    this.lessonForm.patchValue({
+      title: lesson.title,
+      description: lesson.description || '',
+      durationInSeconds: lesson.durationInSeconds,
+      order: lesson.order,
+      isPreview: lesson.isPreview
+    });
+    
     this.selectedVideoFile = null;
     this.videoFileName.set('');
     this.formErrorMessage.set('');
@@ -429,7 +445,8 @@ export class InstructorDashboardComponent implements OnInit {
   }
 
   saveLesson(): void {
-    if (!this.lessonTitle().trim()) {
+    const raw = this.lessonForm.getRawValue();
+    if (!raw.title.trim()) {
       this.formErrorMessage.set('Lesson title is required.');
       return;
     }
@@ -443,11 +460,11 @@ export class InstructorDashboardComponent implements OnInit {
     this.formErrorMessage.set('');
 
     const lessonData = {
-      title: this.lessonTitle().trim(),
-      description: this.lessonDescription().trim(),
-      durationInSeconds: this.lessonDuration(),
-      order: this.lessonOrder(),
-      isPreview: this.lessonIsPreview(),
+      title: raw.title.trim(),
+      description: raw.description ? raw.description.trim() : '',
+      durationInSeconds: raw.durationInSeconds,
+      order: raw.order,
+      isPreview: raw.isPreview,
       videoFile: this.selectedVideoFile || undefined
     };
 
@@ -524,7 +541,6 @@ export class InstructorDashboardComponent implements OnInit {
     });
   }
 
-  // Helper: get full resource url prepending backend host if relative
   getMediaUrl(url: string | null | undefined): string | null {
     if (!url) return null;
     if (url.startsWith('http')) return url;
