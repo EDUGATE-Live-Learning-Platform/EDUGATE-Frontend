@@ -33,7 +33,7 @@ export class CourseListComponent implements OnInit, OnDestroy {
   // Filter signals
   searchQuery = signal<string>('');
   selectedCategory = signal<string>('');
-  maxPrice = signal<number>(1000);
+  maxPrice = signal<number>(2500);
   minRating = signal<number>(0);
   
   // Pagination signals
@@ -50,7 +50,13 @@ export class CourseListComponent implements OnInit, OnDestroy {
     { value: '', labelKey: 'catalog.allCategories' },
     { value: 'Computer Science', labelKey: 'catalog.catCS' },
     { value: 'Artificial Intelligence', labelKey: 'catalog.catAI' },
-    { value: 'Mathematics', labelKey: 'catalog.catMath' }
+    { value: 'Mathematics', labelKey: 'catalog.catMath' },
+    { value: 'Development', labelKey: 'catalog.catDev' },
+    { value: 'Physics', labelKey: 'catalog.catPhysics' },
+    { value: 'Chemistry', labelKey: 'catalog.catChemistry' },
+    { value: 'Design', labelKey: 'catalog.catDesign' },
+    { value: 'Cybersecurity', labelKey: 'catalog.catCyber' },
+    { value: 'Software Engineering', labelKey: 'catalog.catSE' }
   ];
 
   translateKey(key: string): string {
@@ -151,7 +157,7 @@ export class CourseListComponent implements OnInit, OnDestroy {
   clearFilters(): void {
     this.searchQuery.set('');
     this.selectedCategory.set('');
-    this.maxPrice.set(1000);
+    this.maxPrice.set(2500);
     this.minRating.set(0);
     this.currentPage.set(1);
     this.loadCourses();

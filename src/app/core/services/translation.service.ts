@@ -225,6 +225,12 @@ export interface TranslationSchema {
     catCS: string;
     catAI: string;
     catMath: string;
+    catDev: string;
+    catPhysics: string;
+    catChemistry: string;
+    catDesign: string;
+    catCyber: string;
+    catSE: string;
     reviewsCount: string;
     viewDetails: string;
     noCoursesTitle: string;
@@ -476,7 +482,8 @@ const emptySchema: TranslationSchema = {
   profile: { changePhoto: '', verifiedAccount: '', personalInfo: '', fullName: '', phoneNumber: '', email: '', readOnly: '', governorate: '', academicInfo: '', verifiedRegistration: '', schoolName: '', parentPhone: '', academicGrade: '', academicGrade1: '', academicGrade2: '', academicGrade3: '', academicDivision: '', divisionGeneral: '', divisionScientific: '', divisionLiterary: '', lockedNote: '', cancel: '', saving: '', saveChanges: '', editProfile: '', fileTypeError: '', fileSizeError: '', uploadSuccess: '', uploadError: '', updateSuccess: '', updateError: '' },
   catalog: {
     title: '', subtitle: '', filtersTitle: '', clearFilters: '', searchLabel: '', searchPlh: '', categoryLabel: '',
-    maxPrice: '', minRating: '', anyRating: '', up: '', allCategories: '', catCS: '', catAI: '', catMath: '',
+    maxPrice: '', minRating: '', anyRating: '', up: '', allCategories: '', 
+    catCS: '', catAI: '', catMath: '', catDev: '', catPhysics: '', catChemistry: '', catDesign: '', catCyber: '', catSE: '',
     reviewsCount: '', viewDetails: '', noCoursesTitle: '', noCoursesDesc: '', prev: '', next: '', page: ''
   },
   instructors: {
