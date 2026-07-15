@@ -470,7 +470,7 @@ export class AdminDashboardComponent implements OnInit {
     if (!url) return null;
     if (url.startsWith('http')) return url;
     // Relative path — prepend API base URL
-    const base = 'https://localhost:7098';
+    const base = 'https://edugateeg.runasp.net';
     return url.startsWith('/') ? `${base}${url}` : `${base}/${url}`;
   }
 

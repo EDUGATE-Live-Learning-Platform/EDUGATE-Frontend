@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:7098'
+  apiUrl: 'https://edugateeg.runasp.net'
 };
