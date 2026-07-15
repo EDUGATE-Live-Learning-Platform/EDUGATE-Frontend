@@ -337,6 +337,12 @@
     "catCS": "Computer Science",
     "catAI": "Artificial Intelligence",
     "catMath": "Mathematics",
+    "catDev": "Development",
+    "catPhysics": "Physics",
+    "catChemistry": "Chemistry",
+    "catDesign": "Design",
+    "catCyber": "Cybersecurity",
+    "catSE": "Software Engineering",
     "reviewsCount": "ratings",
     "viewDetails": "View Details",
     "noCoursesTitle": "No Courses Found",
@@ -437,5 +443,23 @@
     "studentOnlyAlert": "Only Student accounts can purchase and enroll in courses.",
     "enrolled": "Enrolled",
     "previewBtn": "Preview"
+  },
+  "admin": {
+    "title": "Admin Management Portal",
+    "subtitle": "Monitor statistics, verify accounts, audit ledgers, and manage schedules.",
+    "stats": "System Statistics",
+    "students": "Students Verification",
+    "instructors": "Instructor Onboarding",
+    "wallet": "Recharge Claims Review",
+    "calendar": "Global Broadcast Calendar",
+    "audit": "Financial Audits",
+    "approve": "Approve Request",
+    "reject": "Reject Request",
+    "feedback": "Administrative Feedback Notes",
+    "globalEvent": "Publish Schedule Event",
+    "users": "System Users Directory",
+    "wallets": "User Wallets Audits",
+    "ban": "Ban User",
+    "unban": "Unban User"
   }
 }

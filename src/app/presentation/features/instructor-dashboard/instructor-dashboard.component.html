@@ -1,0 +1,627 @@
+<div class="space-y-md animate-fade-in" [dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+  
+  <!-- Page Header & Tab Controls -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm border-b border-outline-variant/30 pb-sm">
+    <div class="text-start">
+      <h1 class="text-headline-lg font-bold text-on-surface">
+        {{ lang() === 'ar' ? 'استوديو المعلم' : 'Instructor Studio' }}
+      </h1>
+      <p class="text-xs text-on-surface-variant">
+        {{ lang() === 'ar' ? 'أدوات إدارة المحاضرات، تتبع الطلاب، والتحليلات المالية.' : 'Manage your courses, sections, lesson videos, and student feedback.' }}
+      </p>
+    </div>
+
+    <!-- Tab buttons -->
+    <div class="flex bg-surface-container-low p-[3px] rounded-full border border-outline-variant">
+      <button (click)="switchTab('overview')"
+              [ngClass]="activeTab() === 'overview' ? 'bg-primary text-on-primary shadow-md' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-sm py-1.5 rounded-full text-xs font-bold transition-all select-none">
+        {{ lang() === 'ar' ? 'التحليلات' : 'Analytics' }}
+      </button>
+      <button (click)="switchTab('courses')"
+              [ngClass]="activeTab() === 'courses' ? 'bg-primary text-on-primary shadow-md' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-sm py-1.5 rounded-full text-xs font-bold transition-all select-none">
+        {{ lang() === 'ar' ? 'الاستوديو' : 'Course Studio' }}
+      </button>
+      <button (click)="switchTab('curriculum')"
+              [ngClass]="activeTab() === 'curriculum' ? 'bg-primary text-on-primary shadow-md' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-sm py-1.5 rounded-full text-xs font-bold transition-all select-none">
+        {{ lang() === 'ar' ? 'المنهج الدراسي' : 'Curriculum' }}
+      </button>
+      <button (click)="switchTab('profile')"
+              [ngClass]="activeTab() === 'profile' ? 'bg-primary text-on-primary shadow-md' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-sm py-1.5 rounded-full text-xs font-bold transition-all select-none">
+        {{ lang() === 'ar' ? 'الملف الشخصي' : 'Profile' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading() && activeTab() !== 'curriculum'" class="flex flex-col items-center justify-center py-xl space-y-sm">
+    <div class="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    <span class="text-xs text-on-surface-variant">{{ lang() === 'ar' ? 'جاري التحميل...' : 'Syncing stats data...' }}</span>
+  </div>
+
+  <!-- ================== TAB 1: OVERVIEW / ANALYTICS ================== -->
+  <div *ngIf="activeTab() === 'overview' && !isLoading()" class="space-y-md">
+    
+    <!-- KPI Metric Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-sm">
+      <!-- Total Earnings Card -->
+      <div class="glass-panel p-md rounded-2xl flex items-center gap-md bg-surface-container/20 border border-outline-variant">
+        <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shrink-0">
+          <span class="material-symbols-outlined text-2xl">payments</span>
+        </div>
+        <div class="text-start">
+          <span class="text-[10px] uppercase font-bold text-on-surface-variant block tracking-wider">{{ lang() === 'ar' ? 'إجمالي الأرباح' : 'Total Revenue' }}</span>
+          <h3 class="text-xl font-extrabold text-on-surface mt-base">{{ summary()?.totalEarnings | number }} EGP</h3>
+        </div>
+      </div>
+
+      <!-- Active Students Card -->
+      <div class="glass-panel p-md rounded-2xl flex items-center gap-md bg-surface-container/20 border border-outline-variant">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center border border-blue-500/20 shrink-0">
+          <span class="material-symbols-outlined text-2xl">group</span>
+        </div>
+        <div class="text-start">
+          <span class="text-[10px] uppercase font-bold text-on-surface-variant block tracking-wider">{{ lang() === 'ar' ? 'الطلاب النشطين' : 'Active Students' }}</span>
+          <h3 class="text-xl font-extrabold text-on-surface mt-base">{{ summary()?.activeStudentCount }}</h3>
+        </div>
+      </div>
+
+      <!-- Average Rating Card -->
+      <div class="glass-panel p-md rounded-2xl flex items-center gap-md bg-surface-container/20 border border-outline-variant">
+        <div class="w-12 h-12 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center border border-teal-500/20 shrink-0">
+          <span class="material-symbols-outlined text-2xl">star</span>
+        </div>
+        <div class="text-start">
+          <span class="text-[10px] uppercase font-bold text-on-surface-variant block tracking-wider">{{ lang() === 'ar' ? 'تقييمات الطلاب' : 'Avg Rating' }}</span>
+          <h3 class="text-xl font-extrabold text-on-surface mt-base">{{ summary()?.averageRating | number:'1.1-2' }} ★</h3>
+        </div>
+      </div>
+
+      <!-- Courses Overview Card -->
+      <div class="glass-panel p-md rounded-2xl flex items-center gap-md bg-surface-container/20 border border-outline-variant">
+        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20 shrink-0">
+          <span class="material-symbols-outlined text-2xl">auto_stories</span>
+        </div>
+        <div class="text-start">
+          <span class="text-[10px] uppercase font-bold text-on-surface-variant block tracking-wider">{{ lang() === 'ar' ? 'المقررات الدراسية' : 'Courses' }}</span>
+          <h3 class="text-xl font-extrabold text-on-surface mt-base">
+            {{ summary()?.activeCoursesCount }} <span class="text-xs text-on-surface-variant font-normal">Active</span> / {{ summary()?.draftCoursesCount }} <span class="text-xs text-on-surface-variant font-normal">Draft</span>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Analytics Content: Reports & Recent Reviews -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+      <!-- Courses Performance Report (2/3 width) -->
+      <div class="lg:col-span-2 glass-panel p-md rounded-2xl bg-surface-container/10 border border-outline-variant flex flex-col justify-between">
+        <div class="text-start mb-md">
+          <h3 class="font-bold text-md text-on-surface">{{ lang() === 'ar' ? 'تقرير أداء الكورسات' : 'Courses Performance' }}</h3>
+          <p class="text-[11px] text-on-surface-variant">{{ lang() === 'ar' ? 'إحصائيات المبيعات، التسجيلات ومتوسط التقييم لكل كورس.' : 'A summary of course enrollees, revenue generated, and ratings.' }}</p>
+        </div>
+
+        <div class="space-y-sm max-h-[350px] overflow-y-auto pr-xs">
+          <div *ngFor="let item of coursesReport()" class="flex items-center justify-between p-sm bg-surface-container-low/50 rounded-xl border border-outline-variant/30 hover:border-outline-variant transition-colors">
+            <div class="text-start">
+              <h4 class="font-bold text-xs text-on-surface">{{ item.title }}</h4>
+              <div class="flex items-center gap-sm text-[10px] text-on-surface-variant mt-[2px]">
+                <span>{{ item.enrollmentsCount }} {{ lang() === 'ar' ? 'طالب' : 'Students' }}</span>
+                <span>•</span>
+                <span>{{ item.averageRating | number:'1.1-1' }} ★</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="font-extrabold text-xs text-primary block">{{ item.revenueGenerated | number }} EGP</span>
+              <span class="text-[9px] text-on-surface-variant block">Progress: {{ item.progressAverage | number:'1.0-0' }}%</span>
+            </div>
+          </div>
+          <div *ngIf="coursesReport().length === 0" class="text-center py-lg text-xs text-on-surface-variant">
+            {{ lang() === 'ar' ? 'لم تقم بإنشاء أي كورسات بعد.' : 'No courses created yet.' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Reviews Feed (1/3 width) -->
+      <div class="glass-panel p-md rounded-2xl bg-surface-container/10 border border-outline-variant flex flex-col justify-between">
+        <div class="text-start mb-md">
+          <h3 class="font-bold text-md text-on-surface">{{ lang() === 'ar' ? 'آراء وتقييمات الطلاب الأخيرة' : 'Student Feedback Feed' }}</h3>
+          <p class="text-[11px] text-on-surface-variant">{{ lang() === 'ar' ? 'التعليقات والتقييمات المباشرة من الطلاب.' : 'Real-time rating responses from course enrollees.' }}</p>
+        </div>
+
+        <div class="space-y-sm max-h-[350px] overflow-y-auto pr-xs">
+          <div *ngFor="let review of recentReviews()" class="p-sm bg-surface-container-low/50 rounded-xl border border-outline-variant/30 text-start space-y-[4px]">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-[11px] text-on-surface">{{ review.studentName }}</span>
+              <span class="text-[10px] text-amber-400 font-bold">{{ review.rating }} ★</span>
+            </div>
+            <span class="text-[9px] text-on-surface-variant block italic truncate">{{ review.courseTitle }}</span>
+            <p class="text-[10px] text-on-surface leading-relaxed">{{ review.comment || 'No comment text provided.' }}</p>
+            <span class="text-[8px] text-outline block font-mono">{{ review.createdAt | date:'shortDate' }}</span>
+          </div>
+          <div *ngIf="recentReviews().length === 0" class="text-center py-lg text-xs text-on-surface-variant">
+            {{ lang() === 'ar' ? 'لا توجد تقييمات حالياً.' : 'No student reviews yet.' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== TAB 2: COURSE STUDIO ================== -->
+  <div *ngIf="activeTab() === 'courses' && !isLoading()" class="space-y-md">
+    <!-- Top Action bar -->
+    <div class="flex justify-between items-center bg-surface-container-low p-sm rounded-2xl border border-outline-variant">
+      <div class="text-start">
+        <h3 class="font-bold text-xs text-on-surface">{{ lang() === 'ar' ? 'استوديو الكورسات' : 'Courses Catalog' }}</h3>
+        <p class="text-[9px] text-on-surface-variant">{{ lang() === 'ar' ? 'يمكنك هنا إضافة كورسات جديدة وتعديل أسعارها وتفعيل نشرها.' : 'Review draft/published states, update prices, outcomes or thumbnails.' }}</p>
+      </div>
+      <button (click)="openCreateCourseModal()" class="px-md py-2 bg-primary text-on-primary rounded-xl text-xs font-bold hover:brightness-110 active:scale-95 transition-all flex items-center gap-xs select-none">
+        <span class="material-symbols-outlined text-[14px]">add</span>
+        <span>{{ lang() === 'ar' ? 'كورس جديد' : 'New Course' }}</span>
+      </button>
+    </div>
+
+    <!-- Course Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-sm">
+      <div *ngFor="let course of coursesReport()" class="glass-panel rounded-2xl overflow-hidden bg-surface-container/20 border border-outline-variant flex flex-col justify-between group">
+        
+        <!-- Thumbnail Banner -->
+        <div class="h-32 bg-surface-container-low overflow-hidden relative border-b border-outline-variant/30">
+          <img 
+            [src]="course.thumbnailUrl || '/default-course.jpg'" 
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+            alt="Course Thumbnail"
+            onerror="this.src='/default-course.jpg'"
+          />
+          <span class="absolute top-xs start-xs px-2 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-md border border-white/10"
+                [ngClass]="course.isPublished ? 'text-green-400' : 'text-yellow-400'">
+            {{ course.isPublished ? 'Published' : 'Draft' }}
+          </span>
+        </div>
+
+        <!-- Course Header Summary -->
+        <div class="p-sm text-start space-y-[6px] flex-1">
+          <div class="flex justify-between items-start gap-xs">
+            <h4 class="font-bold text-xs text-on-surface line-clamp-2">{{ course.title }}</h4>
+            <span class="font-extrabold text-xs text-primary shrink-0">{{ course.price }} EGP</span>
+          </div>
+          <div class="flex gap-md text-[10px] text-on-surface-variant pt-base">
+            <span><strong>{{ lang() === 'ar' ? 'المسجلين:' : 'Enrolled:' }}</strong> {{ course.enrollmentsCount }}</span>
+            <span><strong>{{ lang() === 'ar' ? 'التقييم:' : 'Rating:' }}</strong> {{ course.averageRating | number:'1.1-1' }} ★</span>
+          </div>
+          <div class="text-[10px] text-on-surface-variant">
+            <strong>{{ lang() === 'ar' ? 'أرباح الكورس:' : 'Earnings:' }}</strong> <span class="text-green-500 font-bold">{{ course.revenueGenerated | number }} EGP</span>
+          </div>
+        </div>
+
+        <!-- Course Card Actions -->
+        <div class="p-xs bg-surface-container-low border-t border-outline-variant/30 flex gap-xs">
+          <button (click)="openEditCourseModal(course)" class="flex-1 py-1.5 bg-surface-container border border-outline-variant hover:border-primary rounded-xl text-[10px] font-bold text-on-surface transition-colors">
+            {{ lang() === 'ar' ? 'تعديل التفاصيل' : 'Edit Info' }}
+          </button>
+          <button (click)="selectCourseForCurriculum(course.courseId); switchTab('curriculum')" class="flex-1 py-1.5 bg-surface-container border border-outline-variant hover:border-primary rounded-xl text-[10px] font-bold text-on-surface transition-colors">
+            {{ lang() === 'ar' ? 'منهج الفصول' : 'Curriculum' }}
+          </button>
+          <button (click)="togglePublishCourse(course, course.isPublished ? 'Published' : 'Draft')" 
+                  [ngClass]="course.isPublished ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20 hover:bg-yellow-500/20' : 'bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20'"
+                  class="flex-1 py-1.5 rounded-xl border text-[10px] font-bold transition-all active:scale-95">
+            {{ course.isPublished ? (lang() === 'ar' ? 'إلغاء النشر' : 'Unpublish') : (lang() === 'ar' ? 'نشر الكورس' : 'Publish') }}
+          </button>
+        </div>
+      </div>
+      <div *ngIf="coursesReport().length === 0" class="col-span-full text-center py-xl text-on-surface-variant">
+        {{ lang() === 'ar' ? 'لم تقم بإنشاء أي كورسات بعد. اضغط على كورس جديد للبدء!' : 'No courses created yet. Click New Course to get started!' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== TAB 3: CURRICULUM BUILDER ================== -->
+  <div *ngIf="activeTab() === 'curriculum'" class="grid grid-cols-1 md:grid-cols-4 gap-md">
+    
+    <!-- Left column: course selector sidebar -->
+    <div class="glass-panel p-sm rounded-2xl bg-surface-container/20 border border-outline-variant space-y-xs h-[70vh] overflow-y-auto">
+      <span class="text-[10px] font-bold text-on-surface-variant block uppercase px-xs pb-xs border-b border-outline-variant/30 mb-xs">
+        {{ lang() === 'ar' ? 'اختر المقرر للتعديل' : 'Select Target Course' }}
+      </span>
+      <button *ngFor="let course of coursesReport()" 
+              (click)="selectCourseForCurriculum(course.courseId)"
+              [ngClass]="selectedCourseId() === course.courseId ? 'bg-primary/10 border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low'"
+              class="w-full text-start px-sm py-2 rounded-xl border text-xs font-semibold transition-all">
+        <span class="block truncate font-bold">{{ course.title }}</span>
+        <span class="text-[9px] opacity-75 mt-[1px] block">{{ course.isPublished ? 'Published' : 'Draft' }} • {{ course.enrollmentsCount }} students</span>
+      </button>
+    </div>
+
+    <!-- Right column: selected course curriculum tree -->
+    <div class="md:col-span-3 glass-panel p-md rounded-2xl bg-surface-container/10 border border-outline-variant min-h-[70vh] flex flex-col justify-between">
+      
+      <!-- Syllabus Header info -->
+      <div>
+        <div class="flex justify-between items-start border-b border-outline-variant/30 pb-xs mb-md gap-sm">
+          <div class="text-start">
+            <h3 class="font-extrabold text-sm text-on-surface">
+              {{ selectedCourseDetails()?.title || (lang() === 'ar' ? 'اختر كورس للبدء' : 'Select a Course') }}
+            </h3>
+            <p class="text-[10px] text-on-surface-variant mt-[2px]">
+              {{ selectedCourseDetails()?.subtitle || (lang() === 'ar' ? 'تفاصيل المنهج والفصول والمقاطع المرئية' : 'Syllabus structure with sections and video lessons') }}
+            </p>
+          </div>
+          <button *ngIf="selectedCourseId()" (click)="openCreateSectionModal()" class="px-sm py-1.5 bg-primary text-on-primary rounded-xl text-[10px] font-bold hover:brightness-110 active:scale-95 transition-all select-none">
+            {{ lang() === 'ar' ? 'إضافة فصل جديد' : '+ Add Section' }}
+          </button>
+        </div>
+
+        <!-- Syllabus loading state -->
+        <div *ngIf="isLoadingCurriculum()" class="flex flex-col items-center justify-center py-xl space-y-sm">
+          <div class="w-8 h-8 border-3 border-secondary border-t-transparent rounded-full animate-spin"></div>
+          <span class="text-[10px] text-on-surface-variant">Syncing syllabus data...</span>
+        </div>
+
+        <!-- Curriculum sections accordion list -->
+        <div *ngIf="!isLoadingCurriculum() && selectedCourseId()" class="space-y-sm">
+          <div *ngFor="let section of selectedCourseDetails()?.sections" class="border border-outline-variant rounded-2xl overflow-hidden bg-surface-container-low/20">
+            <!-- Section Accordion Header -->
+            <div (click)="toggleSectionExpanded(section.id)" class="px-md py-sm bg-surface-container-low flex justify-between items-center cursor-pointer select-none">
+              <div class="flex items-center gap-xs">
+                <span class="material-symbols-outlined text-md text-primary-container">folder_open</span>
+                <span class="font-bold text-xs text-on-surface">{{ section.order }}. {{ section.title }}</span>
+                <span class="text-[9px] text-on-surface-variant font-normal">({{ section.lessons.length }} lessons)</span>
+              </div>
+              <div class="flex items-center gap-sm">
+                <button type="button" (click)="$event.stopPropagation(); openCreateLessonModal(section.id)" class="px-sm py-1 bg-surface-container border border-outline-variant hover:border-primary text-[9px] rounded-lg font-bold text-on-surface transition-colors">
+                  {{ lang() === 'ar' ? '+ إضافة درس' : '+ Add Lesson' }}
+                </button>
+                <span class="material-symbols-outlined text-sm text-on-surface-variant transition-transform" [ngClass]="expandedSections()[section.id] ? 'rotate-180' : ''">keyboard_arrow_down</span>
+              </div>
+            </div>
+
+            <!-- Section Accordion Body (Lessons list) -->
+            <div *ngIf="expandedSections()[section.id]" class="p-sm space-y-xs border-t border-outline-variant/30 bg-surface-container/10">
+              <div *ngFor="let lesson of section.lessons" class="flex flex-col gap-xs p-sm bg-surface-container-low/50 border border-outline-variant/20 rounded-xl">
+                <!-- Lesson Top summary info -->
+                <div class="flex items-start justify-between gap-sm">
+                  <div class="text-start">
+                    <h5 class="font-bold text-xs text-on-surface flex items-center gap-xs">
+                      <span class="inline-block w-4 h-4 rounded-full bg-surface-container text-[8px] font-bold flex items-center justify-center text-on-surface-variant">{{ lesson.order }}</span>
+                      <span>{{ lesson.title }}</span>
+                      <span *ngIf="lesson.isPreview" class="px-1.5 py-0.5 rounded bg-primary/10 text-primary text-[8px] font-bold uppercase tracking-wider">Preview</span>
+                    </h5>
+                    <p class="text-[10px] text-on-surface-variant ml-xs mt-base leading-relaxed" *ngIf="lesson.description">{{ lesson.description }}</p>
+                    <div class="flex gap-sm items-center text-[9px] text-on-surface-variant mt-[4px] ml-xs">
+                      <span>Length: {{ lesson.durationInSeconds / 60 | number:'1.0-0' }} mins</span>
+                      <span *ngIf="lesson.videoUrl">• Video upload completed</span>
+                    </div>
+                  </div>
+                  <!-- Lesson Actions -->
+                  <div class="flex items-center gap-[4px]">
+                    <button (click)="openEditLessonModal(lesson, section.id)" class="p-1 hover:text-primary transition-colors text-on-surface-variant" title="Edit Lesson">
+                      <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </button>
+                    <button (click)="openAttachmentModal(lesson.id)" class="p-1 hover:text-secondary transition-colors text-on-surface-variant" title="Upload Attachment">
+                      <span class="material-symbols-outlined text-[16px]">attach_file</span>
+                    </button>
+                    <button (click)="deleteLesson(lesson.id)" class="p-1 hover:text-error transition-colors text-on-surface-variant" title="Delete Lesson">
+                      <span class="material-symbols-outlined text-[16px]">delete</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Attachments list -->
+                <div *ngIf="lesson.attachments && lesson.attachments.length > 0" class="ml-xs border-t border-outline-variant/10 pt-xs mt-xs">
+                  <span class="text-[8px] font-bold text-outline block uppercase mb-[2px]">{{ lang() === 'ar' ? 'الملفات المرفقة:' : 'Lesson Attachments:' }}</span>
+                  <div class="flex gap-sm flex-wrap">
+                    <a *ngFor="let att of lesson.attachments" [href]="getMediaUrl(att.fileUrl)" target="_blank" class="text-secondary hover:underline text-[9px] flex items-center gap-[2px]">
+                      <span class="material-symbols-outlined text-[11px]">download</span>
+                      <span>{{ att.fileUrl.substring(att.fileUrl.lastIndexOf('/') + 1) }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="!section.lessons || section.lessons.length === 0" class="text-center py-sm text-[10px] text-on-surface-variant">
+                {{ lang() === 'ar' ? 'لا توجد دروس في هذا الفصل حالياً.' : 'No lessons in this section yet.' }}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!selectedCourseDetails()?.sections || selectedCourseDetails()?.sections?.length === 0" class="text-center py-xl text-xs text-on-surface-variant">
+            {{ lang() === 'ar' ? 'لا توجد فصول دراسية في هذا الكورس.' : 'No sections defined for this course.' }}
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!selectedCourseId()" class="text-center py-xl text-xs text-on-surface-variant">
+        {{ lang() === 'ar' ? 'يرجى اختيار كورس من القائمة الجانبية لتعديل المنهج.' : 'Please select a course from the sidebar to edit curriculum.' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== TAB 4: INSTRUCTOR PROFILE ================== -->
+  <div *ngIf="activeTab() === 'profile' && !isLoading()" class="glass-panel p-lg rounded-2xl bg-surface-container/20 border border-outline-variant max-w-xl mx-auto text-start space-y-md">
+    <div class="border-b border-outline-variant/30 pb-sm">
+      <h3 class="font-extrabold text-md text-on-surface">{{ lang() === 'ar' ? 'ملف تعريف المعلم' : 'Instructor Profile Overview' }}</h3>
+      <p class="text-xs text-on-surface-variant">{{ lang() === 'ar' ? 'بياناتك الأكاديمية والمهنية المسجلة بالمنصة.' : 'Your academic details registered in our onboarding archives.' }}</p>
+    </div>
+
+    <div class="flex items-center gap-md bg-surface-container-low p-sm rounded-2xl border border-outline-variant">
+      <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-outline-variant text-primary shrink-0">
+        <span class="material-symbols-outlined text-3xl">school</span>
+      </div>
+      <div>
+        <h4 class="font-bold text-sm text-on-surface">{{ profile()?.fullName }}</h4>
+        <span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary text-[10px] font-bold uppercase tracking-wider block mt-[2px] w-max">
+          {{ lang() === 'ar' ? 'معلم معتمد' : 'Verified Instructor' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-sm pt-xs">
+      <div class="p-sm bg-surface-container-low rounded-xl border border-outline-variant/30">
+        <span class="text-[9px] uppercase font-bold text-on-surface-variant block tracking-wider">{{ lang() === 'ar' ? 'إجمالي الأرباح' : 'Total Earnings' }}</span>
+        <span class="text-sm font-extrabold text-on-surface mt-[2px] block">{{ profile()?.totalEarnings | number }} EGP</span>
+      </div>
+      <div class="p-sm bg-surface-container-low rounded-xl border border-outline-variant/30">
+        <span class="text-[9px] uppercase font-bold text-on-surface-variant block tracking-wider">{{ lang() === 'ar' ? 'الكورسات النشطة' : 'Active Courses' }}</span>
+        <span class="text-sm font-extrabold text-on-surface mt-[2px] block">{{ profile()?.activeCoursesCount }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== MODAL: CREATE / EDIT COURSE ================== -->
+  <div *ngIf="showCourseModal()" class="fixed inset-0 z-50 flex items-center justify-center p-sm backdrop-blur-md bg-black/60">
+    <div class="glass-panel w-full max-w-lg rounded-2xl bg-surface-container-high border border-outline-variant shadow-2xl overflow-hidden flex flex-col justify-between max-h-[85vh]">
+      
+      <div class="p-md border-b border-outline-variant/30 text-start">
+        <h3 class="font-extrabold text-sm text-on-surface">
+          {{ isEditingCourse() ? (lang() === 'ar' ? 'تعديل الكورس' : 'Edit Course Details') : (lang() === 'ar' ? 'إنشاء كورس جديد' : 'Create New Course') }}
+        </h3>
+        <p class="text-[9px] text-on-surface-variant">
+          {{ lang() === 'ar' ? 'أدخل تفاصيل الكورس، التخصص، والأسعار.' : 'Provide titles, descriptions, categories, base pricing, and syllabus outlines.' }}
+        </p>
+      </div>
+
+      <div class="p-md overflow-y-auto space-y-sm text-start flex-1">
+        <!-- Error Alert -->
+        <div *ngIf="formErrorMessage()" class="p-xs text-xs bg-error/15 text-error rounded-xl border border-error/20">
+          {{ formErrorMessage() }}
+        </div>
+
+        <div class="flex flex-col gap-[2px]">
+          <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'عنوان الكورس *' : 'Course Title *' }}</label>
+          <input type="text" [formControl]="courseForm.controls.title" name="courseTitle"
+                 class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+        </div>
+
+        <div class="flex flex-col gap-[2px]">
+          <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'العنوان الفرعي' : 'Subtitle' }}</label>
+          <input type="text" [formControl]="courseForm.controls.subtitle" name="courseSubtitle"
+                 class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+        </div>
+
+        <div class="flex flex-col gap-[2px]">
+          <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الوصف والتفاصيل *' : 'Description *' }}</label>
+          <textarea [formControl]="courseForm.controls.description" name="courseDescription" rows="3"
+                    class="p-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary resize-none"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-sm">
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'السعر (EGP) *' : 'Price (EGP) *' }}</label>
+            <input type="number" [formControl]="courseForm.controls.price" name="coursePrice" min="0"
+                   class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+          </div>
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'التصنيف / التخصص *' : 'Category *' }}</label>
+            <input type="text" [formControl]="courseForm.controls.category" name="courseCategory"
+                   class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+          </div>
+        </div>
+
+        <!-- Thumbnail Upload Widget -->
+        <div class="flex flex-col gap-xs">
+          <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'صورة الكورس التوضيحية (Thumbnail)' : 'Course Thumbnail Media' }}</label>
+          <div class="flex items-center gap-md bg-surface-container-low p-xs rounded-xl border border-outline-variant">
+            <input type="file" accept="image/*" (change)="onThumbnailSelected($event)" class="hidden" #courseThumbnailInput />
+            <button type="button" (click)="courseThumbnailInput.click()" class="px-sm py-1.5 bg-surface-container border border-outline-variant hover:border-primary text-[10px] rounded-lg font-bold text-on-surface">
+              Upload Image...
+            </button>
+            <span class="text-[9px] text-on-surface-variant truncate max-w-[200px]" *ngIf="thumbnailFileName()">{{ thumbnailFileName() }}</span>
+          </div>
+        </div>
+
+        <!-- Advanced edits only when editing -->
+        <div *ngIf="isEditingCourse()" class="space-y-sm pt-xs border-t border-outline-variant/30">
+          <span class="text-[9px] font-bold text-on-surface-variant block uppercase">{{ lang() === 'ar' ? 'خصومات الأسعار والمنهج (اختياري):' : 'Pricing Discounts & Syllabi (Optional):' }}</span>
+          
+          <div class="grid grid-cols-3 gap-xs">
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'سعر الخصم' : 'Discount Price' }}</label>
+              <input type="number" [formControl]="courseForm.controls.discountPrice" name="courseDiscountPrice"
+                     class="h-8 px-sm text-[11px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary" />
+            </div>
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'بداية الخصم' : 'Start Date' }}</label>
+              <input type="datetime-local" [formControl]="courseForm.controls.discountStartDateUtc" name="courseDiscountStart"
+                     class="h-8 px-xs text-[9px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary" />
+            </div>
+            <div class="flex flex-col gap-[2px]">
+              <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'نهاية الخصم' : 'End Date' }}</label>
+              <input type="datetime-local" [formControl]="courseForm.controls.discountEndDateUtc" name="courseDiscountEnd"
+                     class="h-8 px-xs text-[9px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'شروط ومتطلبات الكورس (سطر لكل شرط)' : 'Requirements (One per line)' }}</label>
+            <textarea [formControl]="courseForm.controls.requirements" name="courseRequirements" rows="2"
+                      class="p-xs text-[10px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary resize-none"></textarea>
+          </div>
+
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[9px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'ماذا سيتعلم الطالب (سطر لكل نتيجة)' : 'Learning Outcomes (One per line)' }}</label>
+            <textarea [formControl]="courseForm.controls.outcomes" name="courseOutcomes" rows="2"
+                      class="p-xs text-[10px] bg-surface-container-low text-on-surface border border-outline-variant rounded-lg outline-none focus:border-primary resize-none"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-sm bg-surface-container border-t border-outline-variant/30 flex gap-xs">
+        <button (click)="showCourseModal.set(false)" class="flex-1 h-9 rounded-xl bg-surface-container border border-outline-variant hover:bg-white/5 text-xs font-bold text-on-surface active:scale-95 transition-all">
+          {{ lang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+        </button>
+        <button (click)="saveCourse()" [disabled]="isSubmitting()" class="flex-1 h-9 rounded-xl bg-primary text-on-primary text-xs font-bold hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-xs">
+          <span *ngIf="isSubmitting()" class="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></span>
+          <span>{{ lang() === 'ar' ? 'حفظ التعديلات' : 'Save Course' }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================== MODAL: CREATE SECTION ================== -->
+  <div *ngIf="showSectionModal()" class="fixed inset-0 z-50 flex items-center justify-center p-sm backdrop-blur-md bg-black/60">
+    <div class="glass-panel w-full max-w-sm rounded-2xl bg-surface-container-high border border-outline-variant shadow-2xl overflow-hidden flex flex-col justify-between h-[220px]">
+      
+      <div class="p-md border-b border-outline-variant/30 text-start">
+        <h3 class="font-extrabold text-sm text-on-surface">{{ lang() === 'ar' ? 'فصل دراسي جديد' : 'Create Section' }}</h3>
+        <p class="text-[9px] text-on-surface-variant">{{ lang() === 'ar' ? 'أدخل عنوان الفصل التوضيحي.' : 'Enter section heading title and display sequence.' }}</p>
+      </div>
+
+      <div class="p-md space-y-sm text-start flex-1 overflow-y-auto">
+        <div *ngIf="formErrorMessage()" class="p-xs text-xs bg-error/15 text-error rounded-xl border border-error/20">
+          {{ formErrorMessage() }}
+        </div>
+
+        <div class="flex flex-col gap-[2px]">
+          <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'عنوان الفصل *' : 'Section Title *' }}</label>
+          <input type="text" [formControl]="sectionForm.controls.title" name="sectionTitle"
+                 class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+        </div>
+      </div>
+
+      <div class="p-sm bg-surface-container border-t border-outline-variant/30 flex gap-xs">
+        <button (click)="showSectionModal.set(false)" class="flex-1 h-9 rounded-xl bg-surface-container border border-outline-variant hover:bg-white/5 text-xs font-bold text-on-surface active:scale-95 transition-all">
+          {{ lang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+        </button>
+        <button (click)="saveSection()" [disabled]="isSubmitting()" class="flex-1 h-9 rounded-xl bg-primary text-on-primary text-xs font-bold hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-xs">
+          <span *ngIf="isSubmitting()" class="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></span>
+          <span>{{ lang() === 'ar' ? 'إنشاء' : 'Create' }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================== MODAL: CREATE / EDIT LESSON ================== -->
+  <div *ngIf="showLessonModal()" class="fixed inset-0 z-50 flex items-center justify-center p-sm backdrop-blur-md bg-black/60">
+    <div class="glass-panel w-full max-w-md rounded-2xl bg-surface-container-high border border-outline-variant shadow-2xl overflow-hidden flex flex-col justify-between max-h-[80vh]">
+      
+      <div class="p-md border-b border-outline-variant/30 text-start">
+        <h3 class="font-extrabold text-sm text-on-surface">
+          {{ isEditingLesson() ? (lang() === 'ar' ? 'تعديل الدرس' : 'Edit Lesson Details') : (lang() === 'ar' ? 'إضافة درس جديد' : 'Add New Lesson') }}
+        </h3>
+        <p class="text-[9px] text-on-surface-variant">{{ lang() === 'ar' ? 'أدخل عنوان الدرس وتفاصيل الملف المرئي.' : 'Set titles, descriptions, duration, preview status, and upload mp4 files.' }}</p>
+      </div>
+
+      <div class="p-md space-y-sm text-start flex-1 overflow-y-auto">
+        <div *ngIf="formErrorMessage()" class="p-xs text-xs bg-error/15 text-error rounded-xl border border-error/20">
+          {{ formErrorMessage() }}
+        </div>
+
+        <div class="flex flex-col gap-[2px]">
+          <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'عنوان الدرس *' : 'Lesson Title *' }}</label>
+          <input type="text" [formControl]="lessonForm.controls.title" name="lessonTitle"
+                 class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+        </div>
+
+        <div class="flex flex-col gap-[2px]">
+          <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الشرح أو الملاحظات' : 'Description / Notes' }}</label>
+          <textarea [formControl]="lessonForm.controls.description" name="lessonDescription" rows="2"
+                    class="p-xs text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary resize-none"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-sm">
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'المدة (بالثواني)' : 'Duration (Seconds)' }}</label>
+            <input type="number" [formControl]="lessonForm.controls.durationInSeconds" name="lessonDuration"
+                   class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+          </div>
+          <div class="flex flex-col gap-[2px]">
+            <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'الترتيب' : 'Display Order' }}</label>
+            <input type="number" [formControl]="lessonForm.controls.order" name="lessonOrder"
+                   class="h-9 px-sm text-xs bg-surface-container-low text-on-surface border border-outline-variant rounded-xl outline-none focus:border-primary" />
+          </div>
+        </div>
+
+        <!-- Preview Toggle -->
+        <div class="flex items-center gap-xs pt-xs">
+          <input type="checkbox" [formControl]="lessonForm.controls.isPreview" name="lessonIsPreview" id="lessonIsPreview" class="w-4 h-4 rounded text-primary" />
+          <label for="lessonIsPreview" class="text-[10px] font-bold text-on-surface-variant cursor-pointer select-none uppercase">
+            {{ lang() === 'ar' ? 'السماح بمعاينة الفيديو مجاناً' : 'Free Preview Lesson' }}
+          </label>
+        </div>
+
+        <!-- Video Upload Widget -->
+        <div class="flex flex-col gap-xs pt-xs">
+          <label class="text-[10px] uppercase font-bold text-on-surface">{{ lang() === 'ar' ? 'ملف الفيديو (MP4) *' : 'Video Lesson File (MP4) *' }}</label>
+          <div class="flex items-center gap-md bg-surface-container-low p-xs rounded-xl border border-outline-variant">
+            <input type="file" accept="video/mp4,video/x-m4v,video/*" (change)="onVideoSelected($event)" class="hidden" #lessonVideoInput />
+            <button type="button" (click)="lessonVideoInput.click()" class="px-sm py-1.5 bg-surface-container border border-outline-variant hover:border-primary text-[10px] rounded-lg font-bold text-on-surface">
+              Select Video...
+            </button>
+            <span class="text-[9px] text-on-surface-variant truncate max-w-[200px]" *ngIf="videoFileName()">{{ videoFileName() }}</span>
+          </div>
+          <p class="text-[8px] text-outline" *ngIf="isEditingLesson()">Leave blank if you do not want to replace the existing video.</p>
+        </div>
+      </div>
+
+      <div class="p-sm bg-surface-container border-t border-outline-variant/30 flex gap-xs">
+        <button (click)="showLessonModal.set(false)" class="flex-1 h-9 rounded-xl bg-surface-container border border-outline-variant hover:bg-white/5 text-xs font-bold text-on-surface active:scale-95 transition-all">
+          {{ lang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+        </button>
+        <button (click)="saveLesson()" [disabled]="isSubmitting()" class="flex-1 h-9 rounded-xl bg-primary text-on-primary text-xs font-bold hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-xs">
+          <span *ngIf="isSubmitting()" class="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></span>
+          <span>{{ lang() === 'ar' ? 'حفظ' : 'Save Lesson' }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================== MODAL: UPLOAD ATTACHMENT ================== -->
+  <div *ngIf="showAttachmentModal()" class="fixed inset-0 z-50 flex items-center justify-center p-sm backdrop-blur-md bg-black/60">
+    <div class="glass-panel w-full max-w-sm rounded-2xl bg-surface-container-high border border-outline-variant shadow-2xl overflow-hidden flex flex-col justify-between h-[220px]">
+      
+      <div class="p-md border-b border-outline-variant/30 text-start">
+        <h3 class="font-extrabold text-sm text-on-surface">{{ lang() === 'ar' ? 'إرفاق ملف للدرس' : 'Upload Lesson Attachment' }}</h3>
+        <p class="text-[9px] text-on-surface-variant">{{ lang() === 'ar' ? 'أرفق ملفات PDF أو مستندات مساعدة لطلاب الدرس.' : 'Upload auxiliary reading files or homework sheets.' }}</p>
+      </div>
+
+      <div class="p-md space-y-sm text-start flex-1 overflow-y-auto">
+        <div *ngIf="formErrorMessage()" class="p-xs text-xs bg-error/15 text-error rounded-xl border border-error/20">
+          {{ formErrorMessage() }}
+        </div>
+
+        <div class="flex items-center gap-md bg-surface-container-low p-xs rounded-xl border border-outline-variant">
+          <input type="file" (change)="onAttachmentSelected($event)" class="hidden" #lessonAttachmentInput />
+          <button type="button" (click)="lessonAttachmentInput.click()" class="px-sm py-1.5 bg-surface-container border border-outline-variant hover:border-primary text-[10px] rounded-lg font-bold text-on-surface">
+            Select Attachment File...
+          </button>
+          <span class="text-[9px] text-on-surface-variant truncate max-w-[150px]" *ngIf="attachmentFileName()">{{ attachmentFileName() }}</span>
+        </div>
+      </div>
+
+      <div class="p-sm bg-surface-container border-t border-outline-variant/30 flex gap-xs">
+        <button (click)="showAttachmentModal.set(false)" class="flex-1 h-9 rounded-xl bg-surface-container border border-outline-variant hover:bg-white/5 text-xs font-bold text-on-surface active:scale-95 transition-all">
+          {{ lang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+        </button>
+        <button (click)="saveAttachment()" [disabled]="isSubmitting()" class="flex-1 h-9 rounded-xl bg-primary text-on-primary text-xs font-bold hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-xs">
+          <span *ngIf="isSubmitting()" class="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin"></span>
+          <span>{{ lang() === 'ar' ? 'رفع الملف' : 'Upload' }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

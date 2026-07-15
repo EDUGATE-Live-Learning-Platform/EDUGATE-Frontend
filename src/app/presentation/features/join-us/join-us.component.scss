@@ -1,0 +1,87 @@
+// Wizard layout styles
+:host {
+  display: block;
+  width: 100%;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+// Scoped Form Styling
+label {
+  display: block;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-color) !important;
+  opacity: 0.85;
+  margin-bottom: 4px;
+}
+
+input, select, textarea {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  background-color: var(--surface-container-low) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--outline-variant) !important;
+
+  &::placeholder {
+    color: var(--text-color) !important;
+    opacity: 0.45 !important;
+  }
+
+  &:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(var(--primary-color), 0.15);
+    outline: none;
+  }
+}
+
+// Custom style for select dropdown arrow
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  
+  [dir="rtl"] & {
+    background-position: left 10px center;
+  }
+}

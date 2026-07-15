@@ -1,0 +1,68 @@
+<div class="space-y-md animate-fade-in font-sans">
+  <div class="border-b border-white/5 pb-sm">
+    <h1 class="text-display-lg bg-gradient-to-r from-on-surface via-primary to-secondary bg-clip-text text-transparent mb-xs">
+      {{ lang() === 'ar' ? 'الأجهزة النشطة' : 'Active Devices' }}
+    </h1>
+    <p class="text-body-md text-on-surface-variant max-w-3xl">
+      {{ lang() === 'ar' ? 'إدارة الأجهزة والجلسات النشطة لحسابك لحمايته من الاستخدام غير المصرح به.' : 'Manage active logins and browser sessions for your account to protect against unauthorized sharing.' }}
+    </p>
+  </div>
+
+  <div class="flex justify-end gap-sm" *ngIf="sessions().length > 1">
+    <button (click)="terminateOthers()" class="px-md py-2 text-xs font-bold rounded-xl bg-error/15 text-error border border-error/25 hover:bg-error hover:text-white transition-all active:scale-95 flex items-center gap-xs">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+      </svg>
+      <span>{{ lang() === 'ar' ? 'تسجيل الخروج من كافة الأجهزة الأخرى' : 'Logout All Other Devices' }}</span>
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage()" class="p-sm text-xs bg-error/15 text-error border border-error/20 rounded-xl">
+    {{ errorMessage() }}
+  </div>
+
+  <div *ngIf="isLoading()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+    <div class="glass-panel p-md rounded-xl border border-white/10 h-32 animate-pulse bg-surface-container-high" *ngFor="let item of [1,2,3]"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && sessions().length === 0" class="glass-panel p-lg text-center border border-white/5">
+    <p class="text-on-surface-variant">{{ lang() === 'ar' ? 'لا توجد جلسات نشطة.' : 'No active sessions found.' }}</p>
+  </div>
+
+  <div *ngIf="!isLoading() && sessions().length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+    <div *ngFor="let session of sessions()" class="glass-panel p-md rounded-xl border border-white/5 flex flex-col justify-between gap-md relative overflow-hidden group">
+      
+      <!-- Session Card Header -->
+      <div class="flex items-start gap-sm text-start">
+        <div class="p-xs bg-primary/10 border border-primary/20 rounded-lg text-primary">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" *ngIf="session.os === 'Windows'">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" *ngIf="session.os !== 'Windows'">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="text-xs font-bold text-on-surface truncate flex items-center gap-xs">
+            <span>{{ session.os }} • {{ session.browser }}</span>
+            <span class="px-1.5 py-0.5 text-[8px] bg-green-500/20 border border-green-500/30 text-green-400 font-bold rounded-full uppercase">Active</span>
+          </h3>
+          <p class="text-[10px] text-on-surface-variant leading-tight truncate">IP: {{ session.ipAddress }} ({{ session.country }})</p>
+        </div>
+      </div>
+
+      <!-- Time and Logout Button -->
+      <div class="flex items-center justify-between pt-sm border-t border-white/5 text-start">
+        <div class="text-[9px] text-on-surface-variant space-y-[2px]">
+          <p>Login: {{ session.loginTime | date:'short' }}</p>
+          <p>Last seen: {{ session.lastActivity | date:'short' }}</p>
+        </div>
+        
+        <button (click)="terminateSession(session.id)" class="px-xs py-1.5 rounded-lg border border-outline-variant hover:border-error hover:text-error text-[10px] font-bold text-on-surface-variant transition-all active:scale-95">
+          {{ lang() === 'ar' ? 'إنهاء الجلسة' : 'Revoke' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

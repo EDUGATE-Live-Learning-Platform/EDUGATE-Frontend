@@ -45,6 +45,10 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/features/home/home.component').then(m => m.HomeComponent)
       },
       {
+        path: 'dashboard',
+        loadComponent: () => import('./presentation/features/dashboard-page/dashboard-page.component').then(m => m.DashboardPageComponent)
+      },
+      {
         path: 'courses',
         loadComponent: () => import('./presentation/features/courses/course-list/course-list.component').then(m => m.CourseListComponent)
       },
@@ -69,8 +73,24 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/features/wallet/wallet.component').then(m => m.WalletComponent)
       },
       {
+        path: 'devices',
+        loadComponent: () => import('./presentation/features/active-devices/active-devices.component').then(m => m.ActiveDevicesComponent)
+      },
+      {
         path: 'learn/:courseId',
         loadComponent: () => import('./presentation/features/student-course-content/student-course-content.component').then(m => m.StudentCourseContentComponent)
+      },
+      {
+        path: 'admin',
+        loadComponent: () => import('./presentation/features/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+      },
+      {
+        path: 'join-us',
+        loadComponent: () => import('./presentation/features/join-us/join-us.component').then(m => m.JoinUsComponent)
+      },
+      {
+        path: 'instructor/dashboard',
+        loadComponent: () => import('./presentation/features/instructor-dashboard/instructor-dashboard.component').then(m => m.InstructorDashboardComponent)
       }
     ]
   },

@@ -51,7 +51,7 @@
             </h2>
             <div class="flex items-center gap-xs mt-base">
               <span class="px-sm py-base rounded-lg bg-primary-container/20 text-primary-container text-[10px] font-bold uppercase tracking-wider border border-primary-container/30">
-                {{ user.Role }}
+                {{ getRoleLabel(user.Role) }}
               </span>
               <span class="px-sm py-base rounded-lg bg-green-500/10 text-green-400 text-[10px] font-bold uppercase tracking-wider border border-green-500/20">
                 {{ t().profile.verifiedAccount }}

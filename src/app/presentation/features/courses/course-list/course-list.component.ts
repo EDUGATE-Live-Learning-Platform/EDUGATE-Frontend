@@ -33,7 +33,7 @@ export class CourseListComponent implements OnInit, OnDestroy {
   // Filter signals
   searchQuery = signal<string>('');
   selectedCategory = signal<string>('');
-  maxPrice = signal<number>(1000);
+  maxPrice = signal<number>(2500);
   minRating = signal<number>(0);
   
   // Pagination signals
@@ -50,7 +50,13 @@ export class CourseListComponent implements OnInit, OnDestroy {
     { value: '', labelKey: 'catalog.allCategories' },
     { value: 'Computer Science', labelKey: 'catalog.catCS' },
     { value: 'Artificial Intelligence', labelKey: 'catalog.catAI' },
-    { value: 'Mathematics', labelKey: 'catalog.catMath' }
+    { value: 'Mathematics', labelKey: 'catalog.catMath' },
+    { value: 'Development', labelKey: 'catalog.catDev' },
+    { value: 'Physics', labelKey: 'catalog.catPhysics' },
+    { value: 'Chemistry', labelKey: 'catalog.catChemistry' },
+    { value: 'Design', labelKey: 'catalog.catDesign' },
+    { value: 'Cybersecurity', labelKey: 'catalog.catCyber' },
+    { value: 'Software Engineering', labelKey: 'catalog.catSE' }
   ];
 
   translateKey(key: string): string {
@@ -61,16 +67,7 @@ export class CourseListComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  constructor() {
-    // Reload courses whenever category, maxPrice, or minRating changes
-    effect(() => {
-      this.selectedCategory();
-      this.maxPrice();
-      this.minRating();
-      this.currentPage.set(1); // Reset page on filter change
-      this.loadCourses();
-    }, { allowSignalWrites: true });
-  }
+  constructor() {}
 
   ngOnInit(): void {
     // Debounce search input to avoid spamming the backend
@@ -80,8 +77,7 @@ export class CourseListComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(val => {
       this.searchQuery.set(val);
-      this.currentPage.set(1);
-      this.loadCourses();
+      this.resetAndLoad();
     });
 
     this.loadCourses();
@@ -95,6 +91,26 @@ export class CourseListComponent implements OnInit, OnDestroy {
   onSearchChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchSubject.next(input.value);
+  }
+
+  onCategoryChange(cat: string): void {
+    this.selectedCategory.set(cat);
+    this.resetAndLoad();
+  }
+
+  onPriceChange(price: number): void {
+    this.maxPrice.set(price);
+    this.resetAndLoad();
+  }
+
+  onRatingChange(rating: number): void {
+    this.minRating.set(rating);
+    this.resetAndLoad();
+  }
+
+  resetAndLoad(): void {
+    this.currentPage.set(1);
+    this.loadCourses();
   }
 
   loadCourses(): void {
@@ -141,7 +157,7 @@ export class CourseListComponent implements OnInit, OnDestroy {
   clearFilters(): void {
     this.searchQuery.set('');
     this.selectedCategory.set('');
-    this.maxPrice.set(1000);
+    this.maxPrice.set(2500);
     this.minRating.set(0);
     this.currentPage.set(1);
     this.loadCourses();

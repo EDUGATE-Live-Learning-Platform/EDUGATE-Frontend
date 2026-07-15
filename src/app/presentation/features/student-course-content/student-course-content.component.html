@@ -1,4 +1,5 @@
-<div class="space-y-md animate-fade-in font-sans">
+<div [class.blur-sm]="isDevToolsOpen()" class="space-y-md animate-fade-in font-sans select-none">
+  
   <div class="flex items-center gap-sm text-start">
     <button (click)="goBack()" class="inline-flex items-center gap-xs text-xs text-primary hover:underline font-bold transition-all">
       <svg class="w-4 h-4 shrink-0 flip-rtl" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,10 +23,20 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
       <div class="lg:col-span-2 space-y-md">
         @if (activeLesson(); as lesson) {
-          <div class="glass-panel rounded-xl overflow-hidden border border-white/5">
+          
+          <!-- Secure Video Player Container -->
+          <div class="glass-panel rounded-xl overflow-hidden border border-white/5 relative">
             @if (lesson.videoUrl) {
-              <div class="relative bg-black aspect-video flex items-center justify-center">
-                <video [src]="lesson.videoUrl" controls autoplay class="w-full h-full object-contain"></video>
+              <div class="relative bg-black aspect-video flex items-center justify-center overflow-hidden">
+                <video id="secure-video-player" controls autoplay controlsList="nodownload" class="w-full h-full object-contain"></video>
+                
+                <!-- Anti-Piracy Floating Watermark -->
+                <div id="secure-watermark" 
+                     [style.top]="watermarkTop()" 
+                     [style.left]="watermarkLeft()"
+                     class="secure-watermark-class absolute pointer-events-none select-none text-[10px] font-bold text-white/15 bg-black/40 px-xs py-0.5 rounded border border-white/5 z-30 transition-all duration-1000 whitespace-nowrap">
+                  {{ watermarkText() }}
+                </div>
               </div>
             } @else {
               <div class="h-64 bg-surface-container-high flex items-center justify-center text-on-surface-variant">
@@ -35,14 +46,38 @@
                 </svg>
               </div>
             }
+
             <div class="p-sm text-start space-y-sm">
               <div class="flex items-center justify-between">
                 <h2 class="text-sm font-bold text-on-surface">{{ lesson.title }}</h2>
                 <span class="text-xs text-on-surface-variant">{{ formatDuration(lesson.durationInSeconds) }}</span>
               </div>
+              
               @if (lesson.description) {
                 <p class="text-xs text-on-surface-variant">{{ lesson.description }}</p>
               }
+
+              <!-- Attachments List -->
+              @if (lesson.attachments && lesson.attachments.length > 0) {
+                <div class="pt-sm border-t border-white/5 space-y-xs">
+                  <span class="text-[10px] uppercase font-bold text-primary block">Course Assets & Materials</span>
+                  <div class="flex flex-wrap gap-xs">
+                    @for (attachment of lesson.attachments; track attachment.id) {
+                      <button (click)="loadPdfAttachment(attachment)" 
+                              class="inline-flex items-center gap-xs px-sm py-1.5 rounded-lg bg-surface-container-low border border-white/5 hover:border-primary text-xs text-on-surface transition-all active:scale-95">
+                        <svg class="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 24 24" *ngIf="attachment.fileName.endsWith('.pdf')">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/>
+                        </svg>
+                        <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" *ngIf="!attachment.fileName.endsWith('.pdf')">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>{{ attachment.fileName }}</span>
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+
               <div class="flex gap-sm pt-sm border-t border-white/5">
                 @if (!lesson.isCompleted) {
                   <button (click)="markAsComplete(lesson.id)"
@@ -65,6 +100,7 @@
             </div>
           </div>
 
+          <!-- Notes Section -->
           @if (showNotes()) {
             <div class="glass-panel p-sm rounded-xl border border-white/5 text-start space-y-sm">
               <h3 class="text-xs font-bold text-on-surface">Notes</h3>
@@ -91,6 +127,7 @@
         }
       </div>
 
+      <!-- Curriculum Sidebar -->
       <div class="lg:col-span-1 space-y-sm">
         <div class="glass-panel p-sm rounded-xl border border-white/5 text-center">
           <h3 class="text-xs font-bold text-on-surface mb-xs">{{ c.title }}</h3>
@@ -145,4 +182,69 @@
       </div>
     </div>
   }
+</div>
+
+<!-- ================== SECURE PDF.JS VIEWER DIALOG ================== -->
+<div *ngIf="activePdfName()" class="fixed inset-0 z-50 flex flex-col justify-between backdrop-blur-lg bg-black/85 p-md select-none">
+  
+  <!-- PDF Top Control Bar -->
+  <div class="flex items-center justify-between p-sm border-b border-white/10 text-white">
+    <div>
+      <h3 class="text-xs font-bold">{{ activePdfName() }}</h3>
+      <p class="text-[9px] text-on-surface-variant">Page {{ pdfCurrentPage() }} of {{ pdfTotalPages() }}</p>
+    </div>
+    
+    <div class="flex items-center gap-xs">
+      <button (click)="pdfPrevPage()" [disabled]="pdfCurrentPage() <= 1" 
+              class="px-sm py-1 bg-surface-container rounded-lg border border-white/5 hover:border-primary disabled:opacity-30 text-[10px] font-bold text-on-surface">
+        Previous
+      </button>
+      <button (click)="pdfNextPage()" [disabled]="pdfCurrentPage() >= pdfTotalPages()" 
+              class="px-sm py-1 bg-surface-container rounded-lg border border-white/5 hover:border-primary disabled:opacity-30 text-[10px] font-bold text-on-surface">
+        Next
+      </button>
+      <button (click)="closePdfViewer()" 
+              class="px-sm py-1 bg-error/10 text-error rounded-lg border border-error/20 hover:bg-error hover:text-white text-[10px] font-bold">
+        Close Viewer
+      </button>
+    </div>
+  </div>
+
+  <!-- PDF Document Canvas Rendering Area -->
+  <div class="flex-1 overflow-y-auto py-md relative flex items-center justify-center">
+    <div class="relative bg-white/5 p-xs rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+      
+      <!-- Loading indicator -->
+      <div *ngIf="pdfLoading()" class="absolute inset-0 bg-black/60 flex items-center justify-center z-40">
+        <span class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+      </div>
+      
+      <canvas id="pdf-canvas" class="mx-auto rounded-xl max-w-full shadow-2xl block"></canvas>
+      
+      <!-- Overlay float watermark on top of PDF Canvas -->
+      <div id="secure-watermark" 
+           [style.top]="watermarkTop()" 
+           [style.left]="watermarkLeft()"
+           class="secure-watermark-class absolute pointer-events-none select-none text-[10px] font-bold text-white/15 bg-black/40 px-xs py-0.5 rounded border border-white/5 z-30 transition-all duration-1000 whitespace-nowrap">
+        {{ watermarkText() }}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================== SECURITY WARNING: DEVTOOLS OPENED ================== -->
+<div *ngIf="isDevToolsOpen()" class="fixed inset-0 z-[99999] bg-black/95 flex flex-col items-center justify-center p-md text-center">
+  <div class="glass-panel p-lg rounded-2xl border border-error/30 max-w-md space-y-md">
+    <div class="w-16 h-16 rounded-full bg-error/10 border border-error/20 flex items-center justify-center text-error mx-auto animate-bounce">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    </div>
+    <h2 class="text-headline-lg font-bold text-error">Security Violation</h2>
+    <p class="text-xs text-on-surface-variant leading-relaxed">
+      Developer Tools are not permitted on this platform to protect copyrighted educational material. 
+      Please close the Developer Tools window to resume learning.
+    </p>
+  </div>
 </div>

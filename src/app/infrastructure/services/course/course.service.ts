@@ -1,8 +1,9 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { Course } from '../../../core/models/course.model';
-import { CourseCatalogItem, CourseDetails, StudentDashboardResponse } from '../../../core/models/course-catalog.model';
+import { CourseCatalogItem, CourseDetails, StudentDashboardResponse, CalendarEvent } from '../../../core/models/course-catalog.model';
 
 @Injectable({
   providedIn: 'root'
@@ -86,6 +87,34 @@ export class CourseService {
 
   // ----------------- HTTP Backend Catalog API Calls -----------------
 
+  private getAbsoluteUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+      return url;
+    }
+    return `${environment.apiUrl}/${url.replace(/^\//, '')}`;
+  }
+
+  private mapCourseDetails(details: CourseDetails): CourseDetails {
+    if (!details) return details;
+    return {
+      ...details,
+      thumbnailUrl: this.getAbsoluteUrl(details.thumbnailUrl) || undefined,
+      previewVideoUrl: this.getAbsoluteUrl(details.previewVideoUrl) || undefined,
+      sections: details.sections ? details.sections.map(s => ({
+        ...s,
+        lessons: s.lessons ? s.lessons.map(l => ({
+          ...l,
+          videoUrl: this.getAbsoluteUrl(l.videoUrl) || undefined,
+          attachments: l.attachments ? l.attachments.map(a => ({
+            ...a,
+            fileUrl: this.getAbsoluteUrl(a.fileUrl) || ''
+          })) : []
+        })) : []
+      })) : []
+    };
+  }
+
   getCoursesCatalog(filters: {
     search?: string;
     category?: string;
@@ -104,11 +133,18 @@ export class CourseService {
     if (filters.page !== undefined) params = params.set('page', filters.page.toString());
     if (filters.pageSize !== undefined) params = params.set('pageSize', filters.pageSize.toString());
 
-    return this.http.get<CourseCatalogItem[]>('/api/v1/courses', { params });
+    return this.http.get<CourseCatalogItem[]>('/api/v1/courses', { params }).pipe(
+      map(courses => (courses || []).map(c => ({
+        ...c,
+        thumbnailUrl: this.getAbsoluteUrl(c.thumbnailUrl) || undefined
+      })))
+    );
   }
 
   getCourseDetails(courseId: string): Observable<CourseDetails> {
-    return this.http.get<CourseDetails>(`/api/v1/courses/${courseId}`);
+    return this.http.get<CourseDetails>(`/api/v1/courses/${courseId}`).pipe(
+      map(details => this.mapCourseDetails(details))
+    );
   }
 
   purchaseCourse(courseId: string): Observable<{ Message: string }> {
@@ -118,11 +154,18 @@ export class CourseService {
   getStudentDashboard(status?: string): Observable<StudentDashboardResponse[]> {
     let params = new HttpParams();
     if (status) params = params.set('status', status);
-    return this.http.get<StudentDashboardResponse[]>('/api/v1/student/dashboard', { params });
+    return this.http.get<StudentDashboardResponse[]>('/api/v1/student/dashboard', { params }).pipe(
+      map(list => (list || []).map(c => ({
+        ...c,
+        thumbnailUrl: this.getAbsoluteUrl(c.thumbnailUrl) || undefined
+      })))
+    );
   }
 
   getStudentCourseContent(courseId: string): Observable<CourseDetails> {
-    return this.http.get<CourseDetails>(`/api/v1/student/courses/${courseId}/content`);
+    return this.http.get<CourseDetails>(`/api/v1/student/courses/${courseId}/content`).pipe(
+      map(details => this.mapCourseDetails(details))
+    );
   }
 
   getStudentDashboardSummary(): Observable<any> {
@@ -151,9 +194,20 @@ export class CourseService {
 
   updateProgress(courseId: string, lessonId: string, second: number): Observable<any> {
     return this.http.post('/api/v1/student/courses/progress', {
-      CourseId: courseId,
-      LastAccessedLessonId: lessonId,
-      LastAccessedSecond: second
+      LessonId: lessonId,
+      Seconds: second
     });
+  }
+
+  getCalendarEvents(): Observable<{ Data: CalendarEvent[] }> {
+    return this.http.get<{ Data: CalendarEvent[] }>('/api/v1/student/calendar');
+  }
+
+  addCalendarEvent(event: CalendarEvent): Observable<{ Data: CalendarEvent }> {
+    return this.http.post<{ Data: CalendarEvent }>('/api/v1/student/calendar', event);
+  }
+
+  getSignedAttachmentBlob(lessonId: string, attachmentId: string): Observable<Blob> {
+    return this.http.get(`/api/v1/lessons/${lessonId}/attachments/${attachmentId}/download`, { responseType: 'blob' });
   }
 }

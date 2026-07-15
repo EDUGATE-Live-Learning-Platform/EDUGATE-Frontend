@@ -13,4 +13,6 @@ export interface UserProfile {
   AcademicGrade?: 'FirstGrade' | 'SecondGrade' | 'ThirdGrade' | null;
   AcademicDivision?: 'General' | 'Scientific' | 'Literary' | null;
   StudentIdImageUrl?: string | null;
+  LastLoginAt?: string | null;
+  LastLoginDevice?: string | null;
 }

@@ -225,6 +225,12 @@ export interface TranslationSchema {
     catCS: string;
     catAI: string;
     catMath: string;
+    catDev: string;
+    catPhysics: string;
+    catChemistry: string;
+    catDesign: string;
+    catCyber: string;
+    catSE: string;
     reviewsCount: string;
     viewDetails: string;
     noCoursesTitle: string;
@@ -325,6 +331,24 @@ export interface TranslationSchema {
     studentOnlyAlert: string;
     enrolled: string;
     previewBtn: string;
+  };
+  admin: {
+    title: string;
+    subtitle: string;
+    stats: string;
+    students: string;
+    instructors: string;
+    wallet: string;
+    calendar: string;
+    audit: string;
+    approve: string;
+    reject: string;
+    feedback: string;
+    globalEvent: string;
+    users: string;
+    wallets: string;
+    ban: string;
+    unban: string;
   };
   
   // Explicitly declared Landing page (Home) keys
@@ -458,7 +482,8 @@ const emptySchema: TranslationSchema = {
   profile: { changePhoto: '', verifiedAccount: '', personalInfo: '', fullName: '', phoneNumber: '', email: '', readOnly: '', governorate: '', academicInfo: '', verifiedRegistration: '', schoolName: '', parentPhone: '', academicGrade: '', academicGrade1: '', academicGrade2: '', academicGrade3: '', academicDivision: '', divisionGeneral: '', divisionScientific: '', divisionLiterary: '', lockedNote: '', cancel: '', saving: '', saveChanges: '', editProfile: '', fileTypeError: '', fileSizeError: '', uploadSuccess: '', uploadError: '', updateSuccess: '', updateError: '' },
   catalog: {
     title: '', subtitle: '', filtersTitle: '', clearFilters: '', searchLabel: '', searchPlh: '', categoryLabel: '',
-    maxPrice: '', minRating: '', anyRating: '', up: '', allCategories: '', catCS: '', catAI: '', catMath: '',
+    maxPrice: '', minRating: '', anyRating: '', up: '', allCategories: '', 
+    catCS: '', catAI: '', catMath: '', catDev: '', catPhysics: '', catChemistry: '', catDesign: '', catCyber: '', catSE: '',
     reviewsCount: '', viewDetails: '', noCoursesTitle: '', noCoursesDesc: '', prev: '', next: '', page: ''
   },
   instructors: {
@@ -482,6 +507,11 @@ const emptySchema: TranslationSchema = {
     confirmPurchaseBtn: '', completingPurchase: '', insufficientFundsTitle: '', insufficientFundsDesc: '',
     coursePrice: '', currentBalance: '', amountNeeded: '', depositAmount: '', depositBtn: '', depositing: '', studentOnlyAlert: '',
     enrolled: '', previewBtn: ''
+  },
+  admin: {
+    title: '', subtitle: '', stats: '', students: '', instructors: '', wallet: '', calendar: '', audit: '',
+    approve: '', reject: '', feedback: '', globalEvent: '',
+    users: '', wallets: '', ban: '', unban: ''
   },
   
   // Empty values for explicitly declared Landing page (Home) keys
